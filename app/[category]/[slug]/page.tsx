@@ -207,7 +207,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               {article.category.name}
             </Link>
             <ChevronRight className="w-3.5 h-3.5 text-stone-400 shrink-0" />
-            <span className="text-forest-900 font-semibold truncate max-w-xs">
+            <span className="text-forest-900 font-semibold truncate max-w-[140px] xs:max-w-xs">
               {article.title}
             </span>
           </nav>
@@ -228,12 +228,12 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
 
           {/* H1 Main Title */}
-          <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-stone-950 leading-[1.18] tracking-tight mb-4">
+          <h1 className="font-serif text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-stone-950 leading-[1.2] tracking-tight mb-4">
             {article.title}
           </h1>
 
           {/* Excerpt */}
-          <p className="text-base sm:text-lg text-stone-600 leading-relaxed mb-6 font-normal">
+          <p className="text-sm sm:text-lg text-stone-600 leading-relaxed mb-6 font-normal">
             {article.excerpt}
           </p>
 
@@ -274,12 +274,13 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       </div>
 
       {/* Main Content Layout */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 sm:mt-10">
-        <div className="grid lg:grid-cols-12 gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-10">
           {/* Main Article Body */}
           <div className="lg:col-span-8 max-w-3xl">
             {/* Featured Hero Image */}
-            <div className="relative h-72 sm:h-96 lg:h-[420px] rounded-3xl overflow-hidden mb-8 shadow-sm border border-cream-200 bg-stone-100">
+            <div className="relative h-56 xs:h-64 sm:h-96 lg:h-[420px] rounded-2xl sm:rounded-3xl overflow-hidden mb-6 sm:mb-8 shadow-sm border border-cream-200 bg-stone-100">
+
               <Image
                 src={article.featuredImage}
                 alt={article.imageAlt || article.title}

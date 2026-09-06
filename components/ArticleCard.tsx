@@ -34,7 +34,7 @@ export default function ArticleCard({ article, variant = 'standard' }: ArticleCa
   if (variant === 'featured') {
     return (
       <article className="group relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-cream-200 grid lg:grid-cols-12 gap-0">
-        <div className="lg:col-span-7 relative h-72 sm:h-96 lg:h-full min-h-[320px] overflow-hidden bg-stone-100">
+        <div className="lg:col-span-7 relative h-64 sm:h-96 lg:h-full min-h-[240px] sm:min-h-[320px] overflow-hidden bg-stone-100">
           <Image
             src={article.featuredImage}
             alt={article.imageAlt || article.title}
@@ -43,21 +43,21 @@ export default function ArticleCard({ article, variant = 'standard' }: ArticleCa
             priority
             sizes="(max-width: 1024px) 100vw, 60vw"
           />
-          <div className="absolute top-4 left-4 flex gap-2">
-            <span className="bg-forest-900/90 backdrop-blur-md text-white font-semibold text-xs px-3.5 py-1.5 rounded-full uppercase tracking-wider">
+          <div className="absolute top-3 sm:top-4 left-3 sm:left-4 flex flex-wrap gap-1.5 sm:gap-2">
+            <span className="bg-forest-900/90 backdrop-blur-md text-white font-semibold text-[11px] sm:text-xs px-3 py-1 rounded-full uppercase tracking-wider">
               {article.category.name}
             </span>
             {article.isSponsored && (
-              <span className="bg-gold-500 text-forest-950 font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+              <span className="bg-gold-500 text-forest-950 font-bold text-[10px] sm:text-xs px-2.5 py-1 rounded-full uppercase tracking-wider">
                 In Association with {article.sponsoredBrand || 'A.S. Brand'}
               </span>
             )}
           </div>
         </div>
 
-        <div className="lg:col-span-5 p-6 sm:p-8 lg:p-10 flex flex-col justify-between bg-cream-50/50">
+        <div className="lg:col-span-5 p-5 sm:p-8 lg:p-10 flex flex-col justify-between bg-cream-50/50">
           <div>
-            <div className="flex items-center gap-3 text-xs text-stone-500 font-medium mb-3">
+            <div className="flex items-center gap-2 sm:gap-3 text-xs text-stone-500 font-medium mb-2.5 sm:mb-3">
               <span className="flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5 text-forest-700" />
                 {article.readingTime} min read
@@ -66,9 +66,10 @@ export default function ArticleCard({ article, variant = 'standard' }: ArticleCa
               <span>{formatDate(article.publishedAt)}</span>
             </div>
 
-            <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-stone-950 group-hover:text-forest-800 transition-colors leading-tight mb-4">
+            <h2 className="font-serif text-xl sm:text-3xl lg:text-4xl font-bold text-stone-950 group-hover:text-forest-800 transition-colors leading-snug sm:leading-tight mb-3 sm:mb-4">
               <Link href={articleUrl}>{article.title}</Link>
             </h2>
+
 
             <p className="text-stone-600 text-sm sm:text-base line-clamp-3 leading-relaxed mb-6">
               {article.excerpt}

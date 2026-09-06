@@ -1,37 +1,70 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, Menu, X, ArrowUpRight, Flame, ShieldCheck } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import {
+  Search,
+  Menu,
+  X,
+  ArrowUpRight,
+  Flame,
+  ShieldCheck,
+  BookOpen,
+  Utensils,
+  HeartPulse,
+  Sparkles,
+  Sprout,
+  Compass,
+} from 'lucide-react';
 import SearchModal from './SearchModal';
 
 const NAV_CATEGORIES = [
-  { name: 'Food & Cooking', slug: 'food' },
-  { name: 'Heirloom Recipes', slug: 'recipes' },
-  { name: 'Health & Wellness', slug: 'health' },
-  { name: 'Culture & Deepam', slug: 'culture' },
-  { name: 'Agriculture & Science', slug: 'agriculture' },
-  { name: 'Guides', slug: 'guides' },
+  { name: 'Food & Cooking', slug: 'food', icon: Utensils },
+  { name: 'Heirloom Recipes', slug: 'recipes', icon: BookOpen },
+  { name: 'Health & Wellness', slug: 'health', icon: HeartPulse },
+  { name: 'Culture & Deepam', slug: 'culture', icon: Sparkles },
+  { name: 'Agriculture & Science', slug: 'agriculture', icon: Sprout },
+  { name: 'Guides', slug: 'guides', icon: Compass },
 ];
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  // Close mobile drawer on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
+  // Prevent background scrolling when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
 
   const currentDate = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
+    weekday: 'short',
     month: 'short',
     day: 'numeric',
-    year: 'numeric',
   });
 
   return (
     <>
       {/* Top Editorial Ticker Bar */}
-      <div className="bg-forest-950 text-stone-300 text-xs py-1.5 px-4 border-b border-forest-900">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-3">
-            <span className="font-medium text-stone-400">{currentDate}</span>
+      <div className="bg-forest-950 text-stone-300 text-xs py-1.5 px-3 sm:px-4 border-b border-forest-900">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <span className="font-medium text-stone-400 shrink-0 text-[11px] sm:text-xs">
+              {currentDate}
+            </span>
             <span className="hidden sm:inline text-forest-700">•</span>
             <div className="hidden md:flex items-center gap-2 text-stone-300">
               <span className="inline-flex items-center text-gold-400 font-semibold uppercase tracking-wider text-[10px] bg-gold-950/60 px-2 py-0.5 rounded border border-gold-800/40">
@@ -42,13 +75,14 @@ export default function Header() {
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-4 text-xs">
+
+          <div className="flex items-center gap-3 sm:gap-4 text-[11px] sm:text-xs shrink-0">
             <Link
               href="/products"
               className="text-gold-400 hover:text-gold-300 flex items-center gap-1 font-medium transition-colors"
             >
               <ShieldCheck className="w-3.5 h-3.5" />
-              Verified A.S. Brand Pantry
+              <span className="hidden xs:inline">Verified</span> A.S. Brand
             </Link>
             <span className="text-forest-800">|</span>
             <Link href="/admin" className="text-stone-400 hover:text-stone-200 transition-colors">
@@ -59,39 +93,39 @@ export default function Header() {
       </div>
 
       {/* Main Masthead */}
-      <header className="bg-cream-50 border-b border-cream-200 sticky top-0 z-40 shadow-sm/50 backdrop-blur-md bg-cream-50/95">
+      <header className="bg-cream-50/95 border-b border-cream-200 sticky top-0 z-40 shadow-sm backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="py-4 md:py-6 flex items-center justify-between border-b border-cream-200/70">
+          <div className="py-3 sm:py-4 md:py-6 flex items-center justify-between gap-2 border-b border-cream-200/70">
             {/* Mobile menu trigger */}
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-forest-900 hover:text-forest-700"
-              aria-label="Toggle menu"
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="lg:hidden p-2 -ml-2 text-forest-950 hover:text-forest-700 rounded-xl hover:bg-cream-200/60 transition-colors"
+              aria-label="Open mobile navigation menu"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              <Menu className="w-6 h-6" />
             </button>
 
             {/* Publication Logo / Masthead */}
-            <div className="text-center mx-auto lg:mx-0">
+            <div className="text-center mx-auto lg:mx-0 flex-1 lg:flex-initial">
               <Link href="/" className="inline-block group">
-                <div className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-forest-950 group-hover:text-forest-800 transition-colors">
+                <div className="font-serif text-lg xs:text-xl sm:text-3xl md:text-4xl font-bold tracking-tight text-forest-950 group-hover:text-forest-800 transition-colors">
                   A.S. HERITAGE & LIVING
                 </div>
-                <div className="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-forest-700/80 font-medium mt-0.5">
+                <div className="text-[9px] xs:text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] text-forest-700/80 font-medium mt-0.5">
                   Culinary Heritage • Wellness • Traditional Culture
                 </div>
               </Link>
             </div>
 
             {/* Quick Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <button
                 onClick={() => setIsSearchOpen(true)}
-                className="flex items-center gap-2 bg-cream-100 hover:bg-cream-200 text-stone-600 px-3.5 py-2 rounded-full border border-cream-300 text-sm transition-all hover:shadow-sm"
+                className="flex items-center gap-1.5 sm:gap-2 bg-cream-100 hover:bg-cream-200 text-stone-600 px-3 py-2 rounded-full border border-cream-300 text-xs sm:text-sm transition-all hover:shadow-sm"
                 aria-label="Search articles"
               >
                 <Search className="w-4 h-4 text-forest-800" />
-                <span className="hidden sm:inline font-medium">Search articles...</span>
+                <span className="hidden sm:inline font-medium">Search...</span>
               </button>
 
               <a
@@ -107,7 +141,7 @@ export default function Header() {
             </div>
           </div>
 
-          {/* Navigation Bar */}
+          {/* Desktop Navigation Bar */}
           <nav className="hidden lg:flex items-center justify-between py-2.5 text-sm font-medium">
             <div className="flex items-center space-x-6">
               <Link
@@ -138,42 +172,100 @@ export default function Header() {
           </nav>
         </div>
 
-        {/* Mobile Navigation Drawer */}
+        {/* Mobile Slide-Over Drawer with Backdrop */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden bg-cream-50 border-b border-cream-200 px-4 pt-2 pb-6 space-y-3">
-            <Link
-              href="/"
+          <div className="lg:hidden fixed inset-0 z-50 flex">
+            {/* Backdrop */}
+            <div
+              className="fixed inset-0 bg-stone-950/70 backdrop-blur-sm transition-opacity"
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block py-2 text-forest-950 font-semibold border-b border-cream-200"
-            >
-              Home
-            </Link>
-            {NAV_CATEGORIES.map((cat) => (
-              <Link
-                key={cat.slug}
-                href={`/${cat.slug}`}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block py-2 text-stone-700 hover:text-forest-900 border-b border-cream-200/50"
-              >
-                {cat.name}
-              </Link>
-            ))}
-            <Link
-              href="/products"
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="block py-2 text-forest-800 font-bold border-b border-cream-200/50"
-            >
-              Heritage Oils & Seeds Roster
-            </Link>
-            <div className="pt-2">
-              <a
-                href="https://asbrandoils.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center gap-2 bg-forest-900 text-white py-2.5 rounded-lg text-sm font-semibold"
-              >
-                Visit A.S. Brand Oils Official Website <ArrowUpRight className="w-4 h-4 text-gold-400" />
-              </a>
+              aria-hidden="true"
+            />
+
+            {/* Slide-out Panel */}
+            <div className="relative w-4/5 max-w-xs bg-cream-50 h-full p-5 flex flex-col justify-between z-10 shadow-2xl overflow-y-auto border-r border-cream-200">
+              <div className="space-y-6">
+                {/* Drawer Header */}
+                <div className="flex items-center justify-between pb-4 border-b border-cream-200">
+                  <div>
+                    <div className="font-serif font-bold text-base text-forest-950">
+                      A.S. Heritage & Living
+                    </div>
+                    <div className="text-[10px] uppercase tracking-wider text-forest-700 font-semibold mt-0.5">
+                      Magazine Navigation
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-1.5 rounded-lg text-stone-600 hover:text-stone-900 hover:bg-cream-200 transition-colors"
+                    aria-label="Close navigation menu"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                {/* Categories List */}
+                <nav className="space-y-1">
+                  <Link
+                    href="/"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-semibold text-forest-950 hover:bg-cream-200/80 transition-colors text-sm"
+                  >
+                    <span>Home Editorial</span>
+                    <span className="text-xs text-forest-700">★</span>
+                  </Link>
+
+                  <div className="pt-2 pb-1 px-3.5 text-[10px] uppercase font-bold tracking-widest text-stone-400">
+                    Topic Clusters
+                  </div>
+
+                  {NAV_CATEGORIES.map((cat) => {
+                    const Icon = cat.icon;
+                    return (
+                      <Link
+                        key={cat.slug}
+                        href={`/${cat.slug}`}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-stone-700 hover:text-forest-900 hover:bg-cream-200/80 transition-colors text-sm font-medium"
+                      >
+                        <Icon className="w-4 h-4 text-forest-800 shrink-0" />
+                        <span>{cat.name}</span>
+                      </Link>
+                    );
+                  })}
+
+                  <div className="pt-3">
+                    <Link
+                      href="/products"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between px-3.5 py-3 rounded-xl bg-forest-900 text-white font-bold text-sm shadow-sm transition-colors"
+                    >
+                      <span className="flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-gold-400" />
+                        Verified Pantry Roster
+                      </span>
+                      <ArrowUpRight className="w-4 h-4 text-gold-400" />
+                    </Link>
+                  </div>
+                </nav>
+              </div>
+
+              {/* Drawer Footer */}
+              <div className="pt-4 border-t border-cream-200 space-y-2.5">
+                <a
+                  href="https://asbrandoils.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 bg-cream-200 hover:bg-cream-300 text-forest-950 py-2.5 rounded-xl text-xs font-bold transition-colors border border-cream-300"
+                >
+                  Visit asbrandoils.com <ArrowUpRight className="w-3.5 h-3.5 text-forest-700" />
+                </a>
+
+                <div className="text-center text-[10px] text-stone-400">
+                  A.S. Brand Heritage Oils & Wellness • 2026
+                </div>
+              </div>
             </div>
           </div>
         )}

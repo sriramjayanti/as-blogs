@@ -105,7 +105,7 @@ export default async function HomePage() {
 
       {/* 3. Subtle Brand Story / Heritage Banner */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-3xl overflow-hidden bg-forest-950 text-white p-8 sm:p-12 lg:p-16 border border-forest-900 shadow-xl">
+        <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-forest-950 text-white p-6 sm:p-12 lg:p-16 border border-forest-900 shadow-xl">
           <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none bg-[radial-gradient(#D97706_1px,transparent_1px)] [background-size:16px_16px]" />
           
           <div className="relative z-10 max-w-2xl space-y-4">
@@ -170,8 +170,9 @@ export default async function HomePage() {
 
       {/* 5. The Curated Pantry Showcase (Non-intrusive Product Directory) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl p-8 sm:p-10 border border-cream-200 shadow-sm">
-          <div className="text-center max-w-2xl mx-auto mb-10">
+        <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-10 border border-cream-200 shadow-sm">
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+
             <span className="text-xs font-bold uppercase tracking-widest text-gold-700">
               Curated Essentials
             </span>

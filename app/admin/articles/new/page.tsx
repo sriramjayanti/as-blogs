@@ -158,7 +158,7 @@ export default function NewArticlePage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8">
+      <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8 pb-20 lg:pb-0">
         {/* Main Content Column */}
         <div className="lg:col-span-8 space-y-6">
           <div className="bg-stone-950/70 border border-stone-800 rounded-3xl p-6 sm:p-8 space-y-5">
@@ -311,8 +311,41 @@ export default function NewArticlePage() {
           </button>
         </div>
 
+        {/* Sticky Mobile Bottom Bar (visible on < lg screens) */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 p-3.5 bg-stone-950/95 backdrop-blur-md border-t border-stone-800 z-30 shadow-2xl flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-stone-400 font-mono">SEO:</span>
+            <span
+              className={`font-mono text-xs font-bold px-2 py-0.5 rounded-full ${
+                seoScore >= 80
+                  ? 'bg-emerald-950 text-emerald-400 border border-emerald-800'
+                  : seoScore >= 50
+                  ? 'bg-amber-950 text-amber-400 border border-amber-800'
+                  : 'bg-red-950 text-red-400 border border-red-800'
+              }`}
+            >
+              {seoScore}/100
+            </span>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex items-center gap-1.5 bg-gold-500 hover:bg-gold-400 text-forest-950 font-bold text-xs uppercase tracking-wider py-2.5 px-4 rounded-xl shadow-md transition-colors disabled:opacity-50"
+          >
+            {isSubmitting ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <>
+                <Save className="w-4 h-4" /> Publish Article
+              </>
+            )}
+          </button>
+        </div>
+
         {/* Live SEO Auditor & Previews Column */}
         <div className="lg:col-span-4 space-y-6">
+
           {/* SEO Score Box */}
           <div className="bg-stone-950/70 border border-stone-800 rounded-3xl p-6 space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-stone-800">
