@@ -1,0 +1,193 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("ADMIN") // ADMIN, EDITOR
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Author {
+  id        String    @id @default(uuid())
+  name      String
+  slug      String    @unique
+  bio       String
+  avatar    String
+  roleTitle String    @default("Senior Culinary & Wellness Writer")
+  twitter   String?
+  linkedin  String?
+  articles  Article[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Category {
+  id          String        @id @default(uuid())
+  name        String
+  slug        String        @unique
+  description String
+  image       String?
+  orderIndex  Int           @default(0)
+  parentId    String?
+  parent      Category?     @relation("CategoryToSubcategory", fields: [parentId], references: [id])
+  children    Category[]    @relation("CategoryToSubcategory")
+  articles    Article[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Tag {
+  id        String    @id @default(uuid())
+  name      String
+  slug      String    @unique
+  articles  Article[] @relation("ArticleTags")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Article {
+  id             String      @id @default(uuid())
+  title          String
+  slug           String      @unique
+  excerpt        String
+  content        String      // Rich HTML/Markdown content
+  featuredImage  String
+  imageAlt       String?
+  readingTime    Int         @default(5) // in minutes
+  status         String      @default("PUBLISHED") // DRAFT, PUBLISHED, SCHEDULED
+  publishedAt    DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  
+  authorId       String
+  author         Author      @relation(fields: [authorId], references: [id])
+  
+  categoryId     String
+  category       Category    @relation(fields: [categoryId], references: [id])
+  
+  tags           Tag[]       @relation("ArticleTags")
+  
+  // SEO Metadata
+  seoTitle       String?
+  metaDescription String?
+  canonicalUrl   String?
+  focusKeyword   String?
+  ogImage        String?
+  
+  // Editorial & Sponsorship
+  isSponsored    Boolean     @default(false)
+  sponsoredBrand String?     @default("A.S. Brand Oils")
+  
+  // Structured Content JSON (FAQs, Recipes, How-To steps)
+  faqsJson       String?     @default("[]")
+  recipeJson     String?     @default("{}")
+  
+  // Metrics
+  viewsCount     Int         @default(0)
+  sharesCount    Int         @default(0)
+  
+  createdAt      DateTime    @default(now())
+}
+
+model Product {
+  id               String          @id @default(uuid())
+  name             String
+  slug             String          @unique
+  shortDescription String
+  fullDescription  String
+  imageUrl         String
+  productUrl       String          @default("https://asbrandoils.com/")
+  marketplaceLinks String          @default("[]") // JSON array of { name: 'Amazon', url: '...' }
+  tags             String          @default("")   // Comma-separated tags
+  isFeatured       Boolean         @default(true)
+  orderIndex       Int             @default(0)
+  promotionRules   PromotionRule[]
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model PromotionRule {
+  id                 String   @id @default(uuid())
+  name               String
+  keywords           String   // Comma separated keywords: "sesame oil, gingelly oil, til oil"
+  matchType          String   @default("CONTAINS") // EXACT, CONTAINS, PHRASE
+  
+  productId          String
+  product            Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  placementTypes     String   @default("[\"CONTEXT_LINK\",\"INLINE_CARD\",\"BANNER\",\"SIDEBAR\",\"END_CTA\"]") // JSON array
+  maxLinksPerArticle Int      @default(2)
+  categoryFilter     String   @default("ALL") // "ALL" or category slug
+  isActive           Boolean  @default(true)
+  priority           Int      @default(1)
+  
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Campaign {
+  id               String   @id @default(uuid())
+  name             String
+  title            String
+  description      String
+  bannerImageUrl   String
+  ctaText          String   @default("Explore A.S. Brand")
+  destinationUrl   String   @default("https://asbrandoils.com/")
+  placement        String   @default("ARTICLE_MIDDLE") // ARTICLE_MIDDLE, SIDEBAR, HOMEPAGE_HERO, POPUP
+  categoriesFilter String   @default("ALL")
+  startDate        DateTime @default(now())
+  endDate          DateTime?
+  isActive         Boolean  @default(true)
+  clickCount       Int      @default(0)
+  viewCount        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model AnalyticsEvent {
+  id          String   @id @default(uuid())
+  eventType   String   // article_view, product_click, contextual_link_click, banner_click, outbound_asbrand_click, marketplace_click
+  articleId   String?
+  productId   String?
+  campaignId  String?
+  placement   String?  // contextual_link, inline_product_card, sidebar_card, end_cta, homepage_banner
+  utmSource   String?  @default("as_heritage_mag")
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  destinationUrl String?
+  referrer    String?
+  device      String?  @default("desktop")
+  ipHash      String?
+  createdAt   DateTime @default(now())
+}
+
+model SEOSetting {
+  id                     String   @id @default(uuid())
+  siteTitle              String   @default("A.S. Heritage & Living | Food, Wellness & Traditional Culture")
+  defaultMetaDescription String   @default("Discover authentic Indian recipes, cooking science, smoke points, wellness traditions, and heritage food culture.")
+  defaultOgImage         String   @default("https://asbrandoils.com/cdn/shop/files/Gingelly_oil_1_720x.png?v=1721982944")
+  twitterHandle          String   @default("@asbrandoils")
+  robotsDirectives       String   @default("User-agent: *\nAllow: /\nSitemap: /sitemap.xml")
+  updatedAt              DateTime @updatedAt
+}
+
+model Redirect {
+  id             String   @id @default(uuid())
+  sourcePath     String   @unique
+  destinationUrl String
+  statusCode     Int      @default(301)
+  isActive       Boolean  @default(true)
+  hits           Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
