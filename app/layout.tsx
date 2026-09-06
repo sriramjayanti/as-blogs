@@ -18,9 +18,13 @@ const plusJakarta = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://asbrandoils.com';
+const metadataBaseUrl = siteUrl.startsWith('http') ? new URL(siteUrl) : new URL(`https://${siteUrl}`);
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  metadataBase: metadataBaseUrl,
   title: {
+
     default: 'A.S. Heritage & Living | Indian Culinary, Wellness & Culture',
     template: '%s | A.S. Heritage & Living',
   },
