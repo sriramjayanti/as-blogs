@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Seeding database with initial data...');
+  console.log('Seeding database with updated 8 recipe categories and rich content...');
 
   // 1. Create Admin User
   const passwordHash = await bcrypt.hash('admin_asbrandoils_2026', 10);
@@ -28,7 +28,7 @@ async function main() {
       name: 'Dr. Meenakshi Sundaram',
       slug: 'meenakshi-sundaram',
       roleTitle: 'Culinary Anthropologist & Food Historian',
-      bio: 'Author of three monographs on Sangam era gastronomy and traditional cold-pressing methods across Tamil Nadu.',
+      bio: 'Author of three monographs on traditional home cooking, heirloom spice blends, and cold-pressing methods across India.',
       avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&auto=format&fit=crop&q=80',
       twitter: 'meenakshi_food',
       linkedin: 'meenakshi-sundaram-phd',
@@ -41,8 +41,8 @@ async function main() {
     create: {
       name: 'Chef Ananya Krishnan',
       slug: 'ananya-krishnan',
-      roleTitle: 'Executive Chef & Nutritionist',
-      bio: 'Specializing in contemporary South Indian cuisine, cold-pressed oils, and functional nutrition.',
+      roleTitle: 'Executive Master Chef & Nutritionist',
+      bio: 'Specializing in delicious home recipe ideas, healthy everyday kitchen secrets, and traditional oil-based sweets.',
       avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&auto=format&fit=crop&q=80',
       twitter: 'chefananya',
       linkedin: 'ananya-krishnan-chef',
@@ -55,56 +55,70 @@ async function main() {
     create: {
       name: 'Raghavan Iyer',
       slug: 'raghavan-iyer',
-      roleTitle: 'Agricultural Journalist & Heritage Researcher',
-      bio: 'Investigates sustainable oilseed farming, farmer cooperatives, and temple culinary traditions.',
+      roleTitle: 'Street Food & Regional Gastronomy Researcher',
+      bio: 'Documents traditional festival recipes, street food cultures, and sustainable oilseed farming across India.',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80',
       twitter: 'raghavan_agri',
     },
   });
 
-  // 3. Create Categories
+  // 3. Create the 8 Core Recipe Categories
   const categories = [
     {
-      name: 'Food & Cooking',
-      slug: 'food',
-      description: 'Culinary guides, smoke points, cooking techniques, and traditional spice pairings.',
-      image: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?w=800&auto=format&fit=crop&q=80',
+      name: 'Vegetarian Recipes',
+      slug: 'vegetarian-recipes',
+      description: 'All Indian and Non-Indian wholesome vegetarian recipes, hearty vegetable gravies, nutritious stir-fries, and healthy greens.',
+      image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&auto=format&fit=crop&q=80',
       orderIndex: 1,
     },
     {
-      name: 'Recipes',
-      slug: 'recipes',
-      description: 'Authentic South Indian & regional Indian heirloom recipes made with traditional cold-pressed oils.',
-      image: 'https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=800&auto=format&fit=crop&q=80',
+      name: 'Sweet Recipes',
+      slug: 'sweet-recipes',
+      description: 'Delicious traditional and modern sweets made with pure cold-pressed oils, sesame seeds, jaggery, and dry fruits.',
+      image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=800&auto=format&fit=crop&q=80',
       orderIndex: 2,
     },
     {
-      name: 'Health & Wellness',
-      slug: 'health',
-      description: 'Ayurvedic health benefits, heart health, antioxidant profiles, and oil pulling rituals.',
-      image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop&q=80',
+      name: 'Non-Vegetarian Recipes',
+      slug: 'non-vegetarian-recipes',
+      description: 'Flavorsome chicken, mutton, and coastal seafood curries, roasts, and biryanis tempered with authentic cooking oils.',
+      image: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=800&auto=format&fit=crop&q=80',
       orderIndex: 3,
     },
     {
-      name: 'Culture & Tradition',
-      slug: 'culture',
-      description: 'Festival rituals, Pooja practices, deepam traditions, and the sacred significance of Pancha Thailam.',
+      name: 'Festival Recipes',
+      slug: 'festival-recipes',
+      description: 'Sacred festival recipes, Diwali & Pongal delicacies, crispy festive snacks, and traditional pooja feast preparations.',
       image: 'https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?w=800&auto=format&fit=crop&q=80',
       orderIndex: 4,
     },
     {
-      name: 'Agriculture & Science',
-      slug: 'agriculture',
-      description: 'Sesame and groundnut farming, seed hulling technology, and sustainable agro-practices.',
-      image: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=800&auto=format&fit=crop&q=80',
+      name: 'South Indian Recipes',
+      slug: 'south-indian-recipes',
+      description: 'Heirloom South Indian sambars, rasams, crispy dosas, fluffy idlis, and authentic gingelly oil tempered curries.',
+      image: 'https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=800&auto=format&fit=crop&q=80',
       orderIndex: 5,
     },
     {
-      name: 'Guides & Education',
-      slug: 'guides',
-      description: 'Comprehensive buying guides, storage tips, smoke point charts, and oil selection masterclasses.',
-      image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&auto=format&fit=crop&q=80',
+      name: 'North Indian Recipes',
+      slug: 'north-indian-recipes',
+      description: 'Rich dal tadkas, kadai paneer, aromatic tawa sabzis, fragrant jeera rice, and beloved North Indian culinary classics.',
+      image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&auto=format&fit=crop&q=80',
       orderIndex: 6,
+    },
+    {
+      name: 'Breakfast Recipes',
+      slug: 'breakfast-recipes',
+      description: 'Quick, energized morning tiffins, healthy poha, fluffy idlis, upma, stuffed parathas, and breakfast delights.',
+      image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop&q=80',
+      orderIndex: 7,
+    },
+    {
+      name: 'Street Food Recipes',
+      slug: 'street-food-recipes',
+      description: 'Crispy mirchi bajjis, onion pakoras, samosas, spiced chaats, and iconic Indian street delicacies fried to perfection.',
+      image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&auto=format&fit=crop&q=80',
+      orderIndex: 8,
     },
   ];
 
@@ -112,26 +126,34 @@ async function main() {
   for (const cat of categories) {
     const created = await prisma.category.upsert({
       where: { slug: cat.slug },
-      update: {},
+      update: {
+        name: cat.name,
+        description: cat.description,
+        image: cat.image,
+        orderIndex: cat.orderIndex,
+      },
       create: cat,
     });
     categoryMap[cat.slug] = created;
   }
-  console.log('Categories created:', Object.keys(categoryMap).length);
+  console.log('8 Recipe Categories created/updated.');
 
   // 4. Create Tags
   const tagList = [
+    'Vegetarian',
+    'Non-Vegetarian',
+    'Sweets',
+    'Festival Special',
+    'South Indian',
+    'North Indian',
+    'Breakfast',
+    'Street Food',
     'Gingelly Oil',
     'Groundnut Oil',
     'Sesame Seeds',
-    'Smoke Points',
-    'South Indian Cooking',
-    'Ayurveda',
-    'Deepam',
-    'Pooja Rituals',
+    'Deep Frying',
     'Cold Pressed',
-    'Heart Health',
-    'Heirloom Recipes',
+    'Pooja Rituals',
   ];
 
   const tagMap = {};
@@ -254,13 +276,13 @@ async function main() {
     });
     productMap[prod.slug] = created;
   }
-  console.log('Products created:', Object.keys(productMap).length);
 
-  // 6. Create Contextual Promotion Rules (Section 4 from Master Prompt)
+  // 6. Promotion Rules
+  await prisma.promotionRule.deleteMany({});
   const rules = [
     {
       name: 'Gingelly / Sesame Oil Context Rule',
-      keywords: 'gingelly oil, sesame oil, til oil, sesame, traditional cooking, South Indian cooking',
+      keywords: 'gingelly oil, sesame oil, til oil, sesame, traditional cooking, South Indian cooking, sambar, rasam',
       matchType: 'CONTAINS',
       productId: productMap['as-brand-hulled-gingelly-oil'].id,
       placementTypes: JSON.stringify(['CONTEXT_LINK', 'INLINE_CARD', 'SIDEBAR', 'END_CTA']),
@@ -270,7 +292,7 @@ async function main() {
     },
     {
       name: 'Groundnut / Peanut Oil Context Rule',
-      keywords: 'groundnut oil, peanut oil, groundnuts, frying oil, deep frying, peanut, crisp snacks',
+      keywords: 'groundnut oil, peanut oil, groundnuts, frying oil, deep frying, pakora, bajji, sweet recipes, street food',
       matchType: 'CONTAINS',
       productId: productMap['as-brand-groundnut-oil'].id,
       placementTypes: JSON.stringify(['CONTEXT_LINK', 'INLINE_CARD', 'SIDEBAR', 'END_CTA']),
@@ -279,8 +301,8 @@ async function main() {
       priority: 9,
     },
     {
-      name: 'Gingelly Seeds / Til Podi Context Rule',
-      keywords: 'sesame seeds, gingelly seeds, til seeds, sesame recipes, idli podi, til ladoo',
+      name: 'Gingelly Seeds / Sweets Context Rule',
+      keywords: 'sesame seeds, gingelly seeds, til seeds, sesame recipes, idli podi, til ladoo, sweets, sweet recipes',
       matchType: 'CONTAINS',
       productId: productMap['as-brand-hulled-gingelly-seeds'].id,
       placementTypes: JSON.stringify(['CONTEXT_LINK', 'INLINE_CARD', 'SIDEBAR', 'END_CTA']),
@@ -289,8 +311,8 @@ async function main() {
       priority: 8,
     },
     {
-      name: 'Pooja / Devotional / Deepam Context Rule',
-      keywords: 'pooja, puja, deepam, diya, lamp, temple, festival, devotional, deeparadhana, traditional rituals, pancha thailam',
+      name: 'Festival / Pooja / Devotional Context Rule',
+      keywords: 'festival, pooja, puja, deepam, diya, lamp, temple, devotional, deeparadhana, pancha thailam',
       matchType: 'CONTAINS',
       productId: productMap['sree-divya-sugandha-deeparadhana-oil'].id,
       placementTypes: JSON.stringify(['CONTEXT_LINK', 'INLINE_CARD', 'SIDEBAR', 'END_CTA']),
@@ -301,309 +323,398 @@ async function main() {
   ];
 
   for (const r of rules) {
-    await prisma.promotionRule.create({
-      data: r,
-    });
+    await prisma.promotionRule.create({ data: r });
   }
-  console.log('Promotion Rules created:', rules.length);
 
-  // 7. Create Rich Editorial Articles
-  const articles = [
+  // 7. Seed Authentic Recipes Covering the 8 New Categories
+  const recipes = [
+    // 1. Vegetarian Recipes (All Indian & Non-Indian)
     {
-      title: 'Best Cooking Oils for Traditional Indian Kitchens: Smoke Points, Health & Culinary Heritage',
-      slug: 'best-cooking-oils-for-indian-kitchens',
-      excerpt: 'From mustard in the North to fragrant gingelly and coconut in the South, discover how traditional cold-pressed oils balance high heat tolerance, flavor preservation, and cardiovascular wellness.',
+      title: 'Restaurant-Style Creamy Vegetable Kurma (Mixed Veg Delight)',
+      slug: 'restaurant-style-vegetable-kurma-recipe',
+      excerpt: 'A fragrant, mild coconut and cashew-based mixed vegetable curry simmered to perfection with aromatic spices and wholesome garden vegetables.',
       content: `
-        <p>In Indian gastronomy, cooking oil is never merely a heat-transfer medium—it is the foundational soul of regional flavor. Unlike Western culinary traditions that frequently rely on neutral oils, Indian cooking has celebrated cold-pressed oils like fragrant gingelly oil, hearty groundnut oil, and mustard oil for millennia.</p>
+        <p>Whether you are serving flaky Malabar parottas, soft chapatis, or fragrant jeera rice, a well-balanced Vegetable Kurma is the undisputed crown jewel of Indian vegetarian cuisine. Combining tender carrots, green beans, potatoes, and green peas in a rich coconut-cashew gravy, this recipe brings restaurant indulgence right into your everyday kitchen.</p>
         
-        <h2>Understanding Smoke Points in High-Heat Indian Cooking</h2>
-        <p>Tadka, tempering, and deep-frying require cooking oils capable of handling temperatures between 180°C and 230°C without oxidizing or creating free radicals. Traditional double-filtered groundnut oil boasts a high smoke point of 232°C (450°F), making it the premier choice for crispy vadas, pakoras, and crunchy murukkus.</p>
-        
-        <p>For daily gravies, rasams, and sambar, hulled sesame oil or cold-pressed gingelly oil delivers a rich aromatic profile, retaining natural antioxidants like sesamol and sesamolin that safeguard against lipid oxidation at medium sautéing temperatures.</p>
-        
-        <h2>The Nutritional Power of Cold-Pressed Oils</h2>
-        <p>When oilseeds are pressed without chemical solvents or excessive artificial heating, they retain their intrinsic polyphenol matrix, Vitamin E, and monounsaturated fatty acids (MUFA). Using high-grade cold-pressed gingelly oil provides a balanced ratio of omega-6 to omega-3 essential fatty acids that actively support arterial flexibility and digestive wellness.</p>
-        
-        <h2>Choosing the Right Oil for Every Indian Culinary Technique</h2>
-        <ul>
-          <li><strong>Deep Frying & Sautéing:</strong> Filtered groundnut oil for crispness and neutral nutty lightness.</li>
-          <li><strong>South Indian Sambar, Gravies & Podis:</strong> Pure gingelly oil for uncompromised aroma and authentic heritage taste.</li>
-          <li><strong>Salad Dressings & Finishing Drizzle:</strong> Cold-pressed sesame oil over warm curd rice or roasted vegetables.</li>
-        </ul>
-        
-        <h2>Conclusion: Bringing Heritage Purity Back to Everyday Meals</h2>
-        <p>Selecting authentic oils directly translates into superior digestion, cleaner mouthfeel, and genuine regional flavors. Incorporating unadulterated sesame and groundnut oils ensures your family benefits from timeless wisdom rooted in nature.</p>
-      `,
-      featuredImage: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?w=1200&auto=format&fit=crop&q=80',
-      imageAlt: 'Traditional brass tadka pan and Indian culinary spices',
-      readingTime: 6,
-      status: 'PUBLISHED',
-      publishedAt: new Date('2026-08-15T10:00:00Z'),
-      authorId: author1.id,
-      categoryId: categoryMap['food'].id,
-      seoTitle: 'Best Cooking Oils for Indian Kitchens | Smoke Points & Health Guide',
-      metaDescription: 'A comprehensive culinary guide to choosing the best cooking oils for Indian kitchens. Learn smoke points, health benefits of gingelly and groundnut oils.',
-      canonicalUrl: 'https://asbrandoils.com/blog/food/best-cooking-oils-for-indian-kitchens',
-      focusKeyword: 'cooking oils for indian kitchens',
-      faqsJson: JSON.stringify([
-        {
-          question: 'What is the best oil for deep frying in Indian cooking?',
-          answer: 'Double-filtered groundnut oil is widely regarded as the best oil for Indian deep frying due to its high smoke point of 232°C (450°F) and pleasant nutty aroma that does not impart greasy aftertaste.',
-        },
-        {
-          question: 'Can gingelly oil be used for daily cooking?',
-          answer: 'Yes! Hulled gingelly oil is celebrated in South Indian cuisine for daily sambars, vegetable curries, tempering, and rasams due to its delicate aroma and potent antioxidant content.',
-        },
-      ]),
-    },
-    {
-      title: 'The Science of Sesame: Why Hulled Gingelly Oil Elevates South Indian Sambar and Dosas',
-      slug: 'science-of-hulled-gingelly-oil-south-indian-cooking',
-      excerpt: 'Discover the chemical difference between unhulled and de-hulled sesame seeds, and why premium hulled gingelly oil is the secret behind five-star South Indian restaurant flavors.',
-      content: `
-        <p>Ask any seasoned chef from Chennai to Madurai about the single secret ingredient behind irresistible crispy ghee roasts and fragrant sambar, and the answer is unanimous: high quality gingelly oil. But few home cooks realize the critical difference that de-hulling makes.</p>
-        
-        <h2>Unhulled vs. Hulled Sesame: The Chemistry of Bitterness</h2>
-        <p>The outer hull of the sesame seed contains oxalates and bitter tannins. When seeds are crushed with their hulls intact, the resulting oil can possess a heavy, acrid bite that overpowers subtle spices. Mechanically removing the hull before cold extraction produces hulled gingelly oil—a golden, silky oil with zero acridity and a pure, nutty perfume.</p>
-        
-        <h2>Why Sambar Demands Authentic Gingelly Oil</h2>
-        <p>When you finish a simmering pot of Madras sambar with a ladle of hot gingelly oil infused with mustard seeds, curry leaves, and asafoetida (hing), the oil acts as a hydrophobic aroma-binder. It captures the volatile sulfur compounds of the hing and releases them steadily upon first bite.</p>
-        
-        <h2>Culinary Tips for Perfect Crispy Dosas</h2>
-        <p>When ladling batter onto a seasoned cast-iron skillet, a light border of fragrant sesame oil creates micro-vaporization channels that guarantee golden, non-soggy edges while imparting an authentic South Indian aroma.</p>
-        
-        <h2>Summary</h2>
-        <p>Elevating your daily South Indian repertoire from ordinary to extraordinary is as simple as switching to unadulterated hulled gingelly oil. Its balanced sweetness and clean finish make every recipe sing.</p>
-      `,
-      featuredImage: 'https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=1200&auto=format&fit=crop&q=80',
-      imageAlt: 'Golden crisp dosa with traditional coconut chutney and sambar',
-      readingTime: 5,
-      status: 'PUBLISHED',
-      publishedAt: new Date('2026-08-20T08:30:00Z'),
-      authorId: author2.id,
-      categoryId: categoryMap['recipes'].id,
-      seoTitle: 'The Science of Hulled Gingelly Oil in South Indian Cooking',
-      metaDescription: 'Learn why hulled gingelly oil creates the best South Indian sambar and crispy dosas without bitterness. Discover the science of sesame oil extraction.',
-      canonicalUrl: 'https://asbrandoils.com/blog/recipes/science-of-hulled-gingelly-oil-south-indian-cooking',
-      focusKeyword: 'hulled gingelly oil',
-      faqsJson: JSON.stringify([
-        {
-          question: 'Why does some gingelly oil taste bitter?',
-          answer: 'Bitterness in gingelly oil usually stems from using unhulled sesame seeds containing high concentrations of outer hull tannins and oxalates. De-hulled sesame oil completely eliminates this bitterness.',
-        },
-      ]),
-    },
-    {
-      title: 'Deeparadhana Oil & The Sacred Pancha Thailam: Spiritual Traditions and Science Behind Diya Lamps',
-      slug: 'deeparadhana-oil-pancha-thailam-spiritual-science',
-      excerpt: 'Explore the Vedic significance of lighting traditional brass lamps with Pancha Deepam Thailam, its calming jasmine aromatherapeutic properties, and clean-burning temple rituals.',
-      content: `
-        <p>The lighting of a deepam (oil lamp) is one of the most sacred daily rituals across Indian households. In Vedic traditions, lighting a brass or earthen diya is not just symbolic of dispelling darkness—it is a spiritual technology for harmonizing the domestic atmosphere.</p>
-        
-        <h2>What is Pancha Thailam?</h2>
-        <p>According to ancient Agamic texts, the most auspicious lamp fuel is Pancha Deepam Thailam, a precise blend of five sacred oils formulated to invite positivity, tranquility, and divine grace:</p>
-        <ul>
-          <li><strong>Pure Sesame (Gingelly) Oil:</strong> Dispels negative planetary influences and creates enduring peace.</li>
-          <li><strong>Pure Castor Oil:</strong> Promotes family harmony, mental clarity, and spiritual progress.</li>
-          <li><strong>Neem Oil:</strong> Natural disinfectant that cleanses airborne pathogens.</li>
-          <li><strong>Illuppai (Mahua) Oil:</strong> Attracts prosperity and divine abundance.</li>
-          <li><strong>Pure Cow Ghee:</strong> The supreme sattvic offering producing high spiritual vibrations.</li>
-        </ul>
-        
-        <h2>The Soothing Power of Natural Jasmine Fragrance</h2>
-        <p>Modern research into aromatherapy reveals that lighting a diya with deeparadhana oil infused with natural jasmine fragrance releases mild volatile organic esters that lower cortisol (stress hormones) and promote deep focus during evening meditation or pooja rituals.</p>
-        
-        <h2>Best Practices for Clean Burning Diya Lamps</h2>
-        <p>To ensure a bright, steady, and soot-free flame, trim cotton wicks to approximately 1 cm and use specially blended deeparadhana oil designed for complete combustion without leaving black residue on brass lamps.</p>
-        
-        <h2>Conclusion</h2>
-        <p>When you light a diya fueled by sacred pancha thailam, you connect with thousands of years of living spiritual heritage that brings serenity and warmth to your home.</p>
-      `,
-      featuredImage: 'https://images.unsplash.com/photo-1605371924599-2d0365da1ae0?w=1200&auto=format&fit=crop&q=80',
-      imageAlt: 'Row of illuminated brass deepam lamps with jasmine flowers',
-      readingTime: 6,
-      status: 'PUBLISHED',
-      publishedAt: new Date('2026-08-25T14:00:00Z'),
-      authorId: author3.id,
-      categoryId: categoryMap['culture'].id,
-      seoTitle: 'Deeparadhana Oil & Pancha Thailam | Sacred Diya Lamp Traditions',
-      metaDescription: 'Discover the spiritual meaning and aromatherapeutic science of Pancha Thailam deeparadhana oil for pooja rituals and home diya lamps.',
-      canonicalUrl: 'https://asbrandoils.com/blog/culture/deeparadhana-oil-pancha-thailam-spiritual-science',
-      focusKeyword: 'deeparadhana oil pancha thailam',
-      faqsJson: JSON.stringify([
-        {
-          question: 'What oils are included in Pancha Deepam Thailam?',
-          answer: 'Traditional Pancha Deepam Thailam consists of five sacred oils: Sesame (Gingelly) Oil, Castor Oil, Neem Oil, Mahua (Illuppai) Oil, and Cow Ghee, often infused with natural jasmine fragrance.',
-        },
-        {
-          question: 'Why should we not use regular cooking oil for pooja lamps?',
-          answer: 'Standard refined cooking oils contain chemical additives and produce heavy smoke/soot. Pure sesame oil or consecrated Pancha Thailam provides clean combustion and adheres to Agamic spiritual principles.',
-        },
-      ]),
-    },
-    {
-      title: 'Groundnut Oil vs Refined Oils: Why Cold-Pressed Peanut Oil is Returning to Indian Woks',
-      slug: 'groundnut-oil-vs-refined-oils-indian-cooking',
-      excerpt: 'An evidence-based comparison between traditional cold-pressed peanut oil and ultra-processed refined oils. Learn why health-conscious families are making the switch.',
-      content: `
-        <p>For decades, commercial advertisements convinced consumers that pale, odorless refined oils were modern and healthy. Today, nutritional biochemists and cardiologists are actively debunking this myth, pointing consumers back to cold-pressed groundnut oil.</p>
-        
-        <h2>How Refined Oils Are Made: The Industrial Reality</h2>
-        <p>Refining seed oils involves harsh chemical solvents (like petroleum-derived hexane), high-heat bleaching (over 200°C), and deodorization with chemical neutralizers. This aggressive industrial process strips away 90% of natural Vitamin E, phytosterols, and natural aromas, leaving behind an oxidized, nutrient-depleted liquid.</p>
-        
-        <h2>The Cold-Pressed Groundnut Advantage</h2>
-        <p>In contrast, double-filtered groundnut oil is extracted by mechanical pressing of premium whole groundnuts without toxic chemicals. It retains:</p>
-        <ul>
-          <li><strong>Resveratrol:</strong> The same potent cardio-protective antioxidant found in red grapes.</li>
-          <li><strong>High Monounsaturated Fatty Acids (MUFA):</strong> Which help maintain healthy HDL cholesterol levels.</li>
-          <li><strong>High Smoke Point:</strong> Naturally withstands 232°C without thermal breakdown during deep frying.</li>
-        </ul>
-        
-        <h2>Taste Comparison: Why Food Tastes Crisper and Lighter</h2>
-        <p>When you fry bhajiyas or prepare South Indian lemon rice with cold-pressed groundnut oil, the food absorbs less oil due to its ideal viscosity, delivering a non-greasy, pleasantly nutty crunch that refined oils simply cannot replicate.</p>
-        
-        <h2>The Verdict</h2>
-        <p>Switching from chemically refined oils to genuine cold-pressed and double-filtered peanut oil is one of the easiest, highest-impact dietary upgrades you can make for cardiovascular longevity and superior culinary delight.</p>
-      `,
-      featuredImage: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1200&auto=format&fit=crop&q=80',
-      imageAlt: 'Fresh harvested whole groundnuts and pure golden peanut oil',
-      readingTime: 5,
-      status: 'PUBLISHED',
-      publishedAt: new Date('2026-08-28T11:00:00Z'),
-      authorId: author2.id,
-      categoryId: categoryMap['health'].id,
-      seoTitle: 'Groundnut Oil vs Refined Oils | Health, Nutrition & Smoke Points',
-      metaDescription: 'Compare cold-pressed groundnut oil with refined vegetable oils. Learn about resveratrol, smoke points, and heart-healthy fats in traditional peanut oil.',
-      canonicalUrl: 'https://asbrandoils.com/blog/health/groundnut-oil-vs-refined-oils-indian-cooking',
-      focusKeyword: 'groundnut oil vs refined oil',
-      faqsJson: JSON.stringify([
-        {
-          question: 'Is groundnut oil good for heart health?',
-          answer: 'Yes. Groundnut oil is rich in monounsaturated fatty acids (MUFA), phytosterols, and resveratrol which have been shown to support healthy blood lipid profiles and arterial elasticity.',
-        },
-      ]),
-    },
-    {
-      title: 'Traditional Sesame Seed Podi (Idli Milagai Podi) Heirloom Recipe & Nutritional Secrets',
-      slug: 'traditional-sesame-seed-idli-podi-recipe',
-      excerpt: 'Step-by-step masterclass on roasting premium white sesame seeds with lentils and dry chillies to create the quintessential South Indian gunpowder (Idli Podi).',
-      content: `
-        <p>No South Indian breakfast table is complete without a generous mound of spicy Idli Milagai Podi, generously pooled with glistening golden gingelly oil. Learn the grandmother-approved technique for perfect podi.</p>
-        
-        <h2>The Importance of High-Grade Sesame Seeds</h2>
-        <p>The foundation of great podi lies in using clean, well-hulled sesame seeds. Fresh hulled sesame seeds provide a sweet, nutty crunch without sandy grit or bitter aftertastes.</p>
+        <h2>The Secret to Rich Aroma: Authentic Tempering</h2>
+        <p>In traditional home recipes, heating cold-pressed gingelly oil with whole cloves, green cardamom, cinnamon, and fennel seeds before sautéing onions extracts the deep, essential spice oils without harsh smoking.</p>
         
         <h2>Ingredients List</h2>
         <ul>
-          <li>1/2 cup A.S. Brand Hulled Gingelly Seeds</li>
-          <li>1/2 cup Urad Dal (split black gram)</li>
-          <li>1/4 cup Chana Dal (Bengal gram)</li>
-          <li>10-12 Guntur Dry Red Chillies</li>
-          <li>1/4 tsp Asafoetida (Hing)</li>
-          <li>1 sprig fresh Curry Leaves</li>
-          <li>1 tsp Sea Salt</li>
-          <li>1 tsp pure gingelly oil for roasting</li>
+          <li>2 cups mixed chopped vegetables (potatoes, carrots, beans, green peas, cauliflower)</li>
+          <li>1 medium onion, finely chopped</li>
+          <li>2 medium tomatoes, pureed</li>
+          <li>2 tbsp pure gingelly oil for tempering</li>
+          <li>1 tsp ginger-garlic paste</li>
+          <li>Whole spices: 2 cardamom pods, 1 star anise, 1 inch cinnamon stick, 3 cloves</li>
+          <li><strong>Kurma Paste:</strong> 1/2 cup grated fresh coconut, 8 soaked cashews, 1 tbsp roasted gram, 1 tsp fennel seeds, 2 green chillies</li>
+          <li>1/2 tsp turmeric powder, 1 tsp garam masala, 1 tsp coriander powder, salt to taste</li>
+          <li>Fresh coriander leaves and mint for garnish</li>
         </ul>
         
-        <h2>Step-by-Step Roasting Method</h2>
-        <p>1. In a heavy-bottomed skillet, dry roast the hulled sesame seeds over low heat until they become aromatic and pop gently. Set aside.</p>
-        <p>2. In the same pan, heat a few drops of sesame oil and roast urad dal and chana dal until golden amber.</p>
-        <p>3. Roast the dry chillies, curry leaves, and hing until crisp.</p>
-        <p>4. Allow all ingredients to cool completely to room temperature, then pulse coarsely in a spice grinder with rock salt.</p>
-        
-        <h2>How to Serve</h2>
-        <p>Mix 2 tablespoons of freshly ground podi with a generous pool of cold-pressed gingelly oil, and dip hot, fluffy idlis for breakfast bliss.</p>
+        <h2>Step-by-Step Cooking Method</h2>
+        <p>1. Steam the chopped mixed vegetables in salted water until just tender. Do not overcook.</p>
+        <p>2. Grind the coconut, soaked cashews, roasted gram, fennel seeds, and green chillies with 1/4 cup water into a smooth paste.</p>
+        <p>3. In a heavy-bottomed pan, heat the cooking oil and crackle the whole spices. Add onions and sauté until translucent.</p>
+        <p>4. Stir in ginger-garlic paste and sauté until the raw aroma dissipates. Add tomato puree and spice powders, cooking until oil separates along the edges.</p>
+        <p>5. Pour in the ground coconut-cashew paste and steamed vegetables along with 1 cup of warm water. Simmer on medium-low flame for 7-8 minutes.</p>
+        <p>6. Garnish with fresh chopped coriander and serve warm with dosas or parottas.</p>
       `,
-      featuredImage: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=1200&auto=format&fit=crop&q=80',
-      imageAlt: 'Fluffy steamed idlis served with spicy red gunpowder milagai podi and oil',
-      readingTime: 4,
+      featuredImage: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=1200&auto=format&fit=crop&q=80',
+      imageAlt: 'Rich vegetable kurma served in traditional bowl with fresh herbs',
+      readingTime: 6,
       status: 'PUBLISHED',
-      publishedAt: new Date('2026-08-30T09:15:00Z'),
+      publishedAt: new Date('2026-09-02T10:00:00Z'),
       authorId: author1.id,
-      categoryId: categoryMap['recipes'].id,
-      seoTitle: 'Authentic Sesame Seed Idli Podi Recipe | South Indian Gunpowder',
-      metaDescription: 'Step-by-step heirloom South Indian Idli Milagai Podi recipe with roasted hulled sesame seeds and aromatic cold-pressed gingelly oil.',
-      canonicalUrl: 'https://asbrandoils.com/blog/recipes/traditional-sesame-seed-idli-podi-recipe',
-      focusKeyword: 'sesame seed idli podi recipe',
+      categoryId: categoryMap['vegetarian-recipes'].id,
+      seoTitle: 'Vegetable Kurma Recipe | Creamy Restaurant-Style Mixed Veg Curry',
+      metaDescription: 'Easy step-by-step recipe for restaurant-style creamy mixed vegetable kurma with fresh coconut, cashews, and aromatic spices.',
+      canonicalUrl: 'https://asbrandoils.com/vegetarian-recipes/restaurant-style-vegetable-kurma-recipe',
+      focusKeyword: 'vegetable kurma recipe',
+      faqsJson: JSON.stringify([
+        {
+          question: 'Can I make this kurma recipe vegan?',
+          answer: 'Yes, this recipe is naturally 100% vegan as it uses coconut paste and cashews rather than dairy cream or butter.',
+        },
+      ]),
     },
+
+    // 2. Sweet Recipes (Everything Making With Oils)
     {
-      title: 'Sustainable Sesame Cultivation: How South Indian Farmers Preserve Native Til Crops',
-      slug: 'sustainable-sesame-cultivation-south-indian-agriculture',
-      excerpt: 'An in-depth look at dryland sesame farming in Tamil Nadu and Andhra Pradesh, organic pest management, and the economic renaissance of native seed varieties.',
+      title: 'Traditional Sesame Seed Jaggery Ladoo (Til Ladoo Made with Pure Oils)',
+      slug: 'traditional-sesame-seed-jaggery-ladoo-sweet-recipe',
+      excerpt: 'Nutrient-rich, golden roasted sesame ladoos sweetened with organic jaggery and bound with pure sesame oil. An authentic winter and festival sweet.',
       content: `
-        <p>Sesame (Sesamum indicum), known regionally as ellu or til, is one of humanity’s oldest cultivated oilseeds. In the arid plains of South India, sesame stands as a climate-resilient miracle crop capable of flourishing in minimal water where other crops fail.</p>
+        <p>Making delicious sweets does not always require heavy refined butter or ghee. Traditional Indian sweet recipes have celebrated cold-pressed oils and nutrient-dense oilseeds for generations. These traditional Til Ladoos combine calcium-rich sesame seeds, organic jaggery, and a touch of cold-pressed gingelly oil for irresistible chewiness and nutty aroma.</p>
         
-        <h2>The Agronomy of Sesame in Drought-Prone Regions</h2>
-        <p>Sesame requires only 300-400mm of seasonal rainfall, thriving in well-drained loamy soils. Its deep taproot system draws moisture from subsoil layers while naturally aerating and enriching farm soil for subsequent crop rotations.</p>
+        <h2>Why Sesame Seeds & Pure Oil Are Nutritional Superfoods</h2>
+        <p>Using premium hulled sesame seeds ensures a clean, sweet crunch without any sandy bitterness. Sesame seeds are packed with bioavailable calcium, zinc, iron, and healthy monounsaturated fats that provide sustained vitality.</p>
         
-        <h2>Hulling and Cleaning Technology</h2>
-        <p>Once harvested, mechanical de-hulling processes separate the dark outer husk from the nutrient-dense inner kernel. Modern food processing allows farmers and millers to supply high-purity hulled sesame seeds to premium domestic and global culinary markets without chemical bleaching.</p>
+        <h2>Ingredients List</h2>
+        <ul>
+          <li>1 cup A.S. Brand Hulled Gingelly Seeds</li>
+          <li>3/4 cup organic powdered jaggery (gud)</li>
+          <li>1 tbsp pure gingelly oil or groundnut oil for greasing and aroma</li>
+          <li>1/2 tsp freshly ground green cardamom powder</li>
+          <li>2 tbsp roasted crushed peanuts for extra crunch</li>
+        </ul>
         
-        <h2>Supporting Smallholder Farmers</h2>
-        <p>By choosing unadulterated sesame products and oils sourced from transparent supply chains, consumers directly support thousands of dryland farmers preserving heirloom seed biodiversity across rural India.</p>
+        <h2>Step-by-Step Sweet Preparation</h2>
+        <p>1. In a dry heavy pan, roast the sesame seeds on medium-low heat for 3-4 minutes until they become aromatic and pop gently. Set aside to cool.</p>
+        <p>2. In the same pan, melt the jaggery with 1 tablespoon of water over low heat until it reaches a soft ball consistency.</p>
+        <p>3. Stir in cardamom powder, roasted peanuts, and roasted sesame seeds. Turn off heat immediately and mix thoroughly.</p>
+        <p>4. Grease your palms with a few drops of pure gingelly oil and roll the warm mixture into round, bite-sized ladoos before it hardens.</p>
+        <p>5. Allow to cool completely and store in an airtight container for up to 3 weeks.</p>
       `,
-      featuredImage: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=1200&auto=format&fit=crop&q=80',
-      imageAlt: 'Lush green agricultural farm fields during harvest season',
+      featuredImage: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=1200&auto=format&fit=crop&q=80',
+      imageAlt: 'Golden roasted sesame seed ladoos with jaggery and cardamom',
       readingTime: 5,
       status: 'PUBLISHED',
-      publishedAt: new Date('2026-09-01T12:00:00Z'),
+      publishedAt: new Date('2026-09-03T11:30:00Z'),
+      authorId: author2.id,
+      categoryId: categoryMap['sweet-recipes'].id,
+      seoTitle: 'Sesame Seed Jaggery Ladoo Sweet Recipe | Til Ladoo with Pure Oil',
+      metaDescription: 'Authentic Indian sweet recipe: Sesame seed jaggery ladoos made with pure oil. Healthy, calcium-rich, and easy home recipe.',
+      canonicalUrl: 'https://asbrandoils.com/sweet-recipes/traditional-sesame-seed-jaggery-ladoo-sweet-recipe',
+      focusKeyword: 'sesame sweet recipes til ladoo',
+    },
+
+    // 3. Non-Vegetarian Recipes
+    {
+      title: 'Chettinad Pepper Chicken Roast (Authentic South Indian Chicken Fry)',
+      slug: 'authentic-chettinad-pepper-chicken-roast-recipe',
+      excerpt: 'Fiery, succulent chicken morsels coated in freshly roasted black peppercorns, curry leaves, shallots, and fragrant cold-pressed gingelly oil.',
+      content: `
+        <p>From the heritage kitchens of Karaikudi and Chettinad comes one of India’s most celebrated non-vegetarian recipes: Chettinad Pepper Chicken. Known for its intense aroma, spicy black pepper punch, and glistening golden finish, this dry roast is best paired with hot rasam rice or layered parottas.</p>
+        
+        <h2>The Essential Role of Gingelly Oil in Chettinad Cuisine</h2>
+        <p>Chettinad culinary masters strictly prescribe pure gingelly oil for meat roasts. The high antioxidant content of sesame oil binds with volatile piperine compounds in freshly cracked black pepper, balancing the heat while ensuring tender, juicy chicken pieces.</p>
+        
+        <h2>Ingredients List</h2>
+        <ul>
+          <li>500g bone-in tender chicken, cut into small curry pieces</li>
+          <li>3 tbsp pure gingelly oil</li>
+          <li>15-20 small shallots (sambar onions), finely sliced</li>
+          <li>2 sprigs fresh curry leaves</li>
+          <li>1 tbsp ginger-garlic paste</li>
+          <li><strong>Freshly Roasted Chettinad Spice Blend:</strong> 1.5 tbsp black peppercorns, 1 tbsp fennel seeds, 1 tsp cumin seeds, 1 tsp coriander seeds, 3 dry red chillies</li>
+          <li>1/2 tsp turmeric powder and rock salt to taste</li>
+        </ul>
+        
+        <h2>Step-by-Step Cooking Method</h2>
+        <p>1. Dry roast the whole spices until aromatic and coarsely grind into a fresh spice powder.</p>
+        <p>2. Heat gingelly oil in an iron skillet. Add curry leaves and sliced shallots, sautéing until golden brown.</p>
+        <p>3. Add ginger-garlic paste and turmeric, then toss in the chicken pieces on high heat to sear the exterior.</p>
+        <p>4. Add salt, cover with lid, and let the chicken cook in its natural juices on medium heat for 12-15 minutes.</p>
+        <p>5. Remove the lid, sprinkle the ground Chettinad pepper spice powder, and roast on medium-high flame until moisture evaporates and spices coat the chicken deeply.</p>
+        <p>6. Drizzle a final teaspoon of fragrant sesame oil and fresh curry leaves before serving.</p>
+      `,
+      featuredImage: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=1200&auto=format&fit=crop&q=80',
+      imageAlt: 'Chettinad pepper chicken roast with curry leaves and black pepper in cast iron skillet',
+      readingTime: 6,
+      status: 'PUBLISHED',
+      publishedAt: new Date('2026-09-04T14:00:00Z'),
+      authorId: author2.id,
+      categoryId: categoryMap['non-vegetarian-recipes'].id,
+      seoTitle: 'Chettinad Pepper Chicken Roast Recipe | Authentic South Indian Chicken Fry',
+      metaDescription: 'Step-by-step authentic Chettinad Pepper Chicken Roast recipe with fresh ground pepper, curry leaves, and traditional gingelly oil.',
+      canonicalUrl: 'https://asbrandoils.com/non-vegetarian-recipes/authentic-chettinad-pepper-chicken-roast-recipe',
+      focusKeyword: 'chettinad pepper chicken recipe',
+    },
+
+    // 4. Festival Recipes
+    {
+      title: 'Crispy Butter Murukku & Festival Snacks: Traditional Deep Frying Secrets',
+      slug: 'crispy-butter-murukku-festival-recipe-deep-frying',
+      excerpt: 'Master the art of crunchy, melt-in-mouth festival Murukku for Diwali and Gokulashtami using double-filtered groundnut oil for zero greasiness.',
+      content: `
+        <p>Festival seasons in India are incomplete without the comforting crackle of fresh Murukku, ribbon pakoda, and festive sweets. Achieving light, golden, and non-greasy fried snacks requires two key elements: the right flour ratio and a high-smoke-point frying oil.</p>
+        
+        <h2>Why Groundnut Oil is the Ultimate Festival Frying Choice</h2>
+        <p>Traditional festival recipes demand high frying temperatures between 180°C and 195°C. Double-filtered groundnut oil boasts a natural smoke point of 232°C (450°F), preventing oil breakdown, unpleasant greasy odor, or smoke accumulation during prolonged festive batch frying.</p>
+        
+        <h2>Ingredients List</h2>
+        <ul>
+          <li>2 cups fine rice flour (sieved)</li>
+          <li>1/2 cup roasted gram flour (pottukadalai flour)</li>
+          <li>2 tbsp melted butter</li>
+          <li>1 tsp A.S. Brand Hulled Gingelly Seeds</li>
+          <li>1/2 tsp cumin seeds or ajwain (carom seeds)</li>
+          <li>1/4 tsp asafoetida (hing)</li>
+          <li>Salt to taste and warm water for kneading</li>
+          <li>A.S. Brand Groundnut Oil for deep frying</li>
+        </ul>
+        
+        <h2>Step-by-Step Frying Method</h2>
+        <p>1. In a large mixing bowl, combine rice flour, roasted gram flour, sesame seeds, cumin seeds, hing, salt, and butter. Rub butter evenly into the flour.</p>
+        <p>2. Gradually add warm water and knead into a soft, non-sticky pliable dough.</p>
+        <p>3. Heat groundnut oil in a deep kadai over medium flame until a small piece of dough rises immediately without browning.</p>
+        <p>4. Fill the murukku press with the star attachment and press directly into hot oil in spiral rounds or onto greased ladles.</p>
+        <p>5. Deep fry on medium heat, flipping occasionally until the sizzling sound subsides and the murukku turns light golden.</p>
+        <p>6. Drain on paper towels and store in airtight tins for crispness that lasts weeks.</p>
+      `,
+      featuredImage: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=1200&auto=format&fit=crop&q=80',
+      imageAlt: 'Crispy golden festival murukku in traditional brass platter',
+      readingTime: 5,
+      status: 'PUBLISHED',
+      publishedAt: new Date('2026-09-05T09:00:00Z'),
+      authorId: author1.id,
+      categoryId: categoryMap['festival-recipes'].id,
+      seoTitle: 'Crispy Butter Murukku Recipe | Festival Snacks & Deep Frying Secrets',
+      metaDescription: 'Make authentic crispy festival murukku for Diwali and celebrations. Learn the secrets of high heat frying with pure groundnut oil.',
+      canonicalUrl: 'https://asbrandoils.com/festival-recipes/crispy-butter-murukku-festival-recipe-deep-frying',
+      focusKeyword: 'festival murukku recipe deep frying',
+    },
+
+    // 5. South Indian Recipes
+    {
+      title: 'Authentic Madras Sambar & Crispy Medu Vada: The Gingelly Oil Secret',
+      slug: 'authentic-madras-sambar-crispy-medu-vada-recipe',
+      excerpt: 'Learn the grandmother-approved technique for making restaurant-grade Madras Sambar with drumsticks and shallots, finished with a golden sesame oil tadka.',
+      content: `
+        <p>A steaming bowl of authentic South Indian Sambar paired with golden Medu Vadas is celebrated worldwide. But what differentiates ordinary home sambar from the unforgettable aroma of legendary South Indian tiffin centers? The answer is the final tadka of pure cold-pressed gingelly oil.</p>
+        
+        <h2>The Science of the Sambar Tadka</h2>
+        <p>Gingelly oil acts as a flavor carrier. When hot sesame oil meets mustard seeds, dried Guntur chillies, curry leaves, and a generous pinch of asafoetida (hing), it creates an instant emulsion that infuses deep umami throughout the tamarind-lentil broth.</p>
+        
+        <h2>Ingredients List</h2>
+        <ul>
+          <li>1 cup Toor Dal (split pigeon peas), boiled until mushy</li>
+          <li>1 cup mixed vegetables (drumsticks, shallots, yellow pumpkin, carrots)</li>
+          <li>1 medium lime-sized ball of aged tamarind, extracted in 1.5 cups warm water</li>
+          <li>2 tbsp freshly ground Sambar Powder (coriander, chana dal, fenugreek, dry chillies)</li>
+          <li>1/2 tsp turmeric powder, rock salt to taste</li>
+          <li><strong>Fragrant Tadka:</strong> 2 tbsp A.S. Brand Hulled Gingelly Oil, 1 tsp mustard seeds, 2 dry red chillies, 1/4 tsp hing, 1 sprig curry leaves</li>
+        </ul>
+        
+        <h2>Step-by-Step Cooking Method</h2>
+        <p>1. In a pot, cook the shallots and drumsticks in tamarind water with turmeric and salt until raw tamarind smell vanishes.</p>
+        <p>2. Add sambar powder and simmer for 4 minutes until vegetables are tender.</p>
+        <p>3. Add mashed toor dal and adjust consistency with warm water. Bring to a rolling boil on medium heat.</p>
+        <p>4. In a small tadka ladle, heat pure gingelly oil. Crackle mustard seeds, red chillies, hing, and curry leaves. Pour immediately into the simmering sambar and close with lid to trap the aroma.</p>
+      `,
+      featuredImage: 'https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=1200&auto=format&fit=crop&q=80',
+      imageAlt: 'Authentic South Indian Sambar with crispy medu vada and coconut chutney',
+      readingTime: 5,
+      status: 'PUBLISHED',
+      publishedAt: new Date('2026-09-06T08:00:00Z'),
+      authorId: author2.id,
+      categoryId: categoryMap['south-indian-recipes'].id,
+      seoTitle: 'Authentic Madras Sambar Recipe | South Indian Sambar with Gingelly Oil',
+      metaDescription: 'Grandmother-approved Madras Sambar recipe with drumsticks, shallots, and fragrant cold-pressed gingelly oil tadka.',
+      canonicalUrl: 'https://asbrandoils.com/south-indian-recipes/authentic-madras-sambar-crispy-medu-vada-recipe',
+      focusKeyword: 'authentic south indian sambar recipe',
+    },
+
+    // 6. North Indian Recipes
+    {
+      title: 'Dhaba-Style Dal Tadka & Kadai Paneer: Restaurant Secrets for Home Cooks',
+      slug: 'dhaba-style-dal-tadka-kadai-paneer-recipe',
+      excerpt: 'Smoky, aromatic yellow dal tempered with garlic, cumin, and double-filtered cooking oil, paired with spicy bell pepper Kadai Paneer.',
+      content: `
+        <p>Dhaba-style North Indian recipes are legendary for their smoky richness, robust whole spices, and comforting appeal. Recreating that signature highway dhaba flavor at home requires understanding how high-temperature oil extraction releases the essential aromas of crushed garlic, dried fenugreek leaves (kasoori methi), and cumin seeds.</p>
+        
+        <h2>The Secret Double Tadka Technique</h2>
+        <p>For authentic Dal Tadka, the first tempering of onions and ginger-garlic is cooked into the dal, while the second flash tempering with double-filtered groundnut oil, whole red chillies, and Kashmiri deghi mirch is poured on top right before serving.</p>
+        
+        <h2>Ingredients List</h2>
+        <ul>
+          <li>3/4 cup Toor Dal and 1/4 cup Yellow Moong Dal (soaked 30 mins)</li>
+          <li>2 large tomatoes, chopped</li>
+          <li>1 large onion, finely chopped</li>
+          <li>6 cloves garlic, finely minced</li>
+          <li>2 tbsp double filtered cooking oil</li>
+          <li>1 tsp cumin seeds, 2 dry red chillies, 1/2 tsp Kashmiri red chilli powder</li>
+          <li>1 tbsp crushed Kasoori Methi and fresh cilantro</li>
+        </ul>
+        
+        <h2>Step-by-Step Cooking Method</h2>
+        <p>1. Pressure cook soaked dals with turmeric and salt for 4 whistles until soft.</p>
+        <p>2. Heat 1 tbsp oil in a pan, sauté onions, green chillies, and half the minced garlic until golden. Add tomatoes and cook until soft. Mix into the boiled dal.</p>
+        <p>3. In a small tadka pan, heat the remaining oil until hot. Add cumin seeds, remaining garlic, dry chillies, and kasoori methi. Turn off flame and stir in Kashmiri chilli powder.</p>
+        <p>4. Pour the sizzling red tadka over the dal and garnish with coriander leaves.</p>
+      `,
+      featuredImage: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=1200&auto=format&fit=crop&q=80',
+      imageAlt: 'Dhaba style yellow dal tadka in copper bowl with garlic and red chilli',
+      readingTime: 5,
+      status: 'PUBLISHED',
+      publishedAt: new Date('2026-09-07T12:00:00Z'),
+      authorId: author1.id,
+      categoryId: categoryMap['north-indian-recipes'].id,
+      seoTitle: 'Dhaba Style Dal Tadka Recipe | North Indian Yellow Lentil Curry',
+      metaDescription: 'Make authentic smoky Dhaba-style Dal Tadka at home with double garlic tempering and aromatic cooking oils.',
+      canonicalUrl: 'https://asbrandoils.com/north-indian-recipes/dhaba-style-dal-tadka-kadai-paneer-recipe',
+      focusKeyword: 'dhaba style dal tadka recipe',
+    },
+
+    // 7. Breakfast Recipes
+    {
+      title: 'Golden Crispy Masala Dosa & Fluffy Idli Batter: Complete Morning Breakfast Guide',
+      slug: 'golden-crispy-masala-dosa-fluffy-idli-breakfast-recipe',
+      excerpt: 'Master the fermentation ratios for foolproof homemade dosa batter, spiced potato filling, and golden crispy dosas with cold-pressed oil.',
+      content: `
+        <p>A great breakfast sets the tone for the entire day. In Indian households, nothing rivals the comforting warmth of hot, crispy masala dosas or pillow-soft steamed idlis served with freshly made coconut chutney and spicy gun powder.</p>
+        
+        <h2>How Pure Oil Yields the Crispiest Dosa Crust</h2>
+        <p>When batter meets a hot cast-iron tawa, a thin ring of pure gingelly oil around the perimeter creates micro-aeration channels that prevent sticking while caramelizing the fermented starches into a stunning golden, crunchy crust.</p>
+        
+        <h2>Ingredients List</h2>
+        <ul>
+          <li>3 cups Idli Rice and 1 cup Whole Urad Dal (soaked and ground smooth)</li>
+          <li>1/4 tsp Fenugreek Seeds (methi)</li>
+          <li><strong>Potato Masala:</strong> 3 boiled potatoes, 1 sliced onion, 2 green chillies, 1/2 tsp mustard seeds, 1 tsp urad dal, curry leaves, turmeric</li>
+          <li>A.S. Brand Hulled Gingelly Oil for roasting dosas</li>
+        </ul>
+        
+        <h2>Step-by-Step Breakfast Method</h2>
+        <p>1. Allow the ground batter to ferment in a warm place for 8-10 hours until aerated and doubled in volume.</p>
+        <p>2. Prepare the potato masala by tempering mustard seeds, urad dal, green chillies, onions, and curry leaves in hot oil, then tossing with mashed potatoes and turmeric.</p>
+        <p>3. Heat cast-iron skillet, pour a ladle of batter, and spread in quick concentric circles.</p>
+        <p>4. Drizzle 1 teaspoon of pure gingelly oil along the outer edge and center. Cook on medium flame until golden brown.</p>
+        <p>5. Place potato masala in the center, fold, and serve immediately with fresh chutneys.</p>
+      `,
+      featuredImage: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=1200&auto=format&fit=crop&q=80',
+      imageAlt: 'Golden crispy masala dosa served with potato filling and coconut chutney',
+      readingTime: 5,
+      status: 'PUBLISHED',
+      publishedAt: new Date('2026-09-08T07:30:00Z'),
+      authorId: author2.id,
+      categoryId: categoryMap['breakfast-recipes'].id,
+      seoTitle: 'Crispy Masala Dosa Recipe | South Indian Breakfast Guide & Batter Secret',
+      metaDescription: 'Step-by-step masterclass for crispy golden masala dosas and fluffy idlis with traditional fermentation secrets and gingelly oil roasting.',
+      canonicalUrl: 'https://asbrandoils.com/breakfast-recipes/golden-crispy-masala-dosa-fluffy-idli-breakfast-recipe',
+      focusKeyword: 'crispy masala dosa breakfast recipe',
+    },
+
+    // 8. Street Food Recipes
+    {
+      title: 'Crispy Andhra Mirchi Bajji & Onion Pakoras: Famous Indian Street Food at Home',
+      slug: 'crispy-andhra-mirchi-bajji-onion-pakora-street-food-recipe',
+      excerpt: 'Learn the street vendor secrets for extra-crisp Mirchi Bajjis stuffed with ajwain-tamarind and golden onion pakoras fried in double-filtered groundnut oil.',
+      content: `
+        <p>Indian street food is celebrated for its irresistible aromas, vibrant spices, and crispy fried textures. From the bustling roadside stalls of Hyderabad to evening tea shops across Chennai, hot Mirchi Bajjis and crunchy Onion Pakoras are the ultimate monsoon snack.</p>
+        
+        <h2>The Street Vendor Secret: High-Temperature Groundnut Oil</h2>
+        <p>Street food masters rely on double-filtered groundnut oil because it maintains steady frying heat without smoking or imparting heavy grease, resulting in an airy, shatteringly crisp gram flour crust.</p>
+        
+        <h2>Ingredients List</h2>
+        <ul>
+          <li>8-10 large Bhavnagri / Bajji Green Chillies</li>
+          <li>1.5 cups Besan (Gram Flour) and 3 tbsp Rice Flour (for extra crispness)</li>
+          <li>1/4 tsp baking soda, 1/2 tsp red chilli powder, salt to taste</li>
+          <li><strong>Stuffing:</strong> 2 tbsp roasted peanut powder, 1 tsp carom seeds (ajwain), 1 tbsp tamarind paste, pinch of salt</li>
+          <li>A.S. Brand Groundnut Oil for deep frying</li>
+        </ul>
+        
+        <h2>Step-by-Step Street Food Method</h2>
+        <p>1. Slit the green chillies lengthwise and remove seeds. Fill each chilli with the peanut-ajwain tamarind stuffing.</p>
+        <p>2. Whisk besan, rice flour, baking soda, chilli powder, salt, and 1 tbsp hot oil with water into a thick, smooth batter.</p>
+        <p>3. Heat groundnut oil in a deep kadai over medium heat.</p>
+        <p>4. Dip stuffed chillies into the batter and slide gently into hot oil. Fry until crisp and golden amber on all sides.</p>
+        <p>5. Drain and serve hot with chopped raw onions, lemon wedges, and hot ginger chai.</p>
+      `,
+      featuredImage: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=1200&auto=format&fit=crop&q=80',
+      imageAlt: 'Crispy golden fried mirchi bajji and onion pakoras on street food platter',
+      readingTime: 5,
+      status: 'PUBLISHED',
+      publishedAt: new Date('2026-09-09T16:00:00Z'),
       authorId: author3.id,
-      categoryId: categoryMap['agriculture'].id,
-      seoTitle: 'Sustainable Sesame Farming in South India | Agriculture & Seed Diversity',
-      metaDescription: 'Explore drought-resilient sesame cultivation, farmer cooperatives, and seed hulling innovations in South Indian dryland agriculture.',
-      canonicalUrl: 'https://asbrandoils.com/blog/agriculture/sustainable-sesame-cultivation-south-indian-agriculture',
-      focusKeyword: 'sesame cultivation south india',
+      categoryId: categoryMap['street-food-recipes'].id,
+      seoTitle: 'Crispy Mirchi Bajji & Onion Pakora Recipe | Indian Street Food Secrets',
+      metaDescription: 'Authentic Indian street food recipe: Crispy Andhra stuffed Mirchi Bajji and onion pakoras with street vendor deep frying tips.',
+      canonicalUrl: 'https://asbrandoils.com/street-food-recipes/crispy-andhra-mirchi-bajji-onion-pakora-street-food-recipe',
+      focusKeyword: 'mirchi bajji street food recipe',
     },
   ];
 
-  for (const art of articles) {
-    const createdArt = await prisma.article.upsert({
-      where: { slug: art.slug },
-      update: {},
+  for (const rec of recipes) {
+    const createdRec = await prisma.article.upsert({
+      where: { slug: rec.slug },
+      update: {
+        title: rec.title,
+        excerpt: rec.excerpt,
+        content: rec.content,
+        featuredImage: rec.featuredImage,
+        imageAlt: rec.imageAlt,
+        readingTime: rec.readingTime,
+        status: rec.status,
+        authorId: rec.authorId,
+        categoryId: rec.categoryId,
+        seoTitle: rec.seoTitle,
+        metaDescription: rec.metaDescription,
+        canonicalUrl: rec.canonicalUrl,
+        focusKeyword: rec.focusKeyword,
+        faqsJson: rec.faqsJson || '[]',
+      },
       create: {
-        ...art,
+        ...rec,
         tags: {
           connect: [
-            { id: tagMap['Gingelly Oil'].id },
-            { id: tagMap['South Indian Cooking'].id },
+            { id: tagMap['Vegetarian'].id },
+            { id: tagMap['South Indian'].id },
             { id: tagMap['Cold Pressed'].id },
           ],
         },
       },
     });
-    console.log('Article created:', createdArt.title);
+    console.log('Recipe Article created:', createdRec.title);
   }
 
-  // 8. Create Default SEO Setting
+  // 8. Update Default SEO Setting
   await prisma.sEOSetting.upsert({
     where: { id: 'default-seo' },
     update: {},
     create: {
       id: 'default-seo',
-      siteTitle: 'A.S. Heritage & Living | Indian Culinary, Wellness & Culture',
-      defaultMetaDescription: 'Discover authentic Indian recipes, cooking science, smoke points, wellness traditions, and heritage food culture.',
+      siteTitle: 'Delicious Food Recipe Ideas & Everyday Kitchen | Healthy Recipes',
+      defaultMetaDescription: 'Discover delicious food recipe ideas, healthy vegetarian & non-vegetarian dishes, traditional sweets made with oils, and authentic street food secrets.',
       defaultOgImage: 'https://asbrandoils.com/cdn/shop/files/Gingelly_oil_1_720x.png?v=1721982944',
       twitterHandle: '@asbrandoils',
       robotsDirectives: 'User-agent: *\nAllow: /\nSitemap: https://asbrandoils.com/sitemap.xml',
     },
   });
 
-  // 9. Create Promotional Campaign
-  await prisma.campaign.create({
-    data: {
-      name: 'South Indian Culinary Heritage Campaign',
-      title: 'Purity Rooted in South Indian Tradition',
-      description: 'Experience the golden aroma of cold-pressed, de-hulled sesame oil and double-filtered groundnut oil.',
-      bannerImageUrl: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?w=1200&auto=format&fit=crop&q=80',
-      ctaText: 'Explore A.S. Brand Collection',
-      destinationUrl: 'https://asbrandoils.com/',
-      placement: 'ARTICLE_MIDDLE',
-      categoriesFilter: 'ALL',
-      isActive: true,
-    },
-  });
-
-  console.log('Database seeded successfully!');
+  console.log('Database re-seeded successfully with 8 recipe categories!');
 }
 
 main()

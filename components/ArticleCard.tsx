@@ -7,6 +7,7 @@ interface ArticleCardProps {
   article: {
     id: string;
     title: string;
+    titleTe?: string | null;
     slug: string;
     excerpt: string;
     featuredImage: string;
@@ -47,6 +48,11 @@ export default function ArticleCard({ article, variant = 'standard' }: ArticleCa
             <span className="bg-forest-900/90 backdrop-blur-md text-white font-semibold text-[11px] sm:text-xs px-3 py-1 rounded-full uppercase tracking-wider">
               {article.category.name}
             </span>
+            {article.titleTe && (
+              <span className="bg-emerald-950/85 backdrop-blur-md text-emerald-300 font-bold text-[10px] sm:text-xs px-2.5 py-1 rounded-full border border-emerald-700/50">
+                English & తెలుగు
+              </span>
+            )}
             {article.isSponsored && (
               <span className="bg-gold-500 text-forest-950 font-bold text-[10px] sm:text-xs px-2.5 py-1 rounded-full uppercase tracking-wider">
                 In Association with {article.sponsoredBrand || 'A.S. Brand'}
@@ -181,10 +187,15 @@ export default function ArticleCard({ article, variant = 'standard' }: ArticleCa
           className="object-cover group-hover:scale-105 transition-transform duration-500"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
-        <div className="absolute top-3 left-3 flex gap-1.5">
+        <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
           <span className="bg-forest-950/80 backdrop-blur-md text-white font-semibold text-[11px] px-2.5 py-1 rounded-full uppercase tracking-wider">
             {article.category.name}
           </span>
+          {article.titleTe && (
+            <span className="bg-emerald-950/85 backdrop-blur-md text-emerald-300 font-bold text-[10px] px-2 py-0.5 rounded-full border border-emerald-700/50">
+              EN | తెలుగు
+            </span>
+          )}
           {article.isSponsored && (
             <span className="bg-gold-500 text-forest-950 font-bold text-[10px] px-2 py-0.5 rounded-full uppercase">
               Partner

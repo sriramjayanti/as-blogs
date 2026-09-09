@@ -121,11 +121,27 @@
   }
 }
 
-/* Ensure embedded media, tables, and pre-blocks never overflow mobile viewport */
+/* Ensure embedded media, tables, and pre-blocks never overflow mobile viewport or lap on text */
 .editorial-prose img {
   max-width: 100%;
   height: auto;
   border-radius: 1rem;
+  display: block;
+  margin: 1.5rem auto;
+  clear: both;
+}
+
+.editorial-prose figure {
+  margin: 1.5rem 0;
+  clear: both;
+}
+
+.editorial-prose figcaption {
+  font-size: 0.75rem;
+  color: #718096;
+  text-align: center;
+  margin-top: 0.5rem;
+  font-style: italic;
 }
 
 .editorial-prose table {

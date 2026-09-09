@@ -87,6 +87,12 @@ model Article {
   isSponsored    Boolean     @default(false)
   sponsoredBrand String?     @default("A.S. Brand Oils")
   
+  // Bilingual Content (Telugu Version)
+  titleTe        String?
+  excerptTe      String?
+  contentTe      String?     // Rich HTML/Markdown in Telugu
+  recipeJsonTe   String?     @default("{}")
+  
   // Structured Content JSON (FAQs, Recipes, How-To steps)
   faqsJson       String?     @default("[]")
   recipeJson     String?     @default("{}")

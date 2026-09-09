@@ -16,7 +16,8 @@ import EndArticleCta from '@/components/EndArticleCta';
 import ArticleSidebarPromo from '@/components/ArticleSidebarPromo';
 import FaqAccordion from '@/components/FaqAccordion';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
-import { Clock, Calendar, ChevronRight, Share2, Sparkles, User } from 'lucide-react';
+import BilingualRecipeReader from '@/components/BilingualRecipeReader';
+import { Clock, Calendar, ChevronRight, Share2, Sparkles, User, Globe } from 'lucide-react';
 
 interface ArticlePageProps {
   params: {
@@ -115,13 +116,23 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     },
   }));
 
-  // Process the content with the contextual promotion engine
-  const processed = processArticleContent(
+  // Process the English content with contextual promotion engine
+  const processedEn = processArticleContent(
     article.content,
     parsedRules,
     article.category.slug,
     article.slug
   );
+
+  // Process the Telugu content if present
+  const processedTe = article.contentTe
+    ? processArticleContent(
+        article.contentTe,
+        parsedRules,
+        article.category.slug,
+        article.slug
+      )
+    : processedEn;
 
   // Fetch related articles within the same category
   const relatedArticles = await prisma.article.findMany({
@@ -279,33 +290,35 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           {/* Main Article Body */}
           <div className="lg:col-span-8 max-w-3xl">
             {/* Featured Hero Image */}
-            <div className="relative h-56 xs:h-64 sm:h-96 lg:h-[420px] rounded-2xl sm:rounded-3xl overflow-hidden mb-6 sm:mb-8 shadow-sm border border-cream-200 bg-stone-100">
-
-              <Image
-                src={article.featuredImage}
-                alt={article.imageAlt || article.title}
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 800px"
-              />
+            <figure className="mb-6 sm:mb-8">
+              <div className="relative h-60 xs:h-72 sm:h-96 lg:h-[420px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-cream-200 bg-stone-100">
+                <Image
+                  src={article.featuredImage}
+                  alt={article.imageAlt || article.title}
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 800px"
+                />
+              </div>
               {article.imageAlt && (
-                <div className="absolute bottom-0 inset-x-0 bg-stone-900/70 backdrop-blur-sm text-stone-300 text-[11px] px-4 py-2">
+                <figcaption className="mt-2.5 text-center text-xs text-stone-500 font-medium italic">
                   {article.imageAlt}
-                </div>
+                </figcaption>
               )}
-            </div>
+            </figure>
 
-            {/* Injected Content Body */}
-            <div
-              className="editorial-prose"
-              dangerouslySetInnerHTML={{ __html: processed.html }}
+            {/* Bilingual Interactive Recipe Reader (English & Telugu) */}
+            <BilingualRecipeReader
+              article={article}
+              processedHtmlEn={processedEn.html}
+              processedHtmlTe={processedTe.html}
             />
 
             {/* Inline Product Placement (if triggered by context rules) */}
-            {processed.hasInlineCard && processed.inlineCardProduct && (
+            {processedEn.hasInlineCard && processedEn.inlineCardProduct && (
               <InlineProductCard
-                product={processed.inlineCardProduct}
+                product={processedEn.inlineCardProduct}
                 articleSlug={article.slug}
               />
             )}
@@ -314,9 +327,9 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
             {faqs.length > 0 && <FaqAccordion faqs={faqs} />}
 
             {/* End-of-Article Conversion CTA */}
-            {processed.endCtaProduct && (
+            {processedEn.endCtaProduct && (
               <EndArticleCta
-                product={processed.endCtaProduct}
+                product={processedEn.endCtaProduct}
                 articleSlug={article.slug}
               />
             )}
@@ -365,26 +378,28 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
 
           {/* Desktop Sticky Sidebar */}
-          <aside className="hidden lg:block lg:col-span-4 space-y-8">
-            {/* Non-intrusive Contextual Product Sidebar */}
-            <ArticleSidebarPromo
-              products={processed.matchedProducts}
-              articleSlug={article.slug}
-            />
+          <aside className="hidden lg:block lg:col-span-4">
+            <div className="sticky top-28 space-y-6">
+              {/* Non-intrusive Contextual Product Sidebar */}
+              <ArticleSidebarPromo
+                products={processedEn.matchedProducts}
+                articleSlug={article.slug}
+              />
 
-            {/* Related Topic Cluster Box */}
-            {relatedArticles.length > 0 && (
-              <div className="bg-white rounded-2xl p-5 border border-cream-200 shadow-sm">
-                <h4 className="font-serif font-bold text-stone-900 text-base mb-3 pb-2 border-b border-cream-200">
-                  More in {article.category.name}
-                </h4>
-                <div className="space-y-1">
-                  {relatedArticles.map((rel) => (
-                    <ArticleCard key={rel.id} article={rel} variant="compact" />
-                  ))}
+              {/* Related Topic Cluster Box */}
+              {relatedArticles.length > 0 && (
+                <div className="bg-white rounded-2xl p-5 border border-cream-200 shadow-sm">
+                  <h4 className="font-serif font-bold text-stone-900 text-base mb-3 pb-2 border-b border-cream-200">
+                    More in {article.category.name}
+                  </h4>
+                  <div className="space-y-1">
+                    {relatedArticles.map((rel) => (
+                      <ArticleCard key={rel.id} article={rel} variant="compact" />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </aside>
         </div>
 

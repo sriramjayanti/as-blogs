@@ -2,40 +2,148 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/db';
 import ArticleCard from '@/components/ArticleCard';
-import { ArrowRight, ArrowUpRight, Sparkles, Flame, ShieldCheck, BookOpen } from 'lucide-react';
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Sparkles,
+  Flame,
+  ShieldCheck,
+  BookOpen,
+  Utensils,
+  Candy,
+  Drumstick,
+  Soup,
+  ChefHat,
+  Coffee,
+  Pizza,
+  Info,
+} from 'lucide-react';
 
 export const revalidate = 60; // ISR 60 seconds
 
 export default async function HomePage() {
-  // Fetch published articles with relations
-  const articles = await prisma.article.findMany({
-    where: { status: 'PUBLISHED' },
-    include: {
-      category: true,
-      author: true,
-    },
-    orderBy: { publishedAt: 'desc' },
-    take: 12,
-  });
+  // Fetch published recipes and categories
+  const [articles, categories, products] = await Promise.all([
+    prisma.article.findMany({
+      where: { status: 'PUBLISHED' },
+      include: {
+        category: true,
+        author: true,
+      },
+      orderBy: { publishedAt: 'desc' },
+      take: 16,
+    }),
+    prisma.category.findMany({
+      orderBy: { orderIndex: 'asc' },
+    }),
+    prisma.product.findMany({
+      where: { isFeatured: true },
+      orderBy: { orderIndex: 'asc' },
+      take: 6,
+    }),
+  ]);
 
-  // Featured and trending slices
+  // Featured Lead Story
   const featuredArticle = articles[0];
   const trendingArticles = articles.slice(1, 4);
-  const foodArticles = articles.filter((a) => a.category.slug === 'food' || a.category.slug === 'recipes');
-  const cultureArticles = articles.filter((a) => a.category.slug === 'culture' || a.category.slug === 'health');
-  const remainingArticles = articles.slice(4);
 
-  // Fetch official products for subtle pantry showcase
-  const products = await prisma.product.findMany({
-    where: { isFeatured: true },
-    orderBy: { orderIndex: 'asc' },
-    take: 6,
-  });
+  // Group recipes by the 8 categories
+  const vegArticles = articles.filter((a) => a.category.slug === 'vegetarian-recipes');
+  const sweetArticles = articles.filter((a) => a.category.slug === 'sweet-recipes');
+  const nonVegArticles = articles.filter((a) => a.category.slug === 'non-vegetarian-recipes');
+  const festivalArticles = articles.filter((a) => a.category.slug === 'festival-recipes');
+  const southIndianArticles = articles.filter((a) => a.category.slug === 'south-indian-recipes');
+  const northIndianArticles = articles.filter((a) => a.category.slug === 'north-indian-recipes');
+  const breakfastArticles = articles.filter((a) => a.category.slug === 'breakfast-recipes');
+  const streetFoodArticles = articles.filter((a) => a.category.slug === 'street-food-recipes');
 
   return (
-    <div className="space-y-16 sm:space-y-20 pb-16">
-      {/* 1. Hero Editorial Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10">
+    <div className="space-y-14 sm:space-y-18 pb-20">
+      {/* 1. Pleasant Appetizing Food Hero Banner */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+        <div className="relative rounded-3xl overflow-hidden bg-forest-950 text-white border border-forest-900 shadow-2xl">
+          {/* High quality appetizing food background with soft dark gradient overlay */}
+          <div className="absolute inset-0">
+            <Image
+              src="https://images.unsplash.com/photo-1596797038530-2c107229654b?w=1600&auto=format&fit=crop&q=85"
+              alt="Pleasant banquet of delicious Indian food, fragrant spices, and traditional cooking"
+              fill
+              priority
+              className="object-cover object-center opacity-30 scale-105 transition-transform duration-1000"
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-forest-950 via-forest-950/80 to-forest-950/40" />
+          </div>
+
+          {/* Banner Content */}
+          <div className="relative z-10 p-6 sm:p-10 lg:p-14 max-w-4xl space-y-5">
+            <div className="inline-flex items-center gap-2 bg-gold-950/90 text-gold-400 border border-gold-800/60 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+              My Everyday Kitchen • Healthy Food Recipes
+            </div>
+
+            <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold text-cream-50 leading-[1.12] tracking-tight">
+              Delicious Food Recipe Ideas for Your Everyday Kitchen
+            </h1>
+
+            <p className="text-stone-200 text-sm sm:text-base lg:text-lg leading-relaxed max-w-2xl font-normal">
+              Explore authentic home recipes, oil-based traditional sweets, crispy street food favorites, and healthy South & North Indian culinary classics made with honest ingredients.
+            </p>
+
+            {/* Quick Action Buttons */}
+            <div className="pt-2 flex flex-wrap items-center gap-3">
+              <Link
+                href="/about"
+                className="bg-gold-500 hover:bg-gold-400 text-forest-950 font-bold text-xs sm:text-sm px-6 py-3 rounded-full transition-all shadow-md flex items-center gap-2"
+              >
+                <Info className="w-4 h-4" /> About Our Kitchen
+              </Link>
+              <Link
+                href="/sweet-recipes"
+                className="bg-forest-900/90 hover:bg-forest-800 text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-full border border-forest-700 hover:border-gold-500 transition-all flex items-center gap-2"
+              >
+                <Candy className="w-4 h-4 text-gold-400" /> Oil-Based Sweets
+              </Link>
+              <Link
+                href="/products"
+                className="text-stone-300 hover:text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-full border border-stone-700 hover:border-stone-500 transition-colors flex items-center gap-1.5"
+              >
+                <ShieldCheck className="w-4 h-4 text-gold-400" /> A.S. Brand Pantry
+              </Link>
+            </div>
+
+            {/* 8 Category Discovery Pills */}
+            <div className="pt-4 border-t border-forest-800/80">
+              <div className="text-[10px] uppercase font-bold text-stone-400 tracking-wider mb-2.5">
+                Explore Recipe Categories:
+              </div>
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                {[
+                  { name: 'Vegetarian Recipes', slug: 'vegetarian-recipes' },
+                  { name: 'Sweet Recipes (Oils)', slug: 'sweet-recipes' },
+                  { name: 'Non-Vegetarian', slug: 'non-vegetarian-recipes' },
+                  { name: 'Festival Recipes', slug: 'festival-recipes' },
+                  { name: 'South Indian', slug: 'south-indian-recipes' },
+                  { name: 'North Indian', slug: 'north-indian-recipes' },
+                  { name: 'Breakfast Recipes', slug: 'breakfast-recipes' },
+                  { name: 'Street Food', slug: 'street-food-recipes' },
+                ].map((cat) => (
+                  <Link
+                    key={cat.slug}
+                    href={`/${cat.slug}`}
+                    className="text-xs bg-forest-900/80 hover:bg-gold-500 hover:text-forest-950 text-stone-200 px-3 py-1.5 rounded-lg border border-forest-800 transition-colors font-medium whitespace-nowrap"
+                  >
+                    {cat.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. Featured Recipe & Trending Stories */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           {/* Main Lead Story */}
           <div className="lg:col-span-8">
@@ -44,7 +152,7 @@ export default async function HomePage() {
             ) : (
               <div className="p-12 text-center bg-white rounded-2xl border border-cream-200">
                 <BookOpen className="w-8 h-8 mx-auto text-stone-400 mb-2" />
-                <p className="text-stone-600">Publishing editorial articles...</p>
+                <p className="text-stone-600">Publishing recipes...</p>
               </div>
             )}
           </div>
@@ -55,7 +163,7 @@ export default async function HomePage() {
               <div className="flex items-center gap-2 pb-4 mb-3 border-b border-cream-200">
                 <Flame className="w-4 h-4 text-gold-600" />
                 <h3 className="font-serif text-lg font-bold text-stone-950 uppercase tracking-wider">
-                  Trending Stories
+                  Top Home Recipes
                 </h3>
               </div>
               <div className="divide-y divide-cream-100">
@@ -67,51 +175,75 @@ export default async function HomePage() {
 
             <div className="mt-6 pt-4 border-t border-cream-200 bg-cream-50/70 p-4 rounded-xl">
               <div className="text-xs font-semibold text-forest-900 uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-gold-600" /> Editorial Note
+                <Sparkles className="w-3.5 h-3.5 text-gold-600" /> Simple Kitchen Tip
               </div>
               <p className="text-xs text-stone-600 leading-relaxed">
-                Our culinary guides are peer-reviewed by food anthropologists and nutrition specialists.
+                For authentic South Indian aroma, always finish your sambar and vegetable gravies with cold-pressed hulled gingelly oil.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. Topic Spotlight: Culinary Science & Recipes */}
+      {/* 3. Category Highlight: Sweet Recipes (Made With Pure Oils) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8 pb-3 border-b-2 border-forest-900/20">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-forest-800">
-              Gastronomy & Technique
-            </span>
+            <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gold-700">
+              <Candy className="w-3.5 h-3.5" /> Traditional & Healthy Confections
+            </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-stone-950 mt-1">
-              Food & Heirloom Recipes
+              Sweet Recipes (Making with Pure Oils)
             </h2>
           </div>
           <Link
-            href="/food"
+            href="/sweet-recipes"
             className="text-xs sm:text-sm font-bold text-forest-900 hover:text-gold-600 flex items-center gap-1 transition-colors"
           >
-            Explore Food Section <ArrowRight className="w-4 h-4" />
+            All Sweet Recipes <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {foodArticles.slice(0, 3).map((art) => (
+          {(sweetArticles.length > 0 ? sweetArticles : articles.slice(0, 3)).map((art) => (
             <ArticleCard key={art.id} article={art} variant="standard" />
           ))}
         </div>
       </section>
 
-      {/* 3. Subtle Brand Story / Heritage Banner */}
+      {/* 4. Category Highlight: South & North Indian Recipes */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-forest-950 text-white p-6 sm:p-12 lg:p-16 border border-forest-900 shadow-xl">
-          <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none bg-[radial-gradient(#D97706_1px,transparent_1px)] [background-size:16px_16px]" />
-          
+        <div className="flex items-end justify-between mb-8 pb-3 border-b-2 border-forest-900/20">
+          <div>
+            <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-forest-800">
+              <Soup className="w-3.5 h-3.5" /> Regional Heritage Gastronomy
+            </div>
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold text-stone-950 mt-1">
+              South Indian & North Indian Classics
+            </h2>
+          </div>
+          <Link
+            href="/south-indian-recipes"
+            className="text-xs sm:text-sm font-bold text-forest-900 hover:text-gold-600 flex items-center gap-1 transition-colors"
+          >
+            Explore Regional <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {[...southIndianArticles, ...northIndianArticles].slice(0, 3).map((art) => (
+            <ArticleCard key={art.id} article={art} variant="standard" />
+          ))}
+        </div>
+      </section>
+
+      {/* 5. Subtle Brand Story / Heritage Banner */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative rounded-3xl overflow-hidden bg-forest-950 text-white p-8 sm:p-12 lg:p-14 border border-forest-900 shadow-xl">
           <div className="relative z-10 max-w-2xl space-y-4">
             <div className="inline-flex items-center gap-2 bg-gold-950/80 text-gold-400 border border-gold-800/50 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
               <ShieldCheck className="w-3.5 h-3.5 text-gold-400" />
-              Heritage Pillar
+              Heritage Pantry
             </div>
 
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-bold text-cream-50 leading-tight">
@@ -119,10 +251,10 @@ export default async function HomePage() {
             </h2>
 
             <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
-              For generations, traditional cold-pressed gingelly oil, double-filtered groundnut oil, and sacred Pancha Thailam deepam blends have nourished Indian homes. We celebrate authentic methods that preserve natural aroma, essential sesamol antioxidants, and crisp culinary perfection.
+              Every delicious home recipe begins with genuine, chemical-free cold-pressed oils. A.S. Brand Hulled Gingelly Oil and double-filtered Groundnut Oil provide high smoke-point stability and unmatched aroma for everyday cooking and festival sweets.
             </p>
 
-            <div className="pt-4 flex flex-wrap items-center gap-4">
+            <div className="pt-3 flex flex-wrap items-center gap-4">
               <Link
                 href="/products"
                 className="bg-gold-500 hover:bg-gold-400 text-forest-950 font-bold text-sm px-6 py-3 rounded-full transition-all shadow-md"
@@ -142,39 +274,38 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4. Topic Section: Culture, Wellness & Sacred Rituals */}
+      {/* 6. Category Highlight: Breakfast & Street Food Favorites */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8 pb-3 border-b-2 border-forest-900/20">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-forest-800">
-              Wellness & Sacred Living
-            </span>
+            <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-forest-800">
+              <Coffee className="w-3.5 h-3.5" /> Morning Tiffins & Evening Cravings
+            </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-stone-950 mt-1">
-              Culture, Ayurveda & Deepam Traditions
+              Breakfast & Street Food Recipes
             </h2>
           </div>
           <Link
-            href="/culture"
+            href="/street-food-recipes"
             className="text-xs sm:text-sm font-bold text-forest-900 hover:text-gold-600 flex items-center gap-1 transition-colors"
           >
-            Explore Culture Section <ArrowRight className="w-4 h-4" />
+            View Street Food <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {cultureArticles.slice(0, 3).map((art) => (
+          {[...breakfastArticles, ...streetFoodArticles].slice(0, 3).map((art) => (
             <ArticleCard key={art.id} article={art} variant="standard" />
           ))}
         </div>
       </section>
 
-      {/* 5. The Curated Pantry Showcase (Non-intrusive Product Directory) */}
+      {/* 7. The Curated Pantry Showcase (Non-intrusive Product Directory) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 lg:p-10 border border-cream-200 shadow-sm">
-          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
-
+        <div className="bg-white rounded-3xl p-8 sm:p-10 border border-cream-200 shadow-sm">
+          <div className="text-center max-w-2xl mx-auto mb-10">
             <span className="text-xs font-bold uppercase tracking-widest text-gold-700">
-              Curated Essentials
+              Kitchen Essentials
             </span>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-stone-950 mt-1">
               The A.S. Brand Pantry Roster
@@ -227,28 +358,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* 6. Latest Articles Feed */}
-      {remainingArticles.length > 0 && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-end justify-between mb-8 pb-3 border-b-2 border-forest-900/20">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-widest text-forest-800">
-                Fresh Dispatches
-              </span>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-stone-950 mt-1">
-                Latest Articles & Stories
-              </h2>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {remainingArticles.map((art) => (
-              <ArticleCard key={art.id} article={art} variant="horizontal" />
-            ))}
-          </div>
-        </section>
-      )}
     </div>
   );
 }

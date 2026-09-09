@@ -1,20 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { ArrowUpRight, Heart, ShieldCheck, Mail } from 'lucide-react';
+import { ArrowUpRight, ShieldCheck, Mail, Phone, MapPin } from 'lucide-react';
 
 export default function Footer() {
-  const pathname = usePathname();
-
-  // Hide customer footer on admin panel routes
-  if (pathname?.startsWith('/admin')) {
-    return null;
-  }
-
   return (
     <footer className="bg-forest-950 text-stone-300 pt-16 pb-12 border-t border-forest-900 mt-20">
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-forest-900/80">
           {/* Brand & Editorial Mission */}
@@ -24,64 +15,79 @@ export default function Footer() {
                 A.S. HERITAGE & LIVING
               </span>
               <span className="text-[11px] uppercase tracking-widest text-gold-400 font-semibold">
-                Authentic Indian Food, Health & Culture
+                Healthy Food Recipes • My Everyday Kitchen
               </span>
             </Link>
             <p className="text-stone-400 text-xs sm:text-sm leading-relaxed">
-              Dedicated to documenting traditional culinary arts, smoke point science, cold-pressed oil nutrition, and sacred Pooja rituals. Rooted in authentic South Indian heritage and wellness wisdom.
+              Sharing authentic home recipes, healthy cooking techniques, oil-based festival sweets, and traditional culinary secrets. In proud association with A.S. Brand Oils.
             </p>
-            <div className="flex items-center gap-2 text-xs text-stone-400 pt-2">
-              <ShieldCheck className="w-4 h-4 text-gold-400" />
-              <span>Editorial standards compliant • Transparent brand partnership</span>
+            <div className="space-y-1.5 text-xs text-stone-400 pt-2">
+              <div className="flex items-center gap-2">
+                <Phone className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                <a href="tel:9177455998" className="hover:text-gold-300 font-mono">
+                  +91 91774 55998
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                <span>Editorial standards compliant • Pure & healthy cooking</span>
+              </div>
             </div>
           </div>
 
-          {/* Quick Categories */}
-          <div className="lg:col-span-2 space-y-3">
+          {/* 8 Recipe Categories */}
+          <div className="lg:col-span-3 space-y-3">
             <h4 className="font-serif text-sm font-bold uppercase tracking-wider text-cream-100">
-              Categories
+              Recipe Vault
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm">
               <li>
-                <Link href="/food" className="hover:text-gold-400 transition-colors">
-                  Food & Cooking
+                <Link href="/vegetarian-recipes" className="hover:text-gold-400 transition-colors">
+                  Vegetarian Recipes
                 </Link>
               </li>
               <li>
-                <Link href="/recipes" className="hover:text-gold-400 transition-colors">
-                  Heirloom Recipes
+                <Link href="/sweet-recipes" className="hover:text-gold-400 transition-colors">
+                  Sweet Recipes (With Oils)
                 </Link>
               </li>
               <li>
-                <Link href="/health" className="hover:text-gold-400 transition-colors">
-                  Health & Wellness
+                <Link href="/non-vegetarian-recipes" className="hover:text-gold-400 transition-colors">
+                  Non-Vegetarian Recipes
                 </Link>
               </li>
               <li>
-                <Link href="/culture" className="hover:text-gold-400 transition-colors">
-                  Culture & Deepam
+                <Link href="/festival-recipes" className="hover:text-gold-400 transition-colors">
+                  Festival Recipes
                 </Link>
               </li>
               <li>
-                <Link href="/agriculture" className="hover:text-gold-400 transition-colors">
-                  Agriculture & Seeds
+                <Link href="/south-indian-recipes" className="hover:text-gold-400 transition-colors">
+                  South Indian Recipes
                 </Link>
               </li>
               <li>
-                <Link href="/guides" className="hover:text-gold-400 transition-colors">
-                  Buying Guides
+                <Link href="/north-indian-recipes" className="hover:text-gold-400 transition-colors">
+                  North Indian Recipes
+                </Link>
+              </li>
+              <li>
+                <Link href="/breakfast-recipes" className="hover:text-gold-400 transition-colors">
+                  Breakfast Recipes
+                </Link>
+              </li>
+              <li>
+                <Link href="/street-food-recipes" className="hover:text-gold-400 transition-colors">
+                  Street Food Recipes
                 </Link>
               </li>
             </ul>
           </div>
 
           {/* Verified A.S. Brand Pantry */}
-          <div className="lg:col-span-3 space-y-3">
+          <div className="lg:col-span-2 space-y-3">
             <h4 className="font-serif text-sm font-bold uppercase tracking-wider text-cream-100 flex items-center gap-1.5">
-              <span>A.S. Brand Collection</span>
-              <span className="bg-gold-500/20 text-gold-400 text-[10px] px-1.5 py-0.5 rounded border border-gold-500/30">
-                Official
-              </span>
+              <span>A.S. Brand Oils</span>
             </h4>
             <ul className="space-y-2 text-xs sm:text-sm">
               <li>
@@ -113,7 +119,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-gold-400 flex items-center justify-between group"
                 >
-                  <span>Double Filtered Groundnut Oil</span>
+                  <span>Groundnut Oil</span>
                   <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                 </a>
               </li>
@@ -124,7 +130,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-gold-400 flex items-center justify-between group"
                 >
-                  <span>Hulled Sesame Seeds</span>
+                  <span>Sesame Seeds</span>
                   <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                 </a>
               </li>
@@ -135,31 +141,25 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-gold-400 flex items-center justify-between group"
                 >
-                  <span>Sree Divya Deeparadhana Oil</span>
+                  <span>Deeparadhana Oil</span>
                   <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
                 </a>
               </li>
               <li>
-                <a
-                  href="https://asbrandoils.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-gold-400 flex items-center justify-between group"
-                >
-                  <span>Pooja Brand Pure Gingelly Oil</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
-                </a>
+                <Link href="/products" className="text-gold-400 hover:text-gold-300 font-bold block pt-1">
+                  View Full Pantry →
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Newsletter Box */}
+          {/* Quick Links & Newsletter */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="font-serif text-sm font-bold uppercase tracking-wider text-cream-100">
-              Heritage Dispatch
+              Everyday Dispatch
             </h4>
             <p className="text-stone-400 text-xs leading-relaxed">
-              Receive curated heirloom recipes, smoke-point charts, and festival rituals delivered to your inbox.
+              Get tested home recipes, healthy kitchen tips, and festival sweets delivered to your inbox.
             </p>
             <form onSubmit={(e) => e.preventDefault()} className="space-y-2">
               <div className="relative">
@@ -176,24 +176,23 @@ export default function Footer() {
                   Join
                 </button>
               </div>
-              <p className="text-[10px] text-stone-500">
-                No spam. Unsubscribe at any time.
-              </p>
             </form>
+            <div className="pt-2">
+              <Link href="/about" className="text-xs text-gold-400 hover:text-gold-300 font-semibold underline">
+                About Our Editorial Kitchen →
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Bottom Bar & Disclaimer */}
+        {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
           <div>
-            © {new Date().getFullYear()} A.S. Heritage & Living. All rights reserved.
+            © {new Date().getFullYear()} A.S. Heritage & Living • Healthy Food Recipes
           </div>
           <div className="flex items-center gap-6">
-            <Link href="/privacy" className="hover:text-stone-300 transition-colors">
-              Privacy Policy
-            </Link>
-            <Link href="/terms" className="hover:text-stone-300 transition-colors">
-              Terms of Editorial Service
+            <Link href="/about" className="hover:text-stone-300 transition-colors">
+              About Us
             </Link>
             <Link href="/sitemap.xml" className="hover:text-stone-300 transition-colors">
               XML Sitemap

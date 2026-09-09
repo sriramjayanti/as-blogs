@@ -22,7 +22,7 @@ export default function ArticleSidebarPromo({
   );
 
   return (
-    <div className="bg-white rounded-2xl p-5 border border-cream-200 shadow-sm sticky top-28 space-y-4">
+    <div className="bg-white rounded-2xl p-5 border border-cream-200 shadow-sm space-y-4">
       <div className="flex items-center gap-1.5 text-[11px] font-bold text-forest-800 uppercase tracking-wider">
         <Sparkles className="w-3.5 h-3.5 text-gold-600" />
         Featured Culinary Heritage
