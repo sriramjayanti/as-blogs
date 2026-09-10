@@ -2,6 +2,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/db';
 import ArticleCard from '@/components/ArticleCard';
+import ProductBannerShowcase from '@/components/ProductBannerShowcase';
+import BrandVideoShowcase from '@/components/BrandVideoShowcase';
 import {
   ArrowRight,
   ArrowUpRight,
@@ -142,7 +144,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 2. Featured Recipe & Trending Stories */}
+      {/* 2. Opening Section: Official A.S. Brand Product Banners & Oil Science */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ProductBannerShowcase />
+      </div>
+
+      {/* 3. Featured Recipe & Trending Stories */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           {/* Main Lead Story */}
@@ -185,7 +192,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 3. Category Highlight: Sweet Recipes (Made With Pure Oils) */}
+      {/* 4. Category Highlight: Sweet Recipes (Made With Pure Oils) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8 pb-3 border-b-2 border-forest-900/20">
           <div>
@@ -211,7 +218,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 4. Category Highlight: South & North Indian Recipes */}
+      {/* 5. Category Highlight: South & North Indian Recipes */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8 pb-3 border-b-2 border-forest-900/20">
           <div>
@@ -236,6 +243,11 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* 6. Middle Scroll Section: Brand Video Showcase & Heritage Masterclass */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <BrandVideoShowcase />
+      </div>
 
       {/* 5. Subtle Brand Story / Heritage Banner */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

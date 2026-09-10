@@ -292,33 +292,62 @@ export default function BilingualRecipeReader({
           )}
 
           {/* Natural A.S. Brand Product Callout for Recipe */}
-          <div className="mt-6 p-4 sm:p-5 rounded-2xl bg-forest-950 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-            <div className="flex items-center gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-400 flex items-center justify-center shrink-0">
-                <ShoppingBag className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-gold-400 uppercase tracking-wider">
-                  {isTe ? 'A.S. బ్రాండ్ నూనెతో అసలైన రుచి' : 'Chef’s Recommended Cooking Oil'}
-                </div>
-                <div className="text-xs sm:text-sm font-semibold text-stone-200">
-                  {isTe
-                    ? 'ఈ వంటకానికి A.S. బ్రాండ్ హల్డ్ నువ్వుల నూనె లేదా వేరుశెనగ నూనె వాడండి.'
-                    : 'Crafted best with A.S. Brand Pure Hulled Gingelly Oil & Double Filtered Groundnut Oil.'}
-                </div>
-              </div>
-            </div>
+          {(() => {
+            const isDeepFry = /pakoda|pakora|bonda|bajji|murukku|vada|chicken 65|fish fry|parotta|chappathi|kulcha|tikka|jalfrezi|butter masala/i.test(article.title);
+            const isNonVeg = /chettinad|mutton|prawn|egg masala|non-veg/i.test(article.title) || article.category.slug === 'non-vegetarian-recipes';
+            const isSweet = /ladoo|laddu|panchamirtham|urundai|sweet/i.test(article.title) || article.category.slug === 'sweet-recipes';
 
-            <a
-              href="https://asbrandoils.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-bold bg-gold-500 hover:bg-gold-400 text-forest-950 px-4 py-2.5 rounded-xl transition-all shrink-0 shadow-sm"
-            >
-              {isTe ? 'నూనెలను చూడండి' : 'Explore A.S. Oils'}
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </a>
-          </div>
+            let oilEn = 'A.S. Brand Hulled Gingelly Oil';
+            let oilTe = 'A.S. బ్రాండ్ హల్డ్ జింజెల్లీ ఆయిల్';
+            let rationaleEn = 'De-hulled sesame seeds provide fragrant aroma, high antioxidant sesamol, and zero bitter taste for daily cooking.';
+            let rationaleTe = 'చేదు లేకుండా సహజమైన సువాసన మరియు పోషకాల కోసం A.S. బ్రాండ్ హల్డ్ జింజెల్లీ ఆయిల్ వాడండి.';
+
+            if (isDeepFry) {
+              oilEn = 'A.S. Brand Groundnut Oil (232°C High Smoke Point)';
+              oilTe = 'A.S. బ్రాండ్ వేరుశెనగ నూనె (232°C హై స్మోక్ పాయింట్)';
+              rationaleEn = 'Double filtered from selected peanuts. High smoke point ensures crispy frying without oil absorption.';
+              rationaleTe = 'నూనె పీల్చకుండా కరకరలాడే ఫ్రైస్ మరియు స్నాక్స్ కోసం 232°C స్మోక్ పాయింట్ గల వేరుశెనగ నూనె ఉత్తమం.';
+            } else if (isNonVeg) {
+              oilEn = 'Mansion Gingelly Oil (Whole Seed Heritage Extraction)';
+              oilTe = 'మాన్షన్ జింజెల్లీ ఆయిల్ (హోల్ సీడ్ హెరిటేజ్ ఎక్స్‌ట్రాక్షన్)';
+              rationaleEn = 'Whole raw gingelly seeds pressed to deliver robust rustic flavor and tenderize meat spices.';
+              rationaleTe = 'ఘాటైన చికెన్, మటన్, ప్రాన్ రోస్ట్స్ మరియు నాన్‌వెజ్ గ్రేవీలకు మాన్షన్ ఆయిల్ సరైన ఎంపిక.';
+            } else if (isSweet) {
+              oilEn = 'A.S. Brand Hulled Gingelly Seeds & Pure Oils';
+              oilTe = 'A.S. బ్రాండ్ హల్డ్ తెల్ల నువ్వులు & నూనెలు';
+              rationaleEn = 'White sesame seeds with natural crunch and nutty aroma for traditional sweets.';
+              rationaleTe = 'నువ్వుల లడ్డూలు, పండుగ స్వీట్లకు స్వచ్ఛమైన A.S. బ్రాండ్ హల్డ్ సీడ్స్ వాడండి.';
+            }
+
+            return (
+              <div className="mt-6 p-4 sm:p-5 rounded-2xl bg-forest-950 text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm border border-gold-500/30">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-gold-500/20 text-gold-400 flex items-center justify-center shrink-0">
+                    <ShoppingBag className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-gold-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      {isTe ? `సిఫార్సు చేసిన నూనె: ${oilTe}` : `Recommended Cooking Oil: ${oilEn}`}
+                    </div>
+                    <div className="text-xs text-stone-300 mt-0.5 leading-relaxed">
+                      {isTe ? rationaleTe : rationaleEn}
+                    </div>
+                  </div>
+                </div>
+
+                <a
+                  href="https://asbrandoils.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold bg-gold-500 hover:bg-gold-400 text-forest-950 px-4 py-2.5 rounded-xl transition-all shrink-0 shadow-sm"
+                >
+                  {isTe ? 'ఆర్డర్ చేయండి' : 'Buy Official Pack'}
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            );
+          })()}
         </div>
       )}
 
