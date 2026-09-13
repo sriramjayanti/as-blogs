@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/db';
 import ArticleCard from '@/components/ArticleCard';
-import ProductBannerShowcase from '@/components/ProductBannerShowcase';
+import HeroPosterCarousel from '@/components/HeroPosterCarousel';
 import BrandVideoShowcase from '@/components/BrandVideoShowcase';
 import {
   ArrowRight,
@@ -61,95 +61,12 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-14 sm:space-y-18 pb-20">
-      {/* 1. Pleasant Appetizing Food Hero Banner */}
+      {/* 1. Interactive Scrolling Hero Poster Banner with AS Brand Visuals */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
-        <div className="relative rounded-3xl overflow-hidden bg-forest-950 text-white border border-forest-900 shadow-2xl">
-          {/* High quality appetizing food background with soft dark gradient overlay */}
-          <div className="absolute inset-0">
-            <Image
-              src="https://images.unsplash.com/photo-1596797038530-2c107229654b?w=1600&auto=format&fit=crop&q=85"
-              alt="Pleasant banquet of delicious Indian food, fragrant spices, and traditional cooking"
-              fill
-              priority
-              className="object-cover object-center opacity-30 scale-105 transition-transform duration-1000"
-              sizes="100vw"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-forest-950 via-forest-950/80 to-forest-950/40" />
-          </div>
-
-          {/* Banner Content */}
-          <div className="relative z-10 p-6 sm:p-10 lg:p-14 max-w-4xl space-y-5">
-            <div className="inline-flex items-center gap-2 bg-gold-950/90 text-gold-400 border border-gold-800/60 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-              My Everyday Kitchen • Healthy Food Recipes
-            </div>
-
-            <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-bold text-cream-50 leading-[1.12] tracking-tight">
-              Delicious Food Recipe Ideas for Your Everyday Kitchen
-            </h1>
-
-            <p className="text-stone-200 text-sm sm:text-base lg:text-lg leading-relaxed max-w-2xl font-normal">
-              Explore authentic home recipes, oil-based traditional sweets, crispy street food favorites, and healthy South & North Indian culinary classics made with honest ingredients.
-            </p>
-
-            {/* Quick Action Buttons */}
-            <div className="pt-2 flex flex-wrap items-center gap-3">
-              <Link
-                href="/about"
-                className="bg-gold-500 hover:bg-gold-400 text-forest-950 font-bold text-xs sm:text-sm px-6 py-3 rounded-full transition-all shadow-md flex items-center gap-2"
-              >
-                <Info className="w-4 h-4" /> About Our Kitchen
-              </Link>
-              <Link
-                href="/sweet-recipes"
-                className="bg-forest-900/90 hover:bg-forest-800 text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-full border border-forest-700 hover:border-gold-500 transition-all flex items-center gap-2"
-              >
-                <Candy className="w-4 h-4 text-gold-400" /> Oil-Based Sweets
-              </Link>
-              <Link
-                href="/products"
-                className="text-stone-300 hover:text-white text-xs sm:text-sm font-semibold px-4 py-3 rounded-full border border-stone-700 hover:border-stone-500 transition-colors flex items-center gap-1.5"
-              >
-                <ShieldCheck className="w-4 h-4 text-gold-400" /> A.S. Brand Pantry
-              </Link>
-            </div>
-
-            {/* 8 Category Discovery Pills */}
-            <div className="pt-4 border-t border-forest-800/80">
-              <div className="text-[10px] uppercase font-bold text-stone-400 tracking-wider mb-2.5">
-                Explore Recipe Categories:
-              </div>
-              <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                {[
-                  { name: 'Vegetarian Recipes', slug: 'vegetarian-recipes' },
-                  { name: 'Sweet Recipes (Oils)', slug: 'sweet-recipes' },
-                  { name: 'Non-Vegetarian', slug: 'non-vegetarian-recipes' },
-                  { name: 'Festival Recipes', slug: 'festival-recipes' },
-                  { name: 'South Indian', slug: 'south-indian-recipes' },
-                  { name: 'North Indian', slug: 'north-indian-recipes' },
-                  { name: 'Breakfast Recipes', slug: 'breakfast-recipes' },
-                  { name: 'Street Food', slug: 'street-food-recipes' },
-                ].map((cat) => (
-                  <Link
-                    key={cat.slug}
-                    href={`/${cat.slug}`}
-                    className="text-xs bg-forest-900/80 hover:bg-gold-500 hover:text-forest-950 text-stone-200 px-3 py-1.5 rounded-lg border border-forest-800 transition-colors font-medium whitespace-nowrap"
-                  >
-                    {cat.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        <HeroPosterCarousel />
       </section>
 
-      {/* 2. Opening Section: Official A.S. Brand Product Banners & Oil Science */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <ProductBannerShowcase />
-      </div>
-
-      {/* 3. Featured Recipe & Trending Stories */}
+      {/* 2. Featured Recipe & Trending Stories (Immediately following Hero) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           {/* Main Lead Story */}

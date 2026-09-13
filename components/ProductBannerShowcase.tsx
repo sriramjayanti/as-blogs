@@ -134,17 +134,6 @@ export default function ProductBannerShowcase() {
             className="bg-white rounded-2xl p-5 border border-cream-200 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between group"
           >
             <div>
-              {/* Product Header Pill & Image */}
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <span className="bg-gold-500/20 text-forest-950 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md border border-gold-500/30">
-                  {prod.badge}
-                </span>
-                <span className="text-[11px] font-semibold text-stone-500 flex items-center gap-1">
-                  <Flame className="w-3 h-3 text-amber-600" />
-                  {prod.smokePoint}
-                </span>
-              </div>
-
               {/* Product Image */}
               <div className="relative h-44 w-full rounded-xl bg-cream-50/80 border border-cream-200/80 overflow-hidden mb-4 flex items-center justify-center p-2 group-hover:scale-[1.02] transition-transform">
                 <Image
