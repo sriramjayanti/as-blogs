@@ -197,9 +197,6 @@ export default function Footer() {
             <Link href="/sitemap.xml" className="hover:text-stone-300 transition-colors">
               XML Sitemap
             </Link>
-            <Link href="/admin" className="hover:text-gold-400 transition-colors">
-              Editorial CMS
-            </Link>
           </div>
         </div>
       </div>

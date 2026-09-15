@@ -103,10 +103,6 @@ export default function Header() {
               <ShieldCheck className="w-3.5 h-3.5" />
               <span className="hidden xs:inline">Verified</span> A.S. Brand
             </Link>
-            <span className="text-forest-800">|</span>
-            <Link href="/admin" className="text-stone-400 hover:text-stone-200 transition-colors">
-              Admin
-            </Link>
           </div>
         </div>
       </div>
