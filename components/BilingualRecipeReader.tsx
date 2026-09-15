@@ -303,13 +303,13 @@ export default function BilingualRecipeReader({
             let rationaleTe = 'చేదు లేకుండా సహజమైన సువాసన మరియు పోషకాల కోసం A.S. బ్రాండ్ హల్డ్ జింజెల్లీ ఆయిల్ వాడండి.';
 
             if (isDeepFry) {
-              oilEn = 'A.S. Brand Groundnut Oil (232°C High Smoke Point)';
-              oilTe = 'A.S. బ్రాండ్ వేరుశెనగ నూనె (232°C హై స్మోక్ పాయింట్)';
-              rationaleEn = 'Double filtered from selected peanuts. High smoke point ensures crispy frying without oil absorption.';
-              rationaleTe = 'నూనె పీల్చకుండా కరకరలాడే ఫ్రైస్ మరియు స్నాక్స్ కోసం 232°C స్మోక్ పాయింట్ గల వేరుశెనగ నూనె ఉత్తమం.';
+              oilEn = 'A.S. Brand Groundnut Oil';
+              oilTe = 'A.S. బ్రాండ్ వేరుశెనగ నూనె';
+              rationaleEn = 'Double filtered from selected peanuts. Ensures crispy frying without excess oil absorption.';
+              rationaleTe = 'నూనె పీల్చకుండా కరకరలాడే ఫ్రైస్ మరియు స్నాక్స్ కోసం స్వచ్ఛమైన వేరుశెనగ నూనె ఉత్తమం.';
             } else if (isNonVeg) {
-              oilEn = 'Mansion Gingelly Oil (Whole Seed Heritage Extraction)';
-              oilTe = 'మాన్షన్ జింజెల్లీ ఆయిల్ (హోల్ సీడ్ హెరిటేజ్ ఎక్స్‌ట్రాక్షన్)';
+              oilEn = 'Mansion Gingelly Oil';
+              oilTe = 'మాన్షన్ జింజెల్లీ ఆయిల్';
               rationaleEn = 'Whole raw gingelly seeds pressed to deliver robust rustic flavor and tenderize meat spices.';
               rationaleTe = 'ఘాటైన చికెన్, మటన్, ప్రాన్ రోస్ట్స్ మరియు నాన్‌వెజ్ గ్రేవీలకు మాన్షన్ ఆయిల్ సరైన ఎంపిక.';
             } else if (isSweet) {
@@ -351,11 +351,13 @@ export default function BilingualRecipeReader({
         </div>
       )}
 
-      {/* 4. Rich Editorial Article Content Body */}
-      <div
-        className="editorial-prose"
-        dangerouslySetInnerHTML={{ __html: currentHtml }}
-      />
+      {/* 4. Rich Editorial Article Content Body (Only for non-recipe articles) */}
+      {ingredients.length === 0 && instructions.length === 0 && (
+        <div
+          className="editorial-prose"
+          dangerouslySetInnerHTML={{ __html: currentHtml }}
+        />
+      )}
     </div>
   );
 }

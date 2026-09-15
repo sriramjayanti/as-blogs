@@ -46,14 +46,14 @@ const BRAND_VIDEOS: VideoItem[] = [
   },
   {
     id: 'vid-2',
-    title: 'High Smoke Point Frying: Master Crispy Snacks with Groundnut Oil',
-    titleTe: 'హై స్మోక్ పాయింట్ ఫ్రైయింగ్: గ్రౌండ్‌నట్ ఆయిల్‌తో క్రిస్పీ స్నాక్స్',
+    title: 'Crispy Snack Frying: Master Delicious Recipes with Groundnut Oil',
+    titleTe: 'రుచికరమైన ఫ్రైయింగ్: గ్రౌండ్‌నట్ ఆయిల్‌తో క్రిస్పీ స్నాక్స్',
     duration: '05:30',
     category: 'Culinary Science',
     thumbnail: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&auto=format&fit=crop&q=80',
     youtubeUrl: 'https://www.youtube.com/@asbrandoils',
-    description: 'Why 232°C (450°F) high smoke point double-filtered peanut oil ensures pakoras, murukkus, and fish fry remain crispy without burning.',
-    descriptionTe: '232°C స్మోక్ పాయింట్ కలిగిన వేరుశెనగ నూనెతో పకోడీలు, మురుకులు నూనె పీల్చకుండా కరకరలాడేలా వేయించుకోవచ్చు.',
+    description: 'Why double-filtered peanut oil ensures pakoras, murukkus, and fish fry remain wonderfully crispy without greasy absorption.',
+    descriptionTe: 'స్వచ్ఛమైన వేరుశెనగ నూనెతో పకోడీలు, మురుకులు నూనె పీల్చకుండా కరకరలాడేలా వేయించుకోవచ్చు.',
     oilUsed: 'A.S. Brand Groundnut Oil',
     oilUsedTe: 'A.S. బ్రాండ్ వేరుశెనగ నూనె',
   },
@@ -106,7 +106,7 @@ export default function BrandVideoShowcase() {
             Watch & Learn: The Science of Cooking with Pure Oils
           </h2>
           <p className="text-stone-300 text-xs sm:text-sm mt-2 max-w-2xl font-normal leading-relaxed">
-            Step inside our culinary masterclass videos from <strong>@asbrandoils</strong>. See how smoke points, whole-seed pressing, and heirloom spices combine to create unforgettable dishes.
+            Step inside our culinary masterclass videos from <strong>@asbrandoils</strong>. See how pure cold-pressing, whole-seed extraction, and heirloom spices combine to create unforgettable dishes.
           </p>
         </div>
 

@@ -44,9 +44,9 @@ const PRODUCTS: ProductItem[] = [
   {
     name: 'A.S. Brand Groundnut Oil',
     nameTe: 'A.S. బ్రాండ్ గ్రౌండ్‌నట్ ఆయిల్ (వేరుశెనగ నూనె)',
-    tagline: 'Double filtered from handpicked peanuts. 232°C high smoke point.',
+    tagline: 'Double filtered from handpicked peanuts for crispy, non-sticky cooking.',
     badge: 'King of Frying',
-    smokePoint: '232°C / 450°F (High Smoke Point)',
+    smokePoint: 'High Heat Frying',
     bestFor: 'Deep Frying Pakodas, Vada, Murukku, Chicken 65, Paneer Tikka & Parotta',
     image: 'https://asbrandoils.com/cdn/shop/files/Groundnut_oil_01_720x.png?v=1721480148',
     buyUrl: 'https://asbrandoils.com/products/a-s-brand-groundnut-oil-1-liter-pouch',
@@ -61,7 +61,7 @@ const PRODUCTS: ProductItem[] = [
     nameTe: 'మాన్షన్ జింజెల్లీ ఆయిల్ (Mansion Brand)',
     tagline: 'Whole raw gingelly seeds pressed for robust heritage flavor.',
     badge: 'Heritage Non-Veg',
-    smokePoint: '175°C – 205°C',
+    smokePoint: 'Heritage Roasts',
     bestFor: 'Chettinad Pepper Chicken, Spicy Mutton Chops, Prawn Fry & Idli Podi',
     image: 'https://asbrandoils.com/cdn/shop/files/Mansion_oil_720x.png?v=1721477339',
     buyUrl: 'https://asbrandoils.com/products/mansion-gingelly-oil-1-liter-pouch',
@@ -109,13 +109,13 @@ export default function ProductBannerShowcase() {
         <div>
           <div className="inline-flex items-center gap-2 bg-forest-900 text-gold-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-2">
             <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-            Official A.S. Brand Pantry & Oil Science
+            Official A.S. Brand Pantry & Heritage Collection
           </div>
           <h2 className="font-serif text-2xl sm:text-3xl font-bold text-stone-900">
-            Select the Right Oil for Your Cooking Temperature & Smoke Point
+            Select the Right Oil for Your Kitchen Delicacies
           </h2>
           <p className="text-xs sm:text-sm text-stone-600 mt-1 max-w-2xl font-normal">
-            Every dish requires a specific oil to unlock its authentic flavor and maintain health without overheating.
+            Every dish pairs best with a specific unadulterated oil to unlock its authentic aroma and traditional taste.
           </p>
         </div>
 

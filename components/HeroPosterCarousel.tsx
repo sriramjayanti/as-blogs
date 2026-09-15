@@ -52,10 +52,10 @@ const SLIDES: Slide[] = [
   },
   {
     image: 'https://asbrandoils.com/cdn/shop/files/Groundnut_1_1600x.jpg',
-    badge: '232°C High Smoke Point • Double Filtered Purity',
+    badge: 'Crispy Frying Secret • Double Filtered Peanut Oil',
     badgeIcon: 'ShieldCheck',
     title: 'Crispy Frying & Street Food with A.S. Brand Groundnut Oil',
-    subtitle: 'Double filtered from handpicked peanuts. High smoke point ensures golden, crispy pakodas, murukkus, and fish fry without greasy oil absorption.',
+    subtitle: 'Double filtered from handpicked peanuts. Ensures golden, crispy pakodas, murukkus, and fish fry without greasy oil absorption.',
     primaryBtnText: 'Street Food Recipes',
     primaryBtnLink: '/street-food-recipes',
     secondaryBtnText: 'Groundnut Oil Guide',
