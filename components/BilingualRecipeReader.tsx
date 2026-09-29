@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+import { useSearchParams, usePathname } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
 import {
   Globe,
   Clock,
@@ -13,8 +15,10 @@ import {
   ShoppingBag,
   ArrowUpRight,
   Flame,
+  Calendar,
   BookOpen,
 } from 'lucide-react';
+import { formatDate } from '@/lib/utils';
 
 interface RecipeData {
   title?: string;
@@ -38,6 +42,11 @@ interface BilingualRecipeReaderProps {
     recipeJsonTe?: string | null;
     slug: string;
     readingTime: number;
+    publishedAt: Date | string;
+    featuredImage: string;
+    imageAlt?: string | null;
+    isSponsored?: boolean;
+    sponsoredBrand?: string | null;
     category: {
       name: string;
       slug: string;
@@ -45,21 +54,25 @@ interface BilingualRecipeReaderProps {
   };
   processedHtmlEn: string;
   processedHtmlTe: string;
+  initialLang?: 'en' | 'te';
 }
 
 export default function BilingualRecipeReader({
   article,
   processedHtmlEn,
   processedHtmlTe,
+  initialLang = 'en',
 }: BilingualRecipeReaderProps) {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const pathname = usePathname();
 
   // Language state: 'en' or 'te'
-  const initialLang = searchParams?.get('lang') === 'te' ? 'te' : 'en';
-  const [lang, setLang] = useState<'en' | 'te'>(initialLang);
+  const paramLang = searchParams?.get('lang');
+  const [lang, setLang] = useState<'en' | 'te'>(
+    paramLang === 'te' ? 'te' : initialLang === 'te' ? 'te' : 'en'
+  );
   const [checkedIngredients, setCheckedIngredients] = useState<Record<number, boolean>>({});
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const urlLang = searchParams?.get('lang');
@@ -69,16 +82,27 @@ export default function BilingualRecipeReader({
   }, [searchParams]);
 
   const handleLanguageChange = (newLang: 'en' | 'te') => {
+    if (newLang === lang) return;
+    setIsTransitioning(true);
     setLang(newLang);
     setCheckedIngredients({});
-    const params = new URLSearchParams(searchParams?.toString() || '');
-    if (newLang === 'te') {
-      params.set('lang', 'te');
-    } else {
-      params.delete('lang');
+
+    // Smooth URL synchronization without full page reload
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (newLang === 'te') {
+        params.set('lang', 'te');
+      } else {
+        params.delete('lang');
+      }
+      const queryString = params.toString();
+      const newUrl = `${window.location.pathname}${queryString ? `?${queryString}` : ''}`;
+      window.history.replaceState(null, '', newUrl);
     }
-    const queryString = params.toString();
-    router.replace(`${pathname}${queryString ? `?${queryString}` : ''}`, { scroll: false });
+
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 200);
   };
 
   // Parse Recipe JSONs
@@ -91,18 +115,33 @@ export default function BilingualRecipeReader({
     if (article.recipeJsonTe) recipeTe = JSON.parse(article.recipeJsonTe);
   } catch {}
 
-  const isTe = lang === 'te' && Boolean(article.titleTe);
+  const isTe = lang === 'te';
 
-  const currentTitle = isTe ? article.titleTe || article.title : article.title;
-  const currentExcerpt = isTe ? article.excerptTe || article.excerpt : article.excerpt;
-  const currentRecipe = isTe ? recipeTe : recipeEn;
-  const currentHtml = isTe ? processedHtmlTe || article.contentTe || processedHtmlEn : processedHtmlEn;
+  // Dynamic Titles and Excerpts with graceful fallbacks
+  const currentTitle = isTe
+    ? article.titleTe || article.title
+    : article.title;
+  const currentExcerpt = isTe
+    ? article.excerptTe || article.excerpt
+    : article.excerpt;
+  const currentRecipe = isTe
+    ? (recipeTe.ingredients && recipeTe.ingredients.length > 0 ? recipeTe : recipeEn)
+    : recipeEn;
+  const currentHtml = isTe
+    ? processedHtmlTe || article.contentTe || processedHtmlEn
+    : processedHtmlEn;
 
   const ingredients = currentRecipe.ingredients || recipeEn.ingredients || [];
   const instructions = currentRecipe.instructions || recipeEn.instructions || [];
-  const prepTime = isTe ? recipeTe.prepTime || '20 నిమిషాలు' : recipeEn.prepTime || '20 mins';
-  const cookTime = isTe ? recipeTe.cookTime || '25 నిమిషాలు' : recipeEn.cookTime || '25 mins';
-  const servings = isTe ? recipeTe.servings || '4 వ్యక్తులకు' : recipeEn.servings || '4 Servings';
+  const prepTime = isTe
+    ? recipeTe.prepTime || '20 నిమిషాలు'
+    : recipeEn.prepTime || '20 mins';
+  const cookTime = isTe
+    ? recipeTe.cookTime || '25 నిమిషాలు'
+    : recipeEn.cookTime || '25 mins';
+  const servings = isTe
+    ? recipeTe.servings || '4 వ్యక్తులకు'
+    : recipeEn.servings || '4 Servings';
 
   const toggleIngredient = (idx: number) => {
     setCheckedIngredients((prev) => ({
@@ -116,54 +155,115 @@ export default function BilingualRecipeReader({
   };
 
   return (
-    <div className="space-y-8">
-      {/* 1. Sleek Language Toggle Switcher */}
-      <div className="bg-white rounded-2xl p-4 sm:p-5 border-2 border-forest-900/15 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3 text-stone-800">
-          <div className="w-10 h-10 rounded-xl bg-forest-100 flex items-center justify-center text-forest-900 shrink-0">
-            <Globe className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="text-xs font-bold uppercase tracking-wider text-forest-800">
-              Language Options / భాష ఎంపిక
+    <div className="space-y-6 sm:space-y-8">
+      {/* 1. Header Block (H1, Excerpt, Language Switcher, Meta Strip) */}
+      <div className="bg-cream-100/70 border-b border-cream-200 py-6 sm:py-8 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 -mt-6 sm:-mt-8 mb-6 sm:mb-8">
+        <div className="max-w-4xl mx-auto space-y-4">
+          {/* Top Bar: Category Pill & Language Switcher */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2">
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/${article.category.slug}`}
+                className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-forest-900 bg-forest-200/80 hover:bg-forest-300 px-3 py-1 rounded-full transition-colors"
+              >
+                {article.category.name}
+              </Link>
+              {article.isSponsored && (
+                <span className="bg-gold-500 text-forest-950 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full">
+                  Sponsored by {article.sponsoredBrand}
+                </span>
+              )}
             </div>
-            <div className="text-xs sm:text-sm font-semibold text-stone-700">
-              {isTe ? 'ప్రస్తుతం తెలుగులో చదువుతున్నారు' : 'Currently reading in English'}
-            </div>
-          </div>
-        </div>
 
-        {/* Toggle Pill Buttons */}
-        <div className="flex items-center bg-cream-200/90 p-1.5 rounded-xl border border-cream-300 w-full sm:w-auto">
-          <button
-            type="button"
-            onClick={() => handleLanguageChange('en')}
-            className={`flex-1 sm:flex-initial px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${
-              lang === 'en'
-                ? 'bg-forest-900 text-white shadow-md'
-                : 'text-stone-700 hover:text-forest-900 hover:bg-cream-100'
+            {/* Language Switcher Button Group */}
+            <div className="inline-flex items-center bg-white p-1 rounded-xl border border-cream-300 shadow-2xs self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={() => handleLanguageChange('en')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  lang === 'en'
+                    ? 'bg-forest-900 text-white shadow-xs'
+                    : 'text-stone-600 hover:text-stone-900 hover:bg-cream-100'
+                }`}
+              >
+                <span>🇬🇧</span>
+                <span>English</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleLanguageChange('te')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  lang === 'te'
+                    ? 'bg-forest-900 text-white shadow-xs'
+                    : 'text-stone-600 hover:text-stone-900 hover:bg-cream-100'
+                }`}
+              >
+                <span>🇮🇳</span>
+                <span>తెలుగు (Telugu)</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Dynamic H1 Title with smooth CSS transition */}
+          <h1
+            className={`font-serif text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-stone-950 leading-[1.2] tracking-tight transition-all duration-300 ${
+              isTransitioning ? 'opacity-40 translate-y-1' : 'opacity-100 translate-y-0'
             }`}
           >
-            <span>🇬🇧</span>
-            <span>English</span>
-          </button>
+            {currentTitle}
+          </h1>
 
-          <button
-            type="button"
-            onClick={() => handleLanguageChange('te')}
-            className={`flex-1 sm:flex-initial px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 ${
-              lang === 'te'
-                ? 'bg-forest-900 text-white shadow-md'
-                : 'text-stone-700 hover:text-forest-900 hover:bg-cream-100'
+          {/* Dynamic Excerpt with smooth CSS transition */}
+          <p
+            className={`text-sm sm:text-lg text-stone-600 leading-relaxed font-normal transition-all duration-300 ${
+              isTransitioning ? 'opacity-40 translate-y-1' : 'opacity-100 translate-y-0'
             }`}
           >
-            <span>🇮🇳</span>
-            <span>తెలుగు (Telugu)</span>
-          </button>
+            {currentExcerpt}
+          </p>
+
+          {/* Meta Strip */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-cream-200 text-xs text-stone-500">
+            <div className="flex items-center gap-4 text-stone-600 font-medium">
+              <span className="flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5 text-forest-700" />
+                {formatDate(article.publishedAt)}
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-forest-700" />
+                {article.readingTime} {isTe ? 'నిమిషాల సమయం' : 'min read'}
+              </span>
+            </div>
+
+            <div className="text-[11px] font-semibold text-emerald-800 bg-emerald-100/70 px-2.5 py-0.5 rounded-full border border-emerald-300/60">
+              {isTe ? 'తెలుగు వెర్షన్ అందుబాటులో ఉంది' : 'English Edition'}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* 2. Quick Recipe Highlights & Metrics Bar */}
+      {/* 2. Featured Hero Image */}
+      <figure className="mb-6 sm:mb-8">
+        <div className="relative h-60 xs:h-72 sm:h-96 lg:h-[420px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-cream-200 bg-stone-100">
+          <Image
+            src={article.featuredImage}
+            alt={article.imageAlt || currentTitle}
+            fill
+            priority
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 800px"
+          />
+        </div>
+        {article.imageAlt && (
+          <figcaption className="mt-2.5 text-center text-xs text-stone-500 font-medium italic">
+            {article.imageAlt}
+          </figcaption>
+        )}
+      </figure>
+
+      {/* 3. Quick Recipe Highlights & Metrics Bar */}
       <div className="bg-cream-50/90 rounded-2xl p-4 sm:p-5 border border-cream-200 shadow-2xs space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-forest-800 bg-forest-200/60 px-3 py-1 rounded-full">
@@ -171,7 +271,7 @@ export default function BilingualRecipeReader({
             {isTe ? 'సాంప్రదాయ వంటకం సూచనలు' : 'Culinary Masterclass Guide'}
           </div>
           <span className="text-xs text-stone-500 font-medium">
-            {isTe ? 'తెలుగు వెర్షన్' : 'English Edition'}
+            {isTe ? 'తెలుగు వివరణ' : 'Authentic Home Recipe'}
           </span>
         </div>
 
@@ -203,9 +303,13 @@ export default function BilingualRecipeReader({
         </div>
       </div>
 
-      {/* 3. Interactive Recipe Card (Ingredients + Step-by-Step Instructions) */}
+      {/* 4. Interactive Recipe Card (Ingredients + Step-by-Step Instructions) */}
       {(ingredients.length > 0 || instructions.length > 0) && (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-forest-900/20 shadow-md space-y-8">
+        <div
+          className={`bg-white rounded-3xl p-6 sm:p-8 border-2 border-forest-900/20 shadow-md space-y-8 transition-all duration-300 ${
+            isTransitioning ? 'opacity-40' : 'opacity-100'
+          }`}
+        >
           {/* Card Top Strip */}
           <div className="flex items-center justify-between pb-5 border-b border-cream-200 flex-wrap gap-3">
             <div>
@@ -221,9 +325,9 @@ export default function BilingualRecipeReader({
             <button
               type="button"
               onClick={handlePrint}
-              className="inline-flex items-center gap-1.5 text-xs font-bold bg-cream-100 hover:bg-cream-200 text-forest-950 px-3.5 py-2 rounded-xl border border-cream-300 transition-colors shadow-2xs cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-600 hover:text-forest-900 bg-cream-100 hover:bg-cream-200 px-3.5 py-2 rounded-xl transition-colors cursor-pointer border border-cream-200"
             >
-              <Printer className="w-4 h-4 text-forest-700" />
+              <Printer className="w-3.5 h-3.5" />
               <span>{isTe ? 'ప్రింట్ చేయండి' : 'Print Recipe'}</span>
             </button>
           </div>
@@ -233,11 +337,12 @@ export default function BilingualRecipeReader({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h4 className="font-serif text-lg font-bold text-stone-900 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-forest-800" />
+                  <BookOpen className="w-4 h-4 text-forest-800" />
                   {isTe ? 'కావలసిన పదార్థాలు (Ingredients)' : 'Ingredients Checklist'}
                 </h4>
                 <span className="text-xs text-stone-400 font-medium">
-                  {isTe ? 'టిక్ చేయండి' : 'Click to check off'}
+                  {Object.values(checkedIngredients).filter(Boolean).length}/{ingredients.length}{' '}
+                  {isTe ? 'పూర్తయ్యాయి' : 'checked'}
                 </span>
               </div>
 
@@ -351,10 +456,12 @@ export default function BilingualRecipeReader({
         </div>
       )}
 
-      {/* 4. Rich Editorial Article Content Body (Only for non-recipe articles) */}
-      {ingredients.length === 0 && instructions.length === 0 && (
+      {/* 5. Rich Editorial Article Content Body (Introduction & Cooking Notes) */}
+      {currentHtml && (
         <div
-          className="editorial-prose"
+          className={`editorial-prose bg-white rounded-3xl p-6 sm:p-8 border border-cream-200 shadow-xs transition-all duration-300 ${
+            isTransitioning ? 'opacity-40' : 'opacity-100'
+          }`}
           dangerouslySetInnerHTML={{ __html: currentHtml }}
         />
       )}

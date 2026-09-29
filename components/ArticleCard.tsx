@@ -83,19 +83,13 @@ export default function ArticleCard({ article, variant = 'standard' }: ArticleCa
           </div>
 
           <div className="flex items-center justify-between pt-6 border-t border-cream-200">
-            <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10 rounded-full overflow-hidden border border-cream-300">
-                <Image
-                  src={article.author.avatar}
-                  alt={article.author.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-stone-900">{article.author.name}</div>
-                <div className="text-[11px] text-stone-500">Editorial Staff</div>
-              </div>
+            <div className="flex items-center gap-3 text-xs text-stone-500 font-medium">
+              <span className="flex items-center gap-1 text-forest-800">
+                <Clock className="w-3.5 h-3.5" />
+                {article.readingTime} min read
+              </span>
+              <span>•</span>
+              <span>{formatDate(article.publishedAt)}</span>
             </div>
 
             <Link
@@ -166,7 +160,7 @@ export default function ArticleCard({ article, variant = 'standard' }: ArticleCa
             </p>
           </div>
           <div className="mt-4 flex items-center justify-between text-xs text-stone-500 pt-3 border-t border-cream-100">
-            <span>By {article.author.name}</span>
+            <span>{formatDate(article.publishedAt)}</span>
             <span className="font-semibold text-forest-900 group-hover:text-gold-600 flex items-center gap-1">
               Read Story <ArrowUpRight className="w-3.5 h-3.5" />
             </span>
@@ -225,17 +219,7 @@ export default function ArticleCard({ article, variant = 'standard' }: ArticleCa
         </div>
 
         <div className="flex items-center justify-between pt-4 border-t border-cream-100">
-          <div className="flex items-center gap-2.5">
-            <div className="relative w-7 h-7 rounded-full overflow-hidden border border-cream-200">
-              <Image
-                src={article.author.avatar}
-                alt={article.author.name}
-                fill
-                className="object-cover"
-              />
-            </div>
-            <span className="text-xs font-semibold text-stone-800">{article.author.name}</span>
-          </div>
+          <span className="text-xs text-stone-500 font-medium">{formatDate(article.publishedAt)}</span>
 
           <Link
             href={articleUrl}

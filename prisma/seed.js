@@ -360,7 +360,7 @@ async function main() {
         <p>5. Pour in the ground coconut-cashew paste and steamed vegetables along with 1 cup of warm water. Simmer on medium-low flame for 7-8 minutes.</p>
         <p>6. Garnish with fresh chopped coriander and serve warm with dosas or parottas.</p>
       `,
-      featuredImage: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=1200&auto=format&fit=crop&q=80',
+      featuredImage: '/recipes/restaurant-style-vegetable-kurma-recipe.jpg',
       imageAlt: 'Rich vegetable kurma served in traditional bowl with fresh herbs',
       readingTime: 6,
       status: 'PUBLISHED',

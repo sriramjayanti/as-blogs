@@ -12,7 +12,22 @@ import {
   Loader2,
   Search,
   Globe,
+  ImageIcon,
 } from 'lucide-react';
+import Image from 'next/image';
+
+const COMMON_IMAGE_PRESETS = [
+  { name: 'Fish Fry', url: '/recipes/crispy-spicy-fish-fry-recipe.jpg' },
+  { name: 'Veg Kurma', url: '/recipes/restaurant-style-vegetable-kurma-recipe.jpg' },
+  { name: 'Paneer Kurma', url: '/recipes/rich-creamy-paneer-kurma-recipe.jpg' },
+  { name: 'Coconut Halwa', url: '/recipes/traditional-coconut-halwa-sweet-recipe.jpg' },
+  { name: 'Chicken 65', url: '/recipes/crispy-restaurant-style-chicken-65-recipe.jpg' },
+  { name: 'Toor Dhal Idli', url: '/recipes/protein-rich-toor-dhal-idli-recipe.jpg' },
+  { name: 'Potato Fry', url: '/recipes/crispy-potato-fry-aloo-roast-recipe.jpg' },
+  { name: 'Potato Bonda', url: '/recipes/crispy-golden-potato-bonda-festival-snack-recipe.jpg' },
+  { name: 'Masala Dosa', url: '/recipes/crispy-plain-sada-dosa-recipe.jpg' },
+  { name: 'Carrot Halwa', url: '/recipes/rich-gajar-ka-halwa-carrot-sweet-recipe.jpg' },
+];
 
 export default function NewArticlePage() {
   const router = useRouter();
@@ -205,40 +220,21 @@ export default function NewArticlePage() {
               </div>
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-1.5">
-                  Category *
-                </label>
-                <select
-                  value={categoryId}
-                  onChange={(e) => setCategoryId(e.target.value)}
-                  className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2.5 text-xs text-stone-100 focus:outline-none focus:border-gold-500"
-                >
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-1.5">
-                  Author *
-                </label>
-                <select
-                  value={authorId}
-                  onChange={(e) => setAuthorId(e.target.value)}
-                  className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2.5 text-xs text-stone-100 focus:outline-none focus:border-gold-500"
-                >
-                  {authors.map((a) => (
-                    <option key={a.id} value={a.id}>
-                      {a.name} ({a.roleTitle})
-                    </option>
-                  ))}
-                </select>
-              </div>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-1.5">
+                Category *
+              </label>
+              <select
+                value={categoryId}
+                onChange={(e) => setCategoryId(e.target.value)}
+                className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2.5 text-xs text-stone-100 focus:outline-none focus:border-gold-500"
+              >
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
@@ -268,30 +264,83 @@ export default function NewArticlePage() {
               />
             </div>
 
-            <div className="grid sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-1.5">
-                  Featured Image URL
-                </label>
-                <input
-                  type="text"
-                  value={featuredImage}
-                  onChange={(e) => setFeaturedImage(e.target.value)}
-                  className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2.5 text-xs text-stone-100 focus:outline-none focus:border-gold-500 font-mono"
-                />
+            {/* Featured Image & Visual Asset Section */}
+            <div className="bg-stone-900/60 border border-stone-800 rounded-2xl p-5 space-y-4">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-gold-400" />
+                <h4 className="font-serif text-sm font-bold text-stone-100">
+                  Featured Image & Photo Selection
+                </h4>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-1.5">
-                  Image Alt Text (for SEO & Accessibility)
-                </label>
-                <input
-                  type="text"
-                  value={imageAlt}
-                  onChange={(e) => setImageAlt(e.target.value)}
-                  placeholder="e.g. Traditional cold-pressed oil in brass vessel"
-                  className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2.5 text-xs text-stone-100 focus:outline-none focus:border-gold-500"
-                />
+              <div className="grid sm:grid-cols-12 gap-4 items-start">
+                <div className="sm:col-span-5">
+                  <div className="relative aspect-video rounded-xl overflow-hidden bg-stone-900 border border-stone-800 shadow-sm">
+                    {featuredImage ? (
+                      <Image
+                        src={featuredImage}
+                        alt={imageAlt || title || 'Featured'}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-stone-600 text-xs">
+                        No Image
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="sm:col-span-7 space-y-3">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-1">
+                      Featured Image URL *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={featuredImage}
+                      onChange={(e) => setFeaturedImage(e.target.value)}
+                      placeholder="/recipes/crispy-spicy-fish-fry-recipe.jpg"
+                      className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2 text-xs text-stone-100 focus:outline-none focus:border-gold-500 font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-1">
+                      Image Alt Text (SEO)
+                    </label>
+                    <input
+                      type="text"
+                      value={imageAlt}
+                      onChange={(e) => setImageAlt(e.target.value)}
+                      placeholder="e.g. Crisp golden fish fry garnished with onions"
+                      className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2 text-xs text-stone-100 focus:outline-none focus:border-gold-500"
+                    />
+                  </div>
+
+                  <div>
+                    <span className="block text-[10px] font-bold text-stone-400 mb-1 uppercase tracking-wider">
+                      Quick Presets:
+                    </span>
+                    <div className="flex flex-wrap gap-1 max-h-24 overflow-y-auto">
+                      {COMMON_IMAGE_PRESETS.map((p) => (
+                        <button
+                          type="button"
+                          key={p.name}
+                          onClick={() => setFeaturedImage(p.url)}
+                          className={`text-[10px] px-2 py-0.5 rounded border transition-colors ${
+                            featuredImage === p.url
+                              ? 'bg-gold-500 text-stone-950 font-bold border-gold-400'
+                              : 'bg-stone-900 text-stone-300 border-stone-800 hover:bg-stone-800'
+                          }`}
+                        >
+                          {p.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

@@ -17,12 +17,15 @@ import ArticleSidebarPromo from '@/components/ArticleSidebarPromo';
 import FaqAccordion from '@/components/FaqAccordion';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
 import BilingualRecipeReader from '@/components/BilingualRecipeReader';
-import { Clock, Calendar, ChevronRight, Share2, Sparkles, User, Globe } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 interface ArticlePageProps {
   params: {
     category: string;
     slug: string;
+  };
+  searchParams?: {
+    lang?: string;
   };
 }
 
@@ -55,7 +58,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       type: 'article',
       publishedTime: article.publishedAt.toISOString(),
       modifiedTime: article.updatedAt.toISOString(),
-      authors: [article.author.name],
+      authors: ['A.S. Heritage Living'],
       images: [
         {
           url: article.ogImage || article.featuredImage,
@@ -74,7 +77,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   };
 }
 
-export default async function ArticlePage({ params }: ArticlePageProps) {
+export default async function ArticlePage({ params, searchParams }: ArticlePageProps) {
   const article = await prisma.article.findUnique({
     where: { slug: params.slug },
     include: {
@@ -169,7 +172,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
     imageUrl: article.featuredImage,
     publishedTime: article.publishedAt.toISOString(),
     modifiedTime: article.updatedAt.toISOString(),
-    authorName: article.author.name,
+    authorName: 'A.S. Heritage Living',
     categoryName: article.category.name,
   });
 
@@ -202,11 +205,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         />
       )}
 
-      {/* Header & Breadcrumb Container */}
-      <div className="bg-cream-100/60 border-b border-cream-200 py-6 sm:py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          {/* Breadcrumbs */}
-          <nav className="flex items-center gap-2 text-xs text-stone-500 font-medium mb-4 flex-wrap">
+      {/* Breadcrumb Navigation */}
+      <div className="bg-cream-100/50 border-b border-cream-200 py-3 sm:py-3.5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <nav className="flex items-center gap-2 text-xs text-stone-500 font-medium flex-wrap">
             <Link href="/" className="hover:text-forest-900 transition-colors">
               Home
             </Link>
@@ -222,97 +224,20 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               {article.title}
             </span>
           </nav>
-
-          {/* Category Pill */}
-          <div className="flex items-center gap-2 mb-3">
-            <Link
-              href={`/${article.category.slug}`}
-              className="inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-forest-900 bg-forest-200/70 hover:bg-forest-300 px-3 py-1 rounded-full transition-colors"
-            >
-              {article.category.name}
-            </Link>
-            {article.isSponsored && (
-              <span className="bg-gold-500 text-forest-950 text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full">
-                Sponsored by {article.sponsoredBrand}
-              </span>
-            )}
-          </div>
-
-          {/* H1 Main Title */}
-          <h1 className="font-serif text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-bold text-stone-950 leading-[1.2] tracking-tight mb-4">
-            {article.title}
-          </h1>
-
-          {/* Excerpt */}
-          <p className="text-sm sm:text-lg text-stone-600 leading-relaxed mb-6 font-normal">
-            {article.excerpt}
-          </p>
-
-          {/* Meta & Author Strip */}
-          <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-cream-200 text-xs text-stone-500">
-            <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10 rounded-full overflow-hidden border border-cream-300">
-                <Image
-                  src={article.author.avatar}
-                  alt={article.author.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div>
-                <div className="font-bold text-stone-900 text-sm">
-                  {article.author.name}
-                </div>
-                <div className="text-[11px] text-stone-500">
-                  {article.author.roleTitle}
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4 text-stone-500">
-              <span className="flex items-center gap-1">
-                <Calendar className="w-3.5 h-3.5 text-forest-700" />
-                {formatDate(article.publishedAt)}
-              </span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5 text-forest-700" />
-                {article.readingTime} min read
-              </span>
-            </div>
-          </div>
         </div>
       </div>
 
       {/* Main Content Layout */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 sm:mt-8">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-10">
           {/* Main Article Body */}
           <div className="lg:col-span-8 max-w-3xl">
-            {/* Featured Hero Image */}
-            <figure className="mb-6 sm:mb-8">
-              <div className="relative h-60 xs:h-72 sm:h-96 lg:h-[420px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-sm border border-cream-200 bg-stone-100">
-                <Image
-                  src={article.featuredImage}
-                  alt={article.imageAlt || article.title}
-                  fill
-                  priority
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 800px"
-                />
-              </div>
-              {article.imageAlt && (
-                <figcaption className="mt-2.5 text-center text-xs text-stone-500 font-medium italic">
-                  {article.imageAlt}
-                </figcaption>
-              )}
-            </figure>
-
             {/* Bilingual Interactive Recipe Reader (English & Telugu) */}
             <BilingualRecipeReader
               article={article}
               processedHtmlEn={processedEn.html}
               processedHtmlTe={processedTe.html}
+              initialLang={searchParams?.lang === 'te' ? 'te' : 'en'}
             />
 
             {/* Inline Product Placement (if triggered by context rules) */}
@@ -353,28 +278,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               </div>
             )}
 
-            {/* Author Biography Box */}
-            <div className="my-10 bg-white rounded-2xl p-6 border border-cream-200 shadow-sm flex items-start gap-4">
-              <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 border border-cream-300">
-                <Image
-                  src={article.author.avatar}
-                  alt={article.author.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="space-y-1">
-                <h4 className="font-serif font-bold text-base text-stone-900">
-                  About {article.author.name}
-                </h4>
-                <div className="text-xs text-forest-800 font-medium">
-                  {article.author.roleTitle}
-                </div>
-                <p className="text-xs text-stone-600 leading-relaxed pt-1">
-                  {article.author.bio}
-                </p>
-              </div>
-            </div>
+
           </div>
 
           {/* Desktop Sticky Sidebar */}
