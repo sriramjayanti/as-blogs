@@ -21,6 +21,7 @@ import {
   Layers,
   BookOpen,
 } from 'lucide-react';
+import ImageUploadPicker from '@/components/admin/ImageUploadPicker';
 
 const COMMON_IMAGE_PRESETS = [
   { name: 'Fish Fry', url: '/recipes/crispy-spicy-fish-fry-recipe.jpg' },
@@ -255,99 +256,14 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
       <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8 pb-20 lg:pb-0">
         {/* Main Content Column */}
         <div className="lg:col-span-8 space-y-6">
-          {/* 1. Featured Image & Visual Asset Card (Prominent & Easy to Edit) */}
-          <div className="bg-stone-950/80 border-2 border-forest-800/60 rounded-3xl p-6 sm:p-8 space-y-5 shadow-xl">
-            <div className="flex items-center justify-between pb-3 border-b border-stone-800">
-              <div className="flex items-center gap-2.5">
-                <ImageIcon className="w-5 h-5 text-gold-400" />
-                <h3 className="font-serif text-lg font-bold text-stone-100">
-                  Featured Photo & Visual Asset
-                </h3>
-              </div>
-              <span className="text-[11px] font-mono text-stone-400 bg-stone-900 px-2.5 py-1 rounded-full border border-stone-800">
-                Recipe Hero Image
-              </span>
-            </div>
-
-            {/* Live Visual Preview */}
-            <div className="grid sm:grid-cols-12 gap-5 items-start">
-              <div className="sm:col-span-6">
-                <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-2">
-                  Live Photo Preview
-                </label>
-                <div className="relative aspect-video rounded-2xl overflow-hidden bg-stone-900 border-2 border-stone-800 shadow-md">
-                  {featuredImage ? (
-                    <Image
-                      src={featuredImage}
-                      alt={imageAlt || title || 'Recipe image'}
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-stone-600 text-xs">
-                      <ImageIcon className="w-8 h-8 mb-2" />
-                      <span>No photo URL specified</span>
-                    </div>
-                  )}
-                </div>
-                <p className="text-[11px] text-stone-400 mt-2 font-mono truncate">
-                  Current: {featuredImage || 'None'}
-                </p>
-              </div>
-
-              <div className="sm:col-span-6 space-y-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-1.5">
-                    Image URL (Local Path or Unsplash/CDN) *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={featuredImage}
-                    onChange={(e) => setFeaturedImage(e.target.value)}
-                    placeholder="e.g. /recipes/crispy-spicy-fish-fry-recipe.jpg"
-                    className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2.5 text-xs text-stone-100 focus:outline-none focus:border-gold-500 font-mono shadow-inner"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-stone-300 mb-1.5">
-                    Image Alt Description (SEO & Accessibility)
-                  </label>
-                  <input
-                    type="text"
-                    value={imageAlt}
-                    onChange={(e) => setImageAlt(e.target.value)}
-                    placeholder="e.g. Crispy spicy fish fry served on banana leaf"
-                    className="w-full bg-stone-900 border border-stone-800 rounded-xl px-3.5 py-2.5 text-xs text-stone-100 focus:outline-none focus:border-gold-500"
-                  />
-                </div>
-
-                {/* Quick Presets Picker */}
-                <div>
-                  <span className="block text-[11px] font-bold text-stone-400 mb-1.5 uppercase tracking-wider">
-                    Quick Local Presets:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto pr-1">
-                    {COMMON_IMAGE_PRESETS.map((p) => (
-                      <button
-                        type="button"
-                        key={p.name}
-                        onClick={() => setFeaturedImage(p.url)}
-                        className={`text-[10px] px-2.5 py-1 rounded-lg border transition-all ${
-                          featuredImage === p.url
-                            ? 'bg-gold-500 text-stone-950 font-bold border-gold-400'
-                            : 'bg-stone-900 hover:bg-stone-800 text-stone-300 border-stone-800'
-                        }`}
-                      >
-                        {p.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* 1. Featured Image & Visual Asset Card (Upload, Browse Gallery, or Direct Link) */}
+          <ImageUploadPicker
+            value={featuredImage}
+            onChange={(url) => setFeaturedImage(url)}
+            altValue={imageAlt}
+            onAltChange={(alt) => setImageAlt(alt)}
+            label="Featured Photo & Recipe Image"
+          />
 
           {/* 2. Article Text & Details */}
           <div className="bg-stone-950/70 border border-stone-800 rounded-3xl p-6 sm:p-8 space-y-5">
