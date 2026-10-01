@@ -64,13 +64,13 @@ export default function NewArticlePage() {
     if (title && !seoTitle) {
       setSeoTitle(title);
     }
-  }, [title]);
+  }, [title, slug, seoTitle]);
 
   useEffect(() => {
     if (excerpt && !metaDescription) {
       setMetaDescription(excerpt);
     }
-  }, [excerpt]);
+  }, [excerpt, metaDescription]);
 
   // Load categories and authors on mount
   useEffect(() => {

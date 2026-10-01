@@ -120,9 +120,9 @@ export default function SearchModal({
           ) : query ? (
             <div className="py-12 text-center text-stone-500">
               <BookOpen className="w-10 h-10 mx-auto text-stone-400 mb-2 opacity-60" />
-              <p className="font-medium text-sm">No editorial articles found matching "{query}"</p>
+              <p className="font-medium text-sm">No editorial articles found matching &quot;{query}&quot;</p>
               <p className="text-xs text-stone-400 mt-1">
-                Try searching for keywords like "sesame", "smoke point", "deepam", or "frying".
+                Try searching for keywords like &quot;sesame&quot;, &quot;smoke point&quot;, &quot;deepam&quot;, or &quot;frying&quot;.
               </p>
             </div>
           ) : (

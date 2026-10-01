@@ -1,7 +1,16 @@
 import { NextResponse } from 'next/server';
+import { TOKEN_NAME } from '@/lib/auth';
 
 export async function POST() {
-  const response = NextResponse.json({ success: true });
-  response.cookies.delete('as_admin_auth_token');
+  const response = NextResponse.json({ success: true, message: 'Logged out successfully' });
+
+  response.cookies.set(TOKEN_NAME, '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 0,
+  });
+
   return response;
 }

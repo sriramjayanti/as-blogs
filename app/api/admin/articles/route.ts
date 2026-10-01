@@ -1,15 +1,24 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
-import sanitizeHtml from 'sanitize-html';
+import { sanitizeArticleContent } from '@/lib/sanitize';
 import { calculateReadingTime } from '@/lib/utils';
 
 export async function GET() {
-  const articles = await prisma.article.findMany({
-    include: { category: true, author: true },
-    orderBy: { publishedAt: 'desc' },
-  });
-  return NextResponse.json({ articles });
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const articles = await prisma.article.findMany({
+      include: { category: true, author: true },
+      orderBy: { publishedAt: 'desc' },
+    });
+    return NextResponse.json({ articles });
+  } catch (error: any) {
+    return NextResponse.json({ error: 'Failed to fetch articles' }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
@@ -39,7 +48,10 @@ export async function POST(request: Request) {
     } = data;
 
     if (!title || !slug || !content || !categoryId) {
-      return NextResponse.json({ error: 'Title, slug, content, and category are required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Title, slug, content, and category are required' },
+        { status: 400 }
+      );
     }
 
     let resolvedAuthorId = authorId;
@@ -51,53 +63,37 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Author profile required' }, { status: 400 });
     }
 
-    // Sanitize rich HTML content
-    const sanitizedHtml = sanitizeHtml(content, {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-        'img',
-        'h1',
-        'h2',
-        'h3',
-        'h4',
-        'h5',
-        'h6',
-        'span',
-        'iframe',
-        'video',
-        'aside',
-      ]),
-      allowedAttributes: {
-        ...sanitizeHtml.defaults.allowedAttributes,
-        '*': ['class', 'id', 'style', 'data-*'],
-        a: ['href', 'name', 'target', 'rel', 'title', 'data-*', 'class'],
-        img: ['src', 'srcset', 'alt', 'title', 'width', 'height', 'loading'],
-        iframe: ['src', 'width', 'height', 'allowfullscreen', 'frameborder'],
-      },
-    });
-
+    // Sanitize rich HTML content with strict rules
+    const sanitizedHtml = sanitizeArticleContent(content);
     const readingTime = calculateReadingTime(sanitizedHtml);
+
+    const cleanSlug = slug
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9-]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
 
     const newArticle = await prisma.article.create({
       data: {
-        title,
-        slug: slug.toLowerCase().replace(/[^a-z0-9-]+/g, '-'),
-        excerpt: excerpt || title,
+        title: title.trim(),
+        slug: cleanSlug,
+        excerpt: (excerpt || title).trim(),
         content: sanitizedHtml,
         featuredImage:
           featuredImage ||
-          'https://images.unsplash.com/photo-1596797038530-2c107229654b?w=1200&auto=format&fit=crop&q=80',
-        imageAlt: imageAlt || title,
+          '/recipes/crispy-spicy-fish-fry-recipe.jpg',
+        imageAlt: (imageAlt || title).trim(),
         readingTime,
         status: 'PUBLISHED',
         categoryId,
         authorId: resolvedAuthorId,
-        seoTitle: seoTitle || title,
-        metaDescription: metaDescription || excerpt,
-        canonicalUrl: canonicalUrl || null,
-        focusKeyword: focusKeyword || null,
+        seoTitle: (seoTitle || title).trim(),
+        metaDescription: (metaDescription || excerpt || '').trim(),
+        canonicalUrl: canonicalUrl ? canonicalUrl.trim() : null,
+        focusKeyword: focusKeyword ? focusKeyword.trim() : null,
         isSponsored: Boolean(isSponsored),
         sponsoredBrand: sponsoredBrand || 'A.S. Brand Oils',
-        faqsJson: faqsJson || '[]',
+        faqsJson: typeof faqsJson === 'string' ? faqsJson : JSON.stringify(faqsJson || []),
       },
     });
 

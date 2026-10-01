@@ -1,3 +1,5 @@
+import { escapeHtmlAttribute } from '@/lib/sanitize';
+
 export interface ProductPromoInfo {
   id: string;
   name: string;
@@ -172,10 +174,14 @@ export function processArticleContent(
             articleSlug
           );
 
-          // Replace only the first occurrence in this paragraph
+          // Replace only the first occurrence in this paragraph with escaped attributes
+          const safePromoUrl = escapeHtmlAttribute(promoUrl);
+          const safeProductId = escapeHtmlAttribute(rule.product.id);
+          const safeProductName = escapeHtmlAttribute(rule.product.name);
+
           currentParagraphHtml = currentParagraphHtml.replace(
             kwRegex,
-            `<a href="${promoUrl}" target="_blank" rel="noopener noreferrer" class="as-context-link group inline-flex items-baseline font-medium text-forest-700 dark:text-forest-400 hover:text-gold-600 underline decoration-forest-400/50 hover:decoration-gold-500 transition-colors" data-product-id="${rule.product.id}" data-product-name="${rule.product.name}" title="Discover authentic ${rule.product.name}">$1<span class="inline-block text-[10px] ml-0.5 opacity-60 group-hover:opacity-100">↗</span></a>`
+            `<a href="${safePromoUrl}" target="_blank" rel="noopener noreferrer" class="as-context-link group inline-flex items-baseline font-medium text-forest-700 dark:text-forest-400 hover:text-gold-600 underline decoration-forest-400/50 hover:decoration-gold-500 transition-colors" data-product-id="${safeProductId}" data-product-name="${safeProductName}" title="Discover authentic ${safeProductName}">$1<span class="inline-block text-[10px] ml-0.5 opacity-60 group-hover:opacity-100">↗</span></a>`
           );
 
           injectedLinksCount++;

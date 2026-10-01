@@ -6,6 +6,11 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const product = await prisma.product.findUnique({
       where: { id: params.id },
@@ -46,15 +51,19 @@ export async function PUT(
       orderIndex,
     } = data;
 
+    const cleanSlug = slug
+      ? slug.toLowerCase().trim().replace(/[^a-z0-9-]+/g, '-').replace(/(^-|-$)+/g, '')
+      : undefined;
+
     const updated = await prisma.product.update({
       where: { id: params.id },
       data: {
-        ...(name ? { name } : {}),
-        ...(slug ? { slug: slug.toLowerCase().replace(/[^a-z0-9-]+/g, '-') } : {}),
-        ...(shortDescription !== undefined ? { shortDescription } : {}),
-        ...(fullDescription !== undefined ? { fullDescription } : {}),
-        ...(imageUrl ? { imageUrl } : {}),
-        ...(productUrl ? { productUrl } : {}),
+        ...(name ? { name: name.trim() } : {}),
+        ...(cleanSlug ? { slug: cleanSlug } : {}),
+        ...(shortDescription !== undefined ? { shortDescription: shortDescription.trim() } : {}),
+        ...(fullDescription !== undefined ? { fullDescription: fullDescription.trim() } : {}),
+        ...(imageUrl ? { imageUrl: imageUrl.trim() } : {}),
+        ...(productUrl ? { productUrl: productUrl.trim() } : {}),
         ...(marketplaceLinks !== undefined
           ? {
               marketplaceLinks:
@@ -63,7 +72,7 @@ export async function PUT(
                   : JSON.stringify(marketplaceLinks || []),
             }
           : {}),
-        ...(tags !== undefined ? { tags } : {}),
+        ...(tags !== undefined ? { tags: tags.trim() } : {}),
         ...(isFeatured !== undefined ? { isFeatured: Boolean(isFeatured) } : {}),
         ...(orderIndex !== undefined ? { orderIndex: Number(orderIndex) } : {}),
       },

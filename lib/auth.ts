@@ -1,41 +1,34 @@
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
+import { TOKEN_NAME, verifyToken, AdminPayload } from './jwt';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'as_brand_oils_super_secure_jwt_secret_token_2026';
-const TOKEN_NAME = 'as_admin_auth_token';
+export * from './jwt';
 
-export interface AdminPayload {
-  userId: string;
-  email: string;
-  name: string;
-  role: string;
-}
-
-export function signToken(payload: AdminPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
-}
-
-export function verifyToken(token: string): AdminPayload | null {
+/**
+ * Server-side helper to read and verify admin session from cookies
+ */
+export async function getAdminSession(): Promise<AdminPayload | null> {
   try {
-    return jwt.verify(token, JWT_SECRET) as AdminPayload;
-  } catch (error) {
+    const cookieStore = cookies();
+    const token = cookieStore.get(TOKEN_NAME)?.value;
+    if (!token) return null;
+    return await verifyToken(token);
+  } catch {
     return null;
   }
 }
 
-export async function getAdminSession(): Promise<AdminPayload | null> {
-  const cookieStore = cookies();
-  const token = cookieStore.get(TOKEN_NAME)?.value;
-  if (!token) return null;
-  return verifyToken(token);
-}
-
+/**
+ * Secure password hashing with bcryptjs (work factor 10)
+ */
 export async function hashPassword(plainText: string): Promise<string> {
   const salt = await bcrypt.genSalt(10);
   return bcrypt.hash(plainText, salt);
 }
 
+/**
+ * Constant-time password comparison
+ */
 export async function comparePassword(plainText: string, hash: string): Promise<boolean> {
   return bcrypt.compare(plainText, hash);
 }

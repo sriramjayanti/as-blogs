@@ -1,13 +1,18 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
-import sanitizeHtml from 'sanitize-html';
+import { sanitizeArticleContent } from '@/lib/sanitize';
 import { calculateReadingTime } from '@/lib/utils';
 
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const article = await prisma.article.findUnique({
       where: { id: params.id },
@@ -72,31 +77,8 @@ export async function PUT(
     }
 
     // Sanitize rich HTML content
-    const sanitizeConfig = {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat([
-        'img',
-        'h1',
-        'h2',
-        'h3',
-        'h4',
-        'h5',
-        'h6',
-        'span',
-        'iframe',
-        'video',
-        'aside',
-      ]),
-      allowedAttributes: {
-        ...sanitizeHtml.defaults.allowedAttributes,
-        '*': ['class', 'id', 'style', 'data-*'],
-        a: ['href', 'name', 'target', 'rel', 'title', 'data-*', 'class'],
-        img: ['src', 'srcset', 'alt', 'title', 'width', 'height', 'loading'],
-        iframe: ['src', 'width', 'height', 'allowfullscreen', 'frameborder'],
-      },
-    };
-
-    const sanitizedHtml = sanitizeHtml(content, sanitizeConfig);
-    const sanitizedHtmlTe = contentTe ? sanitizeHtml(contentTe, sanitizeConfig) : null;
+    const sanitizedHtml = sanitizeArticleContent(content);
+    const sanitizedHtmlTe = contentTe ? sanitizeArticleContent(contentTe) : null;
     const readingTime = calculateReadingTime(sanitizedHtml);
 
     // If authorId is not provided, keep existing or fallback
@@ -109,33 +91,39 @@ export async function PUT(
       resolvedAuthorId = existing?.authorId;
     }
 
+    const cleanSlug = slug
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9-]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+
     const updatedArticle = await prisma.article.update({
       where: { id: params.id },
       data: {
-        title,
-        titleTe: titleTe || null,
-        slug: slug.toLowerCase().replace(/[^a-z0-9-]+/g, '-'),
-        excerpt: excerpt || title,
-        excerptTe: excerptTe || null,
+        title: title.trim(),
+        titleTe: titleTe ? titleTe.trim() : null,
+        slug: cleanSlug,
+        excerpt: (excerpt || title).trim(),
+        excerptTe: excerptTe ? excerptTe.trim() : null,
         content: sanitizedHtml,
         contentTe: sanitizedHtmlTe,
         featuredImage:
           featuredImage ||
-          'https://images.unsplash.com/photo-1596797038530-2c107229654b?w=1200&auto=format&fit=crop&q=80',
+          '/recipes/crispy-spicy-fish-fry-recipe.jpg',
         ogImage: featuredImage || null,
-        imageAlt: imageAlt || title,
+        imageAlt: (imageAlt || title).trim(),
         readingTime,
         categoryId,
         ...(resolvedAuthorId ? { authorId: resolvedAuthorId } : {}),
-        seoTitle: seoTitle || title,
-        metaDescription: metaDescription || excerpt,
-        canonicalUrl: canonicalUrl || null,
-        focusKeyword: focusKeyword || null,
+        seoTitle: (seoTitle || title).trim(),
+        metaDescription: (metaDescription || excerpt || '').trim(),
+        canonicalUrl: canonicalUrl ? canonicalUrl.trim() : null,
+        focusKeyword: focusKeyword ? focusKeyword.trim() : null,
         isSponsored: Boolean(isSponsored),
         sponsoredBrand: sponsoredBrand || 'A.S. Brand Oils',
-        faqsJson: faqsJson || '[]',
-        recipeJson: recipeJson || '{}',
-        recipeJsonTe: recipeJsonTe || '{}',
+        faqsJson: typeof faqsJson === 'string' ? faqsJson : JSON.stringify(faqsJson || []),
+        recipeJson: typeof recipeJson === 'string' ? recipeJson : JSON.stringify(recipeJson || {}),
+        recipeJsonTe: typeof recipeJsonTe === 'string' ? recipeJsonTe : JSON.stringify(recipeJsonTe || {}),
       },
     });
 
@@ -144,6 +132,30 @@ export async function PUT(
     console.error('Error updating article:', error);
     return NextResponse.json(
       { error: error.message || 'Failed to update article' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await getAdminSession();
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    await prisma.article.delete({
+      where: { id: params.id },
+    });
+
+    return NextResponse.json({ success: true, message: 'Article deleted successfully' });
+  } catch (error: any) {
+    console.error('Error deleting article:', error);
+    return NextResponse.json(
+      { error: error.message || 'Failed to delete article' },
       { status: 500 }
     );
   }

@@ -24,8 +24,13 @@ yarn-error.log*
 firebase-debug.log*
 .firebase/
 
-
-# local env files
+# Environment files and secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production
+.env.production.local
 .env*.local
 
 # typescript
