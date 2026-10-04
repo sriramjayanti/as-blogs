@@ -3,56 +3,53 @@ import { getAdminSession } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
 
-// Valid image signatures (magic bytes)
-function isValidImageBuffer(buffer: Buffer, ext: string): boolean {
-  if (buffer.length < 12) return false;
+// Robust image type detection from buffer magic bytes
+function detectImageType(buffer: Buffer): { isValid: boolean; mimeType: string; ext: string } {
+  if (!buffer || buffer.length < 12) {
+    return { isValid: false, mimeType: '', ext: '' };
+  }
 
   const hexHeader = buffer.subarray(0, 4).toString('hex').toLowerCase();
 
   // JPEG / JPG: FF D8 FF
-  if (ext === '.jpg' || ext === '.jpeg') {
-    return hexHeader.startsWith('ffd8ff');
+  if (hexHeader.startsWith('ffd8ff')) {
+    return { isValid: true, mimeType: 'image/jpeg', ext: '.jpg' };
   }
 
   // PNG: 89 50 4E 47
-  if (ext === '.png') {
-    return hexHeader === '89504e47';
+  if (hexHeader === '89504e47') {
+    return { isValid: true, mimeType: 'image/png', ext: '.png' };
   }
 
-  // GIF: 47 49 46 38 (GIF8)
-  if (ext === '.gif') {
-    return hexHeader === '47494638';
+  // GIF: 47 49 46 38
+  if (hexHeader === '47494638') {
+    return { isValid: true, mimeType: 'image/gif', ext: '.gif' };
   }
 
-  // WEBP: RIFF....WEBP (52 49 46 46 .... 57 45 42 50)
-  if (ext === '.webp') {
-    const isRiff = buffer.subarray(0, 4).toString('ascii') === 'RIFF';
-    const isWebp = buffer.subarray(8, 12).toString('ascii') === 'WEBP';
-    return isRiff && isWebp;
+  // WEBP: RIFF .... WEBP
+  const isRiff = buffer.subarray(0, 4).toString('ascii') === 'RIFF';
+  const isWebp = buffer.subarray(8, 12).toString('ascii') === 'WEBP';
+  if (isRiff && isWebp) {
+    return { isValid: true, mimeType: 'image/webp', ext: '.webp' };
   }
 
-  // AVIF: ....ftypavif or ....ftypavis
-  if (ext === '.avif') {
-    const ftyp = buffer.subarray(4, 12).toString('ascii');
-    return ftyp.includes('ftyp');
+  // AVIF: ....ftyp
+  const ftyp = buffer.subarray(4, 12).toString('ascii');
+  if (ftyp.includes('ftyp')) {
+    return { isValid: true, mimeType: 'image/avif', ext: '.avif' };
   }
 
-  return false;
+  return { isValid: false, mimeType: '', ext: '' };
 }
 
-const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.avif', '.gif'];
-const ALLOWED_MIME_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-  'image/avif',
-  'image/gif',
-];
-
 export async function POST(request: Request) {
+  // Check admin authorization
   const session = await getAdminSession();
   if (!session) {
-    return NextResponse.json({ error: 'Unauthorized access.' }, { status: 401 });
+    return NextResponse.json(
+      { error: 'Unauthorized. Your session may have expired. Please re-login.' },
+      { status: 401 }
+    );
   }
 
   try {
@@ -60,88 +57,88 @@ export async function POST(request: Request) {
     const file = formData.get('file') as File | null;
 
     if (!file) {
-      return NextResponse.json({ error: 'No file provided.' }, { status: 400 });
+      return NextResponse.json({ error: 'No image file was provided.' }, { status: 400 });
     }
 
     // 1. Validate file size (max 5MB)
     const MAX_FILE_SIZE = 5 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: 'File size exceeds maximum allowed limit of 5MB.' },
+        { error: 'Image size exceeds maximum limit of 5MB. Please compress or choose a smaller image.' },
         { status: 400 }
       );
     }
 
-    if (file.size < 100) {
-      return NextResponse.json({ error: 'Corrupt or empty file.' }, { status: 400 });
-    }
-
-    // 2. Validate MIME type & Extension
-    const mimeType = (file.type || '').toLowerCase();
-    const rawExt = path.extname(file.name || '').toLowerCase();
-
-    if (!ALLOWED_MIME_TYPES.includes(mimeType) || !ALLOWED_EXTENSIONS.includes(rawExt)) {
-      return NextResponse.json(
-        { error: 'Invalid file format. Only JPG, PNG, WEBP, AVIF, and GIF image files are permitted.' },
-        { status: 400 }
-      );
-    }
-
-    // Explicitly reject dangerous formats (SVGs, HTML, Executables)
-    if (rawExt === '.svg' || mimeType.includes('svg') || mimeType.includes('html')) {
-      return NextResponse.json(
-        { error: 'Vector SVG and executable files are prohibited for security.' },
-        { status: 400 }
-      );
+    if (file.size < 50) {
+      return NextResponse.json({ error: 'Uploaded file appears empty or corrupt.' }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // 3. Inspect magic bytes
-    if (!isValidImageBuffer(buffer, rawExt)) {
+    // 2. Detect actual image format from buffer
+    const detected = detectImageType(buffer);
+    if (!detected.isValid) {
       return NextResponse.json(
-        { error: 'File content does not match genuine image header signatures.' },
+        { error: 'Invalid image content. Only genuine JPG, PNG, WEBP, AVIF, or GIF photos are supported.' },
         { status: 400 }
       );
     }
 
-    // 4. Strict filename sanitization and uniqueness
+    // 3. Prepare sanitized filename
+    const rawExt = path.extname(file.name || '').toLowerCase();
+    const safeExt = detected.ext || rawExt || '.jpg';
     const safeBaseName = path
-      .basename(file.name, rawExt)
+      .basename(file.name || 'recipe', rawExt)
       .toLowerCase()
       .replace(/[^a-z0-9_-]/g, '-')
       .replace(/(^-|-$)+/g, '')
-      .slice(0, 50);
+      .slice(0, 40) || 'recipe';
 
-    const uniqueFileName = `${safeBaseName || 'recipe'}-${Date.now()}${rawExt}`;
+    const uniqueFileName = `${safeBaseName}-${Date.now()}${safeExt}`;
 
-    // Target upload folder strictly confined to public/recipes
-    const uploadDir = path.resolve(process.cwd(), 'public', 'recipes');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
+    // 4. Attempt to write to local public/recipes
+    let publicUrl = '';
+    let savedToDisk = false;
+
+    try {
+      const uploadDir = path.resolve(process.cwd(), 'public', 'recipes');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+
+      const filePath = path.resolve(uploadDir, uniqueFileName);
+      if (filePath.startsWith(uploadDir)) {
+        await fs.promises.writeFile(filePath, buffer);
+        publicUrl = `/recipes/${uniqueFileName}`;
+        savedToDisk = true;
+      }
+    } catch (diskError: any) {
+      // Disk write failed (typical on Vercel serverless read-only filesystem EROFS)
+      // Fallback: encode as Base64 Data URL so the photo is 100% saved and usable!
+      console.warn('Local disk write unavailable (Vercel serverless environment). Using Base64 Data URL fallback:', diskError?.message);
+      publicUrl = `data:${detected.mimeType};base64,${buffer.toString('base64')}`;
+      savedToDisk = false;
     }
 
-    const filePath = path.resolve(uploadDir, uniqueFileName);
-
-    // Path traversal verification
-    if (!filePath.startsWith(uploadDir)) {
-      return NextResponse.json({ error: 'Path traversal attempt detected.' }, { status: 400 });
+    if (!publicUrl) {
+      // If disk failed and base64 failed, generate direct data URL
+      publicUrl = `data:${detected.mimeType};base64,${buffer.toString('base64')}`;
     }
-
-    await fs.promises.writeFile(filePath, buffer);
-
-    const publicUrl = `/recipes/${uniqueFileName}`;
 
     return NextResponse.json({
       success: true,
       url: publicUrl,
       fileName: uniqueFileName,
       size: file.size,
+      storage: savedToDisk ? 'filesystem' : 'inline_data_url',
     });
   } catch (error: any) {
     console.error('Error handling upload:', error);
-    return NextResponse.json({ error: 'Failed to process file upload.' }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message || 'Failed to process file upload.' },
+      { status: 500 }
+    );
   }
 }
 
@@ -161,22 +158,27 @@ export async function GET() {
     const imageFiles = files
       .filter((file) => file.match(/\.(jpg|jpeg|png|webp|avif|gif)$/i))
       .map((file) => {
-        const filePath = path.resolve(uploadDir, file);
-        if (!filePath.startsWith(uploadDir)) return null;
+        try {
+          const filePath = path.resolve(uploadDir, file);
+          if (!filePath.startsWith(uploadDir)) return null;
 
-        const stats = fs.statSync(filePath);
-        return {
-          fileName: file,
-          url: `/recipes/${file}`,
-          size: stats.size,
-          modifiedAt: stats.mtime.toISOString(),
-        };
+          const stats = fs.statSync(filePath);
+          return {
+            fileName: file,
+            url: `/recipes/${file}`,
+            size: stats.size,
+            modifiedAt: stats.mtime.toISOString(),
+          };
+        } catch {
+          return null;
+        }
       })
       .filter(Boolean)
       .sort((a: any, b: any) => new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime());
 
     return NextResponse.json({ images: imageFiles });
   } catch (error: any) {
-    return NextResponse.json({ error: 'Failed to retrieve media library.' }, { status: 500 });
+    console.warn('Could not read local recipes directory:', error?.message);
+    return NextResponse.json({ images: [] });
   }
 }

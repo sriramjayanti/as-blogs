@@ -83,7 +83,11 @@ export default function ImageUploadPicker({
 
       const data = await res.json();
       if (!res.ok) {
-        setUploadError(data.error || 'Failed to upload photo');
+        if (res.status === 401) {
+          setUploadError('Your admin session has expired. Please refresh or re-login at /admin/login.');
+        } else {
+          setUploadError(data.error || 'Failed to upload photo. Please try another image format.');
+        }
       } else if (data.url) {
         onChange(data.url);
       }
@@ -154,6 +158,7 @@ export default function ImageUploadPicker({
                 src={value}
                 alt={altValue || 'Current photo'}
                 fill
+                unoptimized
                 className="object-cover"
               />
             ) : (
@@ -333,6 +338,7 @@ export default function ImageUploadPicker({
                           src={img.url}
                           alt={img.fileName}
                           fill
+                          unoptimized
                           className="object-cover"
                           sizes="200px"
                         />
