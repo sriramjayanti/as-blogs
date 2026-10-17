@@ -2,7 +2,9 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
+import { isUnoptimizedImage } from '@/lib/utils';
 import { buildUtmUrl } from '@/lib/promotion-engine';
+
 import { ShoppingBag, ArrowUpRight, ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -63,9 +65,11 @@ export default async function ProductsPage() {
                     src={prod.imageUrl}
                     alt={prod.name}
                     fill
+                    unoptimized={isUnoptimizedImage(prod.imageUrl)}
                     className="object-contain p-4 hover:scale-105 transition-transform duration-300"
                     sizes="(max-width: 768px) 100vw, 33vw"
                   />
+
                 </div>
 
                 <div className="space-y-2">

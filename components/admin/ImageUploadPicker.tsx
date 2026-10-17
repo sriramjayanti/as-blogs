@@ -13,6 +13,8 @@ import {
   Search,
   RefreshCw,
   AlertCircle,
+  Zap,
+  CheckCircle2,
 } from 'lucide-react';
 
 interface ImageUploadPickerProps {
@@ -21,6 +23,10 @@ interface ImageUploadPickerProps {
   altValue?: string;
   onAltChange?: (alt: string) => void;
   label?: string;
+  initialValue?: string;
+  onQuickSave?: (url: string) => Promise<void> | void;
+  isQuickSaving?: boolean;
+  quickSaveSuccess?: boolean;
 }
 
 export default function ImageUploadPicker({
@@ -29,7 +35,12 @@ export default function ImageUploadPicker({
   altValue = '',
   onAltChange,
   label = 'Featured Photo & Visual Asset',
+  initialValue,
+  onQuickSave,
+  isQuickSaving = false,
+  quickSaveSuccess = false,
 }: ImageUploadPickerProps) {
+
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState('');
   const [showGallery, setShowGallery] = useState(false);
@@ -113,6 +124,8 @@ export default function ImageUploadPicker({
     img.fileName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const isChanged = Boolean(initialValue && value && value !== initialValue);
+
   return (
     <div className="bg-stone-950/80 border-2 border-forest-800/60 rounded-3xl p-6 sm:p-7 space-y-5 shadow-xl">
       {/* Top Header */}
@@ -121,10 +134,45 @@ export default function ImageUploadPicker({
           <ImageIcon className="w-5 h-5 text-gold-400" />
           <h3 className="font-serif text-lg font-bold text-stone-100">{label}</h3>
         </div>
-        <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/70">
-          Photo Change Ready
-        </span>
+        {isChanged ? (
+          <span className="text-[11px] font-mono text-amber-300 bg-amber-950/90 px-3 py-1 rounded-full border border-amber-600/70 animate-pulse font-semibold">
+            ● Photo Changed (Click Save)
+          </span>
+        ) : (
+          <span className="text-[11px] font-mono text-emerald-400 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/70">
+            Photo Change Ready
+          </span>
+        )}
       </div>
+
+      {isChanged && (
+        <div className="p-3 bg-amber-950/60 border border-amber-600/60 rounded-xl text-xs text-amber-200 flex items-center justify-between gap-3 shadow-md">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-amber-400" />
+            <span>
+              <strong>Photo updated in preview!</strong> Click <em>&quot;Save & Publish Photo Immediately&quot;</em> below or <em>&quot;Save Changes&quot;</em> to update the live website.
+            </span>
+          </div>
+          {onQuickSave && value && (
+            <button
+              type="button"
+              disabled={isQuickSaving}
+              onClick={() => onQuickSave(value)}
+              className="px-3 py-1 bg-amber-500 hover:bg-amber-400 text-stone-950 font-bold text-xs rounded-lg transition-colors shrink-0 cursor-pointer flex items-center gap-1.5 shadow"
+            >
+              {isQuickSaving ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" /> Saving...
+                </>
+              ) : (
+                <>
+                  <Zap className="w-3.5 h-3.5 fill-current" /> Save Now
+                </>
+              )}
+            </button>
+          )}
+        </div>
+      )}
 
       {uploadError && (
         <div className="p-3 bg-red-950/80 border border-red-800 rounded-xl text-xs text-red-200 flex items-center gap-2">
@@ -132,6 +180,7 @@ export default function ImageUploadPicker({
           <span>{uploadError}</span>
         </div>
       )}
+
 
       {/* Grid: Preview Card on Left, Upload/Pick Actions on Right */}
       <div className="grid sm:grid-cols-12 gap-5 items-start">
@@ -188,7 +237,35 @@ export default function ImageUploadPicker({
               </button>
             )}
           </div>
+
+          {/* Quick Publish Action */}
+          {onQuickSave && value && (
+            <button
+              type="button"
+              disabled={isQuickSaving || !value}
+              onClick={() => onQuickSave(value)}
+              className="w-full mt-2 py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-forest-700 hover:from-emerald-500 hover:to-forest-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              {isQuickSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin text-gold-400" />
+                  <span>Saving & Publishing Photo...</span>
+                </>
+              ) : quickSaveSuccess ? (
+                <>
+                  <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+                  <span>Photo Live on Website!</span>
+                </>
+              ) : (
+                <>
+                  <Zap className="w-4 h-4 text-gold-400 fill-current" />
+                  <span>Save & Publish Photo Immediately</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
+
 
         {/* Right: Upload Actions & Preset Picker */}
         <div className="sm:col-span-6 space-y-4">

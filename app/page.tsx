@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/db';
+import { isUnoptimizedImage } from '@/lib/utils';
+
 import ArticleCard from '@/components/ArticleCard';
 import HeroPosterCarousel from '@/components/HeroPosterCarousel';
 import BrandVideoShowcase from '@/components/BrandVideoShowcase';
@@ -256,9 +258,11 @@ export default async function HomePage() {
                       src={prod.imageUrl}
                       alt={prod.name}
                       fill
+                      unoptimized={isUnoptimizedImage(prod.imageUrl)}
                       className="object-contain group-hover:scale-105 transition-transform duration-300"
                       sizes="140px"
                     />
+
                   </div>
                   <h4 className="font-serif text-xs sm:text-sm font-bold text-stone-900 line-clamp-2 leading-tight">
                     {prod.name}

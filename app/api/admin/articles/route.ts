@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
 import { sanitizeArticleContent } from '@/lib/sanitize';
@@ -97,7 +98,16 @@ export async function POST(request: Request) {
       },
     });
 
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+      revalidatePath('/products');
+    } catch (revalidateErr) {
+      console.warn('Revalidation warning:', revalidateErr);
+    }
+
     return NextResponse.json({ success: true, article: newArticle });
+
   } catch (error: any) {
     console.error('Error creating article:', error);
     return NextResponse.json(

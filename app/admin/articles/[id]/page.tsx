@@ -52,7 +52,11 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   const [content, setContent] = useState('');
   const [contentTe, setContentTe] = useState('');
   const [featuredImage, setFeaturedImage] = useState('');
+  const [initialFeaturedImage, setInitialFeaturedImage] = useState('');
+  const [isQuickSavingPhoto, setIsQuickSavingPhoto] = useState(false);
+  const [quickPhotoSaved, setQuickPhotoSaved] = useState(false);
   const [imageAlt, setImageAlt] = useState('');
+
   const [categoryId, setCategoryId] = useState('');
   const [focusKeyword, setFocusKeyword] = useState('');
   const [seoTitle, setSeoTitle] = useState('');
@@ -95,7 +99,9 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
           setContent(a.content || '');
           setContentTe(a.contentTe || '');
           setFeaturedImage(a.featuredImage || '');
+          setInitialFeaturedImage(a.featuredImage || '');
           setImageAlt(a.imageAlt || '');
+
           setCategoryId(a.categoryId || '');
           setCategorySlug(a.category?.slug || '');
           setFocusKeyword(a.focusKeyword || '');
@@ -137,6 +143,51 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
   if (hasKeywordInContent) seoScore += 10;
   if (hasImageAlt) seoScore += 10;
 
+  // Instant Photo Save & Publish
+  const handleQuickPhotoSave = async (newUrl: string) => {
+    setIsQuickSavingPhoto(true);
+    setError('');
+    setSuccessMsg('');
+
+    try {
+      const res = await fetch(`/api/admin/articles/${params.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          titleTe: titleTe || null,
+          slug,
+          excerpt,
+          excerptTe: excerptTe || null,
+          content,
+          contentTe: contentTe || null,
+          featuredImage: newUrl,
+          imageAlt,
+          categoryId,
+          seoTitle: seoTitle || title,
+          metaDescription: metaDescription || excerpt,
+          focusKeyword,
+          isSponsored,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to save photo.');
+      } else {
+        setFeaturedImage(newUrl);
+        setInitialFeaturedImage(newUrl);
+        setQuickPhotoSaved(true);
+        setSuccessMsg('Photo saved & published to the live website! Cache has been refreshed.');
+        setTimeout(() => setQuickPhotoSaved(false), 5000);
+      }
+    } catch {
+      setError('Network error saving photo.');
+    } finally {
+      setIsQuickSavingPhoto(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -169,7 +220,8 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
       if (!res.ok) {
         setError(data.error || 'Failed to update article');
       } else {
-        setSuccessMsg('Article and photo updated successfully!');
+        setInitialFeaturedImage(featuredImage);
+        setSuccessMsg('Article and photo updated successfully! The live website is refreshed.');
         if (data.article?.category?.slug) {
           setCategorySlug(data.article.category.slug);
         }
@@ -180,6 +232,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
       setIsSubmitting(false);
     }
   };
+
 
   if (isLoading) {
     return (
@@ -217,15 +270,34 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
           </p>
         </div>
 
-        {liveArticleUrl !== '#' && (
-          <a
-            href={liveArticleUrl}
-            target="_blank"
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-stone-900 hover:bg-stone-800 text-gold-400 font-semibold text-xs rounded-xl border border-stone-800 transition-colors shrink-0 shadow-sm"
+        <div className="flex items-center gap-3 shrink-0">
+          {liveArticleUrl !== '#' && (
+            <a
+              href={liveArticleUrl}
+              target="_blank"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-stone-900 hover:bg-stone-800 text-gold-400 font-semibold text-xs rounded-xl border border-stone-800 transition-colors shadow-sm"
+            >
+              View Live Article <ArrowUpRight className="w-4 h-4" />
+            </a>
+          )}
+
+          <button
+            type="submit"
+            form="article-edit-form"
+            disabled={isSubmitting}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-stone-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50"
           >
-            View Live Article <ArrowUpRight className="w-4 h-4" />
-          </a>
-        )}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" /> Saving...
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" /> Save Changes & Update Photo
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -253,7 +325,7 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8 pb-20 lg:pb-0">
+      <form id="article-edit-form" onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8 pb-20 lg:pb-0">
         {/* Main Content Column */}
         <div className="lg:col-span-8 space-y-6">
           {/* 1. Featured Image & Visual Asset Card (Upload, Browse Gallery, or Direct Link) */}
@@ -263,7 +335,12 @@ export default function EditArticlePage({ params }: { params: { id: string } }) 
             altValue={imageAlt}
             onAltChange={(alt) => setImageAlt(alt)}
             label="Featured Photo & Recipe Image"
+            initialValue={initialFeaturedImage}
+            onQuickSave={handleQuickPhotoSave}
+            isQuickSaving={isQuickSavingPhoto}
+            quickSaveSuccess={quickPhotoSaved}
           />
+
 
           {/* 2. Article Text & Details */}
           <div className="bg-stone-950/70 border border-stone-800 rounded-3xl p-6 sm:p-8 space-y-5">

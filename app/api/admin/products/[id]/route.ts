@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
+
 
 export async function GET(
   request: Request,
@@ -78,6 +80,14 @@ export async function PUT(
       },
     });
 
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+      revalidatePath('/products');
+    } catch (revalidateErr) {
+      console.warn('Revalidation warning:', revalidateErr);
+    }
+
     return NextResponse.json({ success: true, product: updated });
   } catch (error: any) {
     console.error('Error updating product:', error);
@@ -99,9 +109,18 @@ export async function DELETE(
       where: { id: params.id },
     });
 
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+      revalidatePath('/products');
+    } catch (revalidateErr) {
+      console.warn('Revalidation warning:', revalidateErr);
+    }
+
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('Error deleting product:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
+

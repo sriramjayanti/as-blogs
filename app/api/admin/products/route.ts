@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
+
 
 export async function GET() {
   const session = await getAdminSession();
@@ -70,7 +72,16 @@ export async function POST(request: Request) {
       },
     });
 
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+      revalidatePath('/products');
+    } catch (revalidateErr) {
+      console.warn('Revalidation warning:', revalidateErr);
+    }
+
     return NextResponse.json({ success: true, product });
+
   } catch (error: any) {
     console.error('Error creating product:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });

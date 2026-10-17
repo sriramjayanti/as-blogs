@@ -1,7 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { formatDate } from '@/lib/utils';
+import { formatDate, isUnoptimizedImage } from '@/lib/utils';
 import { Clock, ArrowUpRight } from 'lucide-react';
+
 
 interface ArticleCardProps {
   article: {
@@ -40,10 +41,12 @@ export default function ArticleCard({ article, variant = 'standard' }: ArticleCa
             src={article.featuredImage}
             alt={article.imageAlt || article.title}
             fill
+            unoptimized={isUnoptimizedImage(article.featuredImage)}
             className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
             priority
             sizes="(max-width: 1024px) 100vw, 60vw"
           />
+
           <div className="absolute top-3 sm:top-4 left-3 sm:left-4 flex flex-wrap gap-1.5 sm:gap-2">
             <span className="bg-forest-900/90 backdrop-blur-md text-white font-semibold text-[11px] sm:text-xs px-3 py-1 rounded-full uppercase tracking-wider">
               {article.category.name}
@@ -112,6 +115,7 @@ export default function ArticleCard({ article, variant = 'standard' }: ArticleCa
             src={article.featuredImage}
             alt={article.imageAlt || article.title}
             fill
+            unoptimized={isUnoptimizedImage(article.featuredImage)}
             className="object-cover group-hover:scale-105 transition-transform duration-300"
             sizes="80px"
           />
@@ -139,6 +143,7 @@ export default function ArticleCard({ article, variant = 'standard' }: ArticleCa
             src={article.featuredImage}
             alt={article.imageAlt || article.title}
             fill
+            unoptimized={isUnoptimizedImage(article.featuredImage)}
             className="object-cover group-hover:scale-105 transition-transform duration-500"
             sizes="(max-width: 640px) 100vw, 33vw"
           />
@@ -178,9 +183,11 @@ export default function ArticleCard({ article, variant = 'standard' }: ArticleCa
           src={article.featuredImage}
           alt={article.imageAlt || article.title}
           fill
+          unoptimized={isUnoptimizedImage(article.featuredImage)}
           className="object-cover group-hover:scale-105 transition-transform duration-500"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
+
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
           <span className="bg-forest-950/80 backdrop-blur-md text-white font-semibold text-[11px] px-2.5 py-1 rounded-full uppercase tracking-wider">
             {article.category.name}

@@ -1,8 +1,9 @@
 import { prisma } from '@/lib/db';
 import Link from 'next/link';
 import Image from 'next/image';
-import { formatDate } from '@/lib/utils';
+import { formatDate, isUnoptimizedImage } from '@/lib/utils';
 import { FileText, Plus, Eye, ArrowUpRight, Calendar, KeyRound, Edit, Clock } from 'lucide-react';
+
 
 export const revalidate = 0;
 
@@ -49,8 +50,10 @@ export default async function AdminArticlesPage() {
                   src={art.featuredImage}
                   alt={art.title}
                   fill
+                  unoptimized={isUnoptimizedImage(art.featuredImage)}
                   className="object-cover"
                 />
+
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
@@ -132,8 +135,10 @@ export default async function AdminArticlesPage() {
                         src={art.featuredImage}
                         alt={art.title}
                         fill
+                        unoptimized={isUnoptimizedImage(art.featuredImage)}
                         className="object-cover"
                       />
+
                     </div>
                   </td>
                   <td className="py-4 px-6 font-medium max-w-xs">

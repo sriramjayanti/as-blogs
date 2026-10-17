@@ -18,7 +18,8 @@ import {
   Calendar,
   BookOpen,
 } from 'lucide-react';
-import { formatDate } from '@/lib/utils';
+import { formatDate, isUnoptimizedImage } from '@/lib/utils';
+
 
 interface RecipeData {
   title?: string;
@@ -252,9 +253,11 @@ export default function BilingualRecipeReader({
             alt={article.imageAlt || currentTitle}
             fill
             priority
+            unoptimized={isUnoptimizedImage(article.featuredImage)}
             className="object-cover"
             sizes="(max-width: 1024px) 100vw, 800px"
           />
+
         </div>
         {article.imageAlt && (
           <figcaption className="mt-2.5 text-center text-xs text-stone-500 font-medium italic">

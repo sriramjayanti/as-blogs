@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
 import { sanitizeArticleContent } from '@/lib/sanitize';
@@ -161,6 +162,17 @@ export async function PUT(
       },
     });
 
+    // Bust cache across the website immediately
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+      revalidatePath(`/${updatedArticle.category.slug}`);
+      revalidatePath(`/${updatedArticle.category.slug}/${updatedArticle.slug}`);
+      revalidatePath('/products');
+    } catch (revalidateErr) {
+      console.warn('Revalidation warning:', revalidateErr);
+    }
+
     return NextResponse.json({ success: true, article: updatedArticle });
   } catch (error: any) {
     console.error('Error updating article:', error);
@@ -181,9 +193,25 @@ export async function DELETE(
   }
 
   try {
+    const existing = await prisma.article.findUnique({
+      where: { id: params.id },
+      include: { category: true },
+    });
+
     await prisma.article.delete({
       where: { id: params.id },
     });
+
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/');
+      if (existing?.category?.slug) {
+        revalidatePath(`/${existing.category.slug}`);
+        revalidatePath(`/${existing.category.slug}/${existing.slug}`);
+      }
+    } catch (revalidateErr) {
+      console.warn('Revalidation warning:', revalidateErr);
+    }
 
     return NextResponse.json({ success: true, message: 'Article deleted successfully' });
   } catch (error: any) {
@@ -192,5 +220,6 @@ export async function DELETE(
       { error: error.message || 'Failed to delete article' },
       { status: 500 }
     );
+
   }
 }

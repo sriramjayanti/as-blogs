@@ -557,8 +557,10 @@ export default function ProductListWithEdit({
               <ImageUploadPicker
                 value={formImageUrl}
                 onChange={(url) => setFormImageUrl(url)}
+                initialValue={editingProduct?.imageUrl || ''}
                 label="Product Display Photo (Upload File or Pick from Gallery)"
               />
+
 
               {/* 2. Product Name & Slug */}
               <div className="grid sm:grid-cols-2 gap-4">

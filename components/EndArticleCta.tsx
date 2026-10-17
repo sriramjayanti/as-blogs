@@ -1,5 +1,7 @@
 import Image from 'next/image';
+import { isUnoptimizedImage } from '@/lib/utils';
 import { ProductPromoInfo, buildUtmUrl } from '@/lib/promotion-engine';
+
 import { ArrowUpRight, ShieldCheck, HeartHandshake, Sparkles } from 'lucide-react';
 
 interface EndArticleCtaProps {
@@ -80,9 +82,11 @@ export default function EndArticleCta({ product, articleSlug = 'article' }: EndA
               src={product.imageUrl}
               alt={product.name}
               fill
+              unoptimized={isUnoptimizedImage(product.imageUrl)}
               className="object-contain p-3 group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 768px) 176px, 208px"
             />
+
           </div>
         </div>
       </div>

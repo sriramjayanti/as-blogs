@@ -157,7 +157,7 @@ export default function NewArticlePage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="font-serif text-3xl font-bold text-stone-100">
             Publish New SEO Article
@@ -166,6 +166,23 @@ export default function NewArticlePage() {
             Author authoritative editorial content with real-time SEO scoring and automated promotional linking.
           </p>
         </div>
+
+        <button
+          type="submit"
+          form="new-article-form"
+          disabled={isSubmitting}
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-stone-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition-all cursor-pointer disabled:opacity-50 shrink-0"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" /> Publishing...
+            </>
+          ) : (
+            <>
+              <Save className="w-4 h-4" /> Publish Article
+            </>
+          )}
+        </button>
       </div>
 
       {error && (
@@ -174,7 +191,8 @@ export default function NewArticlePage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8 pb-20 lg:pb-0">
+      <form id="new-article-form" onSubmit={handleSubmit} className="grid lg:grid-cols-12 gap-8 pb-20 lg:pb-0">
+
         {/* Main Content Column */}
         <div className="lg:col-span-8 space-y-6">
           <div className="bg-stone-950/70 border border-stone-800 rounded-3xl p-6 sm:p-8 space-y-5">

@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { isUnoptimizedImage } from '@/lib/utils';
 import { ProductPromoInfo, buildUtmUrl } from '@/lib/promotion-engine';
 import { ShoppingBag, ArrowUpRight, Sparkles, CheckCircle2 } from 'lucide-react';
 
@@ -27,10 +28,12 @@ export default function InlineProductCard({ product, articleSlug = 'article' }: 
             src={product.imageUrl}
             alt={product.name}
             fill
+            unoptimized={isUnoptimizedImage(product.imageUrl)}
             className="object-contain p-2 hover:scale-105 transition-transform duration-300"
             sizes="(max-width: 640px) 112px, 128px"
           />
         </div>
+
 
         {/* Product Information */}
         <div className="flex-1 text-center sm:text-left">
