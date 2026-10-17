@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { v2 as cloudinary } from 'cloudinary';
 import { put } from '@vercel/blob';
+import { prisma } from '@/lib/db';
 
 // Initialize Cloudinary if credentials exist
 if (process.env.CLOUDINARY_URL) {
@@ -213,37 +214,111 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized access.' }, { status: 401 });
   }
 
+  const seenUrls = new Set<string>();
+  const images: Array<{
+    fileName: string;
+    url: string;
+    title?: string;
+    size?: number;
+    source: string;
+    modifiedAt: string;
+  }> = [];
+
+  // 1. Fetch images from Cloudinary library if credentials exist
+  if (process.env.CLOUDINARY_URL || process.env.CLOUDINARY_CLOUD_NAME) {
+    try {
+      const cloudRes = await cloudinary.api.resources({
+        type: 'upload',
+        prefix: 'as_blogs/recipes',
+        max_results: 60,
+      });
+      if (cloudRes && cloudRes.resources) {
+        for (const r of cloudRes.resources) {
+          if (r.secure_url && !seenUrls.has(r.secure_url)) {
+            seenUrls.add(r.secure_url);
+            images.push({
+              fileName: r.public_id.split('/').pop() || r.public_id,
+              url: r.secure_url,
+              size: r.bytes,
+              source: 'cloudinary',
+              modifiedAt: r.created_at || new Date().toISOString(),
+            });
+          }
+        }
+      }
+    } catch (cErr: any) {
+      console.warn('Could not fetch Cloudinary resources:', cErr?.message);
+    }
+  }
+
+  // 2. Fetch images actively used in articles from the database
+  try {
+    const dbArticles = await prisma.article.findMany({
+      where: {
+        featuredImage: { not: '' },
+      },
+      select: {
+        featuredImage: true,
+        title: true,
+        updatedAt: true,
+      },
+      orderBy: { updatedAt: 'desc' },
+      take: 60,
+    });
+
+    for (const art of dbArticles) {
+      if (art.featuredImage && !seenUrls.has(art.featuredImage)) {
+        seenUrls.add(art.featuredImage);
+        const namePart = art.featuredImage.startsWith('data:')
+          ? `${art.title.slice(0, 30)} (Embedded)`
+          : art.featuredImage.split('/').pop() || art.title;
+
+        images.push({
+          fileName: namePart,
+          url: art.featuredImage,
+          title: art.title,
+          source: 'database',
+          modifiedAt: art.updatedAt.toISOString(),
+        });
+      }
+    }
+  } catch (dbErr: any) {
+    console.warn('Could not fetch database images:', dbErr?.message);
+  }
+
+  // 3. Scan local public/recipes directory if available
   try {
     const uploadDir = path.resolve(process.cwd(), 'public', 'recipes');
-    if (!fs.existsSync(uploadDir)) {
-      return NextResponse.json({ images: [] });
-    }
-
-    const files = await fs.promises.readdir(uploadDir);
-    const imageFiles = files
-      .filter((file) => file.match(/\.(jpg|jpeg|png|webp|avif|gif)$/i))
-      .map((file) => {
-        try {
-          const filePath = path.resolve(uploadDir, file);
-          if (!filePath.startsWith(uploadDir)) return null;
-
-          const stats = fs.statSync(filePath);
-          return {
-            fileName: file,
-            url: `/recipes/${file}`,
-            size: stats.size,
-            modifiedAt: stats.mtime.toISOString(),
-          };
-        } catch {
-          return null;
+    if (fs.existsSync(uploadDir)) {
+      const files = await fs.promises.readdir(uploadDir);
+      for (const file of files) {
+        if (file.match(/\.(jpg|jpeg|png|webp|avif|gif)$/i)) {
+          const url = `/recipes/${file}`;
+          if (!seenUrls.has(url)) {
+            seenUrls.add(url);
+            try {
+              const filePath = path.resolve(uploadDir, file);
+              const stats = fs.statSync(filePath);
+              images.push({
+                fileName: file,
+                url,
+                size: stats.size,
+                source: 'filesystem',
+                modifiedAt: stats.mtime.toISOString(),
+              });
+            } catch {
+              // Ignore individual file stat error
+            }
+          }
         }
-      })
-      .filter(Boolean)
-      .sort((a: any, b: any) => new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime());
-
-    return NextResponse.json({ images: imageFiles });
-  } catch (error: any) {
-    console.warn('Could not read local recipes directory:', error?.message);
-    return NextResponse.json({ images: [] });
+      }
+    }
+  } catch (fsErr: any) {
+    console.warn('Could not read local recipes dir:', fsErr?.message);
   }
+
+  // Sort: newest first
+  images.sort((a, b) => new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime());
+
+  return NextResponse.json({ images });
 }
