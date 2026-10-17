@@ -75,11 +75,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No image file was provided.' }, { status: 400 });
     }
 
-    // 1. Validate file size (max 5MB)
-    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    // 1. Validate file size (max 10MB)
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: 'Image size exceeds maximum limit of 5MB. Please compress or choose a smaller image.' },
+        { error: 'Image size exceeds maximum limit of 10MB. Please choose a smaller image.' },
         { status: 400 }
       );
     }

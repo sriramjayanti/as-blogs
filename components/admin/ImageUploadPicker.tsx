@@ -71,6 +71,60 @@ export default function ImageUploadPicker({
     loadGallery();
   };
 
+  // Client-side image compression: resizes large photos to optimal 1200px WebP (< 150KB)
+  const compressImageClientSide = async (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      // If SVG or already tiny (< 100KB), return as is
+      if (file.type === 'image/svg+xml' || file.size < 100 * 1024) {
+        return resolve(file);
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new window.Image();
+        img.onload = () => {
+          let { width, height } = img;
+          const maxDim = 1200;
+
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return resolve(file);
+
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) return resolve(file);
+              const compressedFile = new File(
+                [blob],
+                file.name.replace(/\.[^.]+$/, '') + '.webp',
+                { type: 'image/webp' }
+              );
+              resolve(compressedFile);
+            },
+            'image/webp',
+            0.85
+          );
+        };
+        img.onerror = () => resolve(file);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => resolve(file);
+      reader.readAsDataURL(file);
+    });
+  };
+
   // Upload handler
   const handleFile = async (file: File) => {
     if (!file) return;
@@ -84,8 +138,11 @@ export default function ImageUploadPicker({
     setIsUploading(true);
 
     try {
+      // Auto-compress photo on client to ensure instant upload and avoid serverless payload limits
+      const processedFile = await compressImageClientSide(file);
+
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('file', processedFile);
 
       const res = await fetch('/api/admin/upload', {
         method: 'POST',
