@@ -2,6 +2,21 @@ import { NextResponse } from 'next/server';
 import { getAdminSession } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
+import { v2 as cloudinary } from 'cloudinary';
+import { put } from '@vercel/blob';
+
+// Initialize Cloudinary if credentials exist
+if (process.env.CLOUDINARY_URL) {
+  cloudinary.config({ url: process.env.CLOUDINARY_URL });
+} else if (process.env.CLOUDINARY_CLOUD_NAME) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    secure: true,
+  });
+}
+
 
 // Robust image type detection from buffer magic bytes
 function detectImageType(buffer: Buffer): { isValid: boolean; mimeType: string; ext: string } {
@@ -97,33 +112,82 @@ export async function POST(request: Request) {
 
     const uniqueFileName = `${safeBaseName}-${Date.now()}${safeExt}`;
 
-    // 4. Attempt to write to local public/recipes
+    // 4. Multi-tier Image Storage Handler:
+    // Tier 1: Cloudinary (Free tier persistent cloud CDN)
+    // Tier 2: Vercel Blob (Built-in Vercel storage)
+    // Tier 3: Local disk (public/recipes in local development)
+    // Tier 4: Base64 fallback (emergency fallback)
     let publicUrl = '';
-    let savedToDisk = false;
+    let storageType = 'unknown';
 
-    try {
-      const uploadDir = path.resolve(process.cwd(), 'public', 'recipes');
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
+    // Tier 1: Check for Cloudinary
+    if (process.env.CLOUDINARY_URL || process.env.CLOUDINARY_CLOUD_NAME) {
+      try {
+        const uploadResult = await new Promise<any>((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {
+              folder: 'as_blogs/recipes',
+              public_id: `${safeBaseName}-${Date.now()}`,
+              resource_type: 'image',
+              format: detected.ext.replace('.', '') || undefined,
+            },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          );
+          stream.end(buffer);
+        });
 
-      const filePath = path.resolve(uploadDir, uniqueFileName);
-      if (filePath.startsWith(uploadDir)) {
-        await fs.promises.writeFile(filePath, buffer);
-        publicUrl = `/recipes/${uniqueFileName}`;
-        savedToDisk = true;
+        if (uploadResult?.secure_url) {
+          publicUrl = uploadResult.secure_url;
+          storageType = 'cloudinary';
+        }
+      } catch (cloudErr: any) {
+        console.warn('Cloudinary upload warning:', cloudErr?.message);
       }
-    } catch (diskError: any) {
-      // Disk write failed (typical on Vercel serverless read-only filesystem EROFS)
-      // Fallback: encode as Base64 Data URL so the photo is 100% saved and usable!
-      console.warn('Local disk write unavailable (Vercel serverless environment). Using Base64 Data URL fallback:', diskError?.message);
-      publicUrl = `data:${detected.mimeType};base64,${buffer.toString('base64')}`;
-      savedToDisk = false;
     }
 
+    // Tier 2: Check for Vercel Blob
+    if (!publicUrl && process.env.BLOB_READ_WRITE_TOKEN) {
+      try {
+        const blob = await put(`recipes/${uniqueFileName}`, buffer, {
+          access: 'public',
+          contentType: detected.mimeType,
+        });
+        if (blob?.url) {
+          publicUrl = blob.url;
+          storageType = 'vercel_blob';
+        }
+      } catch (blobErr: any) {
+        console.warn('Vercel Blob upload warning:', blobErr?.message);
+      }
+    }
+
+    // Tier 3: Local disk storage (local development)
     if (!publicUrl) {
-      // If disk failed and base64 failed, generate direct data URL
+      try {
+        const uploadDir = path.resolve(process.cwd(), 'public', 'recipes');
+        if (!fs.existsSync(uploadDir)) {
+          fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
+        const filePath = path.resolve(uploadDir, uniqueFileName);
+        if (filePath.startsWith(uploadDir)) {
+          await fs.promises.writeFile(filePath, buffer);
+          publicUrl = `/recipes/${uniqueFileName}`;
+          storageType = 'filesystem';
+        }
+      } catch (diskError: any) {
+        // Disk write unavailable (read-only environment on Vercel without cloud credentials)
+        console.warn('Local disk write unavailable. Using Base64 fallback:', diskError?.message);
+      }
+    }
+
+    // Tier 4: Fallback Base64 Data URL
+    if (!publicUrl) {
       publicUrl = `data:${detected.mimeType};base64,${buffer.toString('base64')}`;
+      storageType = 'inline_data_url';
     }
 
     return NextResponse.json({
@@ -131,8 +195,9 @@ export async function POST(request: Request) {
       url: publicUrl,
       fileName: uniqueFileName,
       size: file.size,
-      storage: savedToDisk ? 'filesystem' : 'inline_data_url',
+      storage: storageType,
     });
+
   } catch (error: any) {
     console.error('Error handling upload:', error);
     return NextResponse.json(

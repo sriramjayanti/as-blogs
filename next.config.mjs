@@ -3,7 +3,7 @@ const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-eval' 'unsafe-inline' https://va.vercel-scripts.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  img-src 'self' data: blob: https://asbrandoils.com https://images.unsplash.com https://www.lekhafoods.com https://lekhafoods.com https://*.vercel.app;
+  img-src 'self' data: blob: https://asbrandoils.com https://images.unsplash.com https://www.lekhafoods.com https://lekhafoods.com https://res.cloudinary.com https://*.public.blob.vercel-storage.com https://*.vercel.app;
   font-src 'self' data: https://fonts.gstatic.com;
   connect-src 'self' https://*.vercel.app https://vitals.vercel-insights.com;
   frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com;
@@ -43,8 +43,19 @@ const nextConfig = {
         hostname: 'lekhafoods.com',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.public.blob.vercel-storage.com',
+        pathname: '/**',
+      },
     ],
   },
+
   async headers() {
     return [
       {
