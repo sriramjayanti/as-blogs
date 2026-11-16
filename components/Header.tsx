@@ -47,6 +47,18 @@ export default function Header() {
     setIsRecipesDropdownOpen(false);
   }, [pathname]);
 
+  // Global keyboard shortcut: Ctrl+K or Cmd+K to open Search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   // Prevent background scrolling when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -150,6 +162,9 @@ export default function Header() {
               >
                 <Search className="w-4 h-4 text-forest-800" />
                 <span>Search</span>
+                <kbd className="hidden sm:inline-block text-[10px] bg-cream-200/90 text-stone-500 px-1.5 py-0.5 rounded border border-cream-300 font-mono">
+                  ⌘K
+                </kbd>
               </button>
 
               <a
@@ -252,11 +267,11 @@ export default function Header() {
               </div>
 
               {/* Core Links: [ Home ] -> [ About ] -> [ Search ] */}
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 <Link
                   href="/"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl font-bold text-xs bg-cream-200 text-forest-950 hover:bg-cream-300 transition-colors"
+                  className="flex items-center justify-center gap-1 px-2.5 py-2.5 rounded-xl font-bold text-xs bg-cream-200 text-forest-950 hover:bg-cream-300 transition-colors"
                 >
                   Home
                 </Link>
@@ -264,11 +279,23 @@ export default function Header() {
                 <Link
                   href="/about"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl font-bold text-xs bg-cream-200 text-forest-950 hover:bg-cream-300 transition-colors"
+                  className="flex items-center justify-center gap-1 px-2.5 py-2.5 rounded-xl font-bold text-xs bg-cream-200 text-forest-950 hover:bg-cream-300 transition-colors"
                 >
                   <Info className="w-3.5 h-3.5 text-forest-800" />
-                  About Us
+                  About
                 </Link>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsSearchOpen(true);
+                  }}
+                  className="flex items-center justify-center gap-1 px-2.5 py-2.5 rounded-xl font-bold text-xs bg-forest-900 text-white hover:bg-forest-800 transition-colors cursor-pointer"
+                >
+                  <Search className="w-3.5 h-3.5 text-gold-400" />
+                  Search
+                </button>
               </div>
 
               {/* 8 Categories Navigation */}

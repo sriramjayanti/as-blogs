@@ -166,10 +166,12 @@ export default function Footer() {
                 <input
                   type="email"
                   placeholder="Enter your email"
+                  aria-label="Email address for recipe dispatch"
                   className="w-full bg-forest-900/80 border border-forest-800 rounded-xl px-3.5 py-2 text-xs text-stone-200 placeholder-stone-500 focus:outline-none focus:border-gold-500"
                 />
                 <button
                   type="submit"
+                  aria-label="Join recipe dispatch newsletter"
                   className="absolute right-1 top-1 bottom-1 bg-gold-500 hover:bg-gold-400 text-forest-950 font-bold px-3 rounded-lg text-xs transition-colors flex items-center gap-1"
                 >
                   <Mail className="w-3 h-3" />

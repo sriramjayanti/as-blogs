@@ -140,6 +140,7 @@ export default function BrandVideoShowcase() {
               href={activeVideo.youtubeUrl}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`Watch ${activeVideo.title} video on YouTube`}
               className="absolute inset-0 flex items-center justify-center cursor-pointer"
             >
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gold-500 hover:bg-gold-400 text-forest-950 flex items-center justify-center shadow-2xl transition-transform transform group-hover:scale-110">

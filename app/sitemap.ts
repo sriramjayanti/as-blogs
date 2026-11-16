@@ -1,8 +1,9 @@
 import { MetadataRoute } from 'next';
 import { prisma } from '@/lib/db';
+import { getSiteUrl } from '@/lib/utils';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://asbrandoils.com';
+  const siteUrl = getSiteUrl();
 
   // Static Pages
   const staticRoutes = [
@@ -11,6 +12,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
       priority: 1.0,
+    },
+    {
+      url: `${siteUrl}/about`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
     },
     {
       url: `${siteUrl}/products`,

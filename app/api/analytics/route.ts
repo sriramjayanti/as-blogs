@@ -10,6 +10,30 @@ const ALLOWED_EVENT_TYPES = [
   'marketplace_click',
 ];
 
+// In-memory rate limiting: max 60 events per IP per minute
+const eventRateLimit = new Map<string, { count: number; resetTime: number }>();
+const MAX_EVENTS_PER_MINUTE = 60;
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const record = eventRateLimit.get(ip);
+  if (!record || now > record.resetTime) {
+    eventRateLimit.set(ip, { count: 1, resetTime: now + 60000 });
+    return false;
+  }
+  if (record.count >= MAX_EVENTS_PER_MINUTE) {
+    return true;
+  }
+  record.count += 1;
+  return false;
+}
+
+function getClientIp(request: Request): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) return forwarded.split(',')[0].trim();
+  return request.headers.get('x-real-ip') || 'unknown';
+}
+
 function sanitizeString(val: any, maxLength = 150): string | null {
   if (typeof val !== 'string') return null;
   const trimmed = val.trim();
@@ -17,6 +41,11 @@ function sanitizeString(val: any, maxLength = 150): string | null {
 }
 
 export async function POST(request: Request) {
+  const clientIp = getClientIp(request);
+  if (isRateLimited(clientIp)) {
+    return NextResponse.json({ error: 'Too many analytics events' }, { status: 429 });
+  }
+
   try {
     const body = await request.json();
     const {

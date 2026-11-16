@@ -32,9 +32,12 @@ export async function POST(request: Request) {
     const data = await request.json();
     const {
       title,
+      titleTe,
       slug,
       excerpt,
+      excerptTe,
       content,
+      contentTe,
       featuredImage,
       imageAlt,
       categoryId,
@@ -46,6 +49,8 @@ export async function POST(request: Request) {
       isSponsored,
       sponsoredBrand,
       faqsJson,
+      recipeJson,
+      recipeJsonTe,
     } = data;
 
     if (!title || !slug || !content || !categoryId) {
@@ -66,6 +71,7 @@ export async function POST(request: Request) {
 
     // Sanitize rich HTML content with strict rules
     const sanitizedHtml = sanitizeArticleContent(content);
+    const sanitizedHtmlTe = contentTe ? sanitizeArticleContent(contentTe) : null;
     const readingTime = calculateReadingTime(sanitizedHtml);
 
     const cleanSlug = slug
@@ -77,9 +83,12 @@ export async function POST(request: Request) {
     const newArticle = await prisma.article.create({
       data: {
         title: title.trim(),
+        titleTe: titleTe ? titleTe.trim() : null,
         slug: cleanSlug,
         excerpt: (excerpt || title).trim(),
+        excerptTe: excerptTe ? excerptTe.trim() : null,
         content: sanitizedHtml,
+        contentTe: sanitizedHtmlTe,
         featuredImage:
           featuredImage ||
           '/recipes/crispy-spicy-fish-fry-recipe.jpg',
@@ -95,6 +104,8 @@ export async function POST(request: Request) {
         isSponsored: Boolean(isSponsored),
         sponsoredBrand: sponsoredBrand || 'A.S. Brand Oils',
         faqsJson: typeof faqsJson === 'string' ? faqsJson : JSON.stringify(faqsJson || []),
+        recipeJson: typeof recipeJson === 'string' ? recipeJson : JSON.stringify(recipeJson || {}),
+        recipeJsonTe: typeof recipeJsonTe === 'string' ? recipeJsonTe : JSON.stringify(recipeJsonTe || {}),
       },
     });
 

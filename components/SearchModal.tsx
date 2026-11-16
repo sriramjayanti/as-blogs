@@ -29,13 +29,21 @@ export default function SearchModal({
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 50);
       document.body.style.overflow = 'hidden';
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+          onClose();
+        }
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+        document.body.style.overflow = 'auto';
+      };
     } else {
       document.body.style.overflow = 'auto';
     }
-    return () => {
-      document.body.style.overflow = 'auto';
-    };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     if (!query.trim()) {
@@ -63,7 +71,15 @@ export default function SearchModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-stone-900/60 backdrop-blur-sm animate-fadeIn">
+    <div
+      className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 px-4 bg-stone-900/60 backdrop-blur-sm animate-fadeIn"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Search recipes and articles"
+    >
       <div className="bg-cream-50 rounded-2xl max-w-2xl w-full shadow-2xl border border-cream-200 overflow-hidden">
         {/* Search Input Bar */}
         <div className="p-4 sm:p-5 border-b border-cream-200 flex items-center gap-3 bg-white">
@@ -73,6 +89,7 @@ export default function SearchModal({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search articles by title, recipe, ingredient"
             placeholder="Search articles by title, recipe, ingredient (e.g. groundnut, sesame, pooja)..."
             className="w-full bg-transparent outline-none text-stone-800 placeholder-stone-400 text-base"
           />

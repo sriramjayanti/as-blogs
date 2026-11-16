@@ -2,15 +2,26 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
-import { isUnoptimizedImage } from '@/lib/utils';
+import { isUnoptimizedImage, getSiteUrl } from '@/lib/utils';
 import { buildUtmUrl } from '@/lib/promotion-engine';
 
 import { ShoppingBag, ArrowUpRight, ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
+
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: 'The A.S. Brand Pantry | Verified Culinary & Pooja Oils',
   description:
     'Explore the full roster of A.S. Brand Hulled Gingelly Oil, Mansion Gingelly Oil, Double Filtered Groundnut Oil, Sesame Seeds, and Sree Divya Deeparadhana Oil with verified marketplace channels.',
+  alternates: {
+    canonical: `${siteUrl}/products`,
+  },
+  openGraph: {
+    title: 'The A.S. Brand Pantry | Verified Culinary & Pooja Oils',
+    description:
+      'Explore the full roster of A.S. Brand Hulled Gingelly Oil, Mansion Gingelly Oil, Double Filtered Groundnut Oil, Sesame Seeds, and Sree Divya Deeparadhana Oil with verified marketplace channels.',
+    url: `${siteUrl}/products`,
+  },
 };
 
 export const revalidate = 60;

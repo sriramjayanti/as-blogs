@@ -14,11 +14,23 @@ import {
   Award,
   CheckCircle2,
 } from 'lucide-react';
+import { getSiteUrl } from '@/lib/utils';
+
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   title: 'About Us | Delicious Food Recipe Ideas & Everyday Kitchen',
   description:
     'Welcome to My Everyday Kitchen & Food Universe. We share healthy food recipes, simple kitchen cooking techniques, and traditional oil-based secrets for everyday home cooks.',
+  alternates: {
+    canonical: `${siteUrl}/about`,
+  },
+  openGraph: {
+    title: 'About Us | A.S. Heritage & Living',
+    description:
+      'Welcome to My Everyday Kitchen & Food Universe. We share healthy food recipes, simple kitchen cooking techniques, and traditional oil-based secrets for everyday home cooks.',
+    url: `${siteUrl}/about`,
+  },
 };
 
 export default function AboutPage() {

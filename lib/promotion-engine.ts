@@ -75,10 +75,16 @@ export function processArticleContent(
   }
 
   // Filter rules active for this category
+  // Prioritize specific category matching over generic 'ALL', then sort by priority descending
   const activeRules = rules
     .filter((r) => r.isActive)
     .filter((r) => r.categoryFilter === 'ALL' || r.categoryFilter === categorySlug)
-    .sort((a, b) => (b.priority || 0) - (a.priority || 0));
+    .sort((a, b) => {
+      const aSpecific = a.categoryFilter === categorySlug ? 1 : 0;
+      const bSpecific = b.categoryFilter === categorySlug ? 1 : 0;
+      if (aSpecific !== bSpecific) return bSpecific - aSpecific;
+      return (b.priority || 0) - (a.priority || 0);
+    });
 
   if (activeRules.length === 0) {
     return {

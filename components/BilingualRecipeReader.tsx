@@ -401,30 +401,86 @@ export default function BilingualRecipeReader({
 
           {/* Natural A.S. Brand Product Callout for Recipe */}
           {(() => {
-            const isDeepFry = /pakoda|pakora|bonda|bajji|murukku|vada|chicken 65|fish fry|parotta|chappathi|kulcha|tikka|jalfrezi|butter masala/i.test(article.title);
-            const isNonVeg = /chettinad|mutton|prawn|egg masala|non-veg/i.test(article.title) || article.category.slug === 'non-vegetarian-recipes';
-            const isSweet = /ladoo|laddu|panchamirtham|urundai|sweet/i.test(article.title) || article.category.slug === 'sweet-recipes';
+            const titleLower = article.title.toLowerCase();
+            const catSlug = article.category.slug;
+
+            const isNonVeg =
+              catSlug === 'non-vegetarian-recipes' ||
+              /chicken|mutton|prawn|fish|seafood|egg masala|chettinad|biryani|meat|roast/i.test(titleLower);
+
+            const isDeepFryOrStreet =
+              catSlug === 'street-food-recipes' ||
+              /pakoda|pakora|bonda|bajji|samosa|murukku|vada|chips|french fry|puri|poori|deep fry|crispy/i.test(titleLower);
+
+            const isNorthIndian =
+              catSlug === 'north-indian-recipes' ||
+              /paneer|tikka|jalfrezi|chappathi|chapati|kulcha|paratha|dal tadka|kadai|roti|jeera rice/i.test(titleLower);
+
+            const isSweet =
+              catSlug === 'sweet-recipes' ||
+              /ladoo|laddu|halwa|chikki|panchamirtham|urundai|sweet|burfi|poha sweet/i.test(titleLower);
+
+            const isFestivalOrPrasadam =
+              catSlug === 'festival-recipes' ||
+              /sundal|kozhukattai|modak|prasadam|naivedyam|festival/i.test(titleLower);
+
+            const isDevotionalOrCulture =
+              catSlug === 'culture' ||
+              /deepam|diya|pancha thailam|pooja|puja|lamp|spiritual|temple/i.test(titleLower);
+
+            const isSouthIndianOrBreakfast =
+              catSlug === 'south-indian-recipes' ||
+              catSlug === 'breakfast-recipes' ||
+              /sambar|rasam|dosa|idli|chutney|upma|poha|pongal|kootu|poriyal|podi/i.test(titleLower);
 
             let oilEn = 'A.S. Brand Hulled Gingelly Oil';
             let oilTe = 'A.S. బ్రాండ్ హల్డ్ జింజెల్లీ ఆయిల్';
-            let rationaleEn = 'De-hulled sesame seeds provide fragrant aroma, high antioxidant sesamol, and zero bitter taste for daily cooking.';
-            let rationaleTe = 'చేదు లేకుండా సహజమైన సువాసన మరియు పోషకాల కోసం A.S. బ్రాండ్ హల్డ్ జింజెల్లీ ఆయిల్ వాడండి.';
+            let rationaleEn = 'Cold-pressed purity with natural sesamol antioxidants for wholesome everyday home cooking and tempering.';
+            let rationaleTe = 'రోజువారీ ఆరోగ్యకరమైన వంటలు మరియు పోపుల కోసం స్వచ్ఛమైన కోల్డ్-ప్రెస్డ్ హల్డ్ నూనె.';
+            let buyUrl = 'https://asbrandoils.com/products/a-s-brand-hulled-gingelly-oil-1-litre-bottle';
 
-            if (isDeepFry) {
-              oilEn = 'A.S. Brand Groundnut Oil';
-              oilTe = 'A.S. బ్రాండ్ వేరుశెనగ నూనె';
-              rationaleEn = 'Double filtered from selected peanuts. Ensures crispy frying without excess oil absorption.';
-              rationaleTe = 'నూనె పీల్చకుండా కరకరలాడే ఫ్రైస్ మరియు స్నాక్స్ కోసం స్వచ్ఛమైన వేరుశెనగ నూనె ఉత్తమం.';
-            } else if (isNonVeg) {
-              oilEn = 'Mansion Gingelly Oil';
-              oilTe = 'మాన్షన్ జింజెల్లీ ఆయిల్';
-              rationaleEn = 'Whole raw gingelly seeds pressed to deliver robust rustic flavor and tenderize meat spices.';
+            if (isNonVeg) {
+              oilEn = 'Mansion Gingelly Oil (Whole Seed Heritage Extraction)';
+              oilTe = 'మాన్షన్ జింజెల్లీ ఆయిల్ (హోల్ సీడ్ హెరిటేజ్ ఎక్స్‌ట్రాక్షన్)';
+              rationaleEn = 'Whole raw gingelly seeds pressed to deliver robust rustic flavor and tenderize meat spices in curries and roasts.';
               rationaleTe = 'ఘాటైన చికెన్, మటన్, ప్రాన్ రోస్ట్స్ మరియు నాన్‌వెజ్ గ్రేవీలకు మాన్షన్ ఆయిల్ సరైన ఎంపిక.';
+              buyUrl = 'https://asbrandoils.com/products/mansion-gingelly-oil-1-liter-pouch';
+            } else if (isDeepFryOrStreet) {
+              oilEn = 'A.S. Brand Groundnut Oil (232°C High Smoke Point)';
+              oilTe = 'A.S. బ్రాండ్ వేరుశెనగ నూనె (232°C హై స్మోక్ పాయింట్)';
+              rationaleEn = 'Double filtered from selected groundnuts. High smoke point ensures golden, crispy frying without greasy oil absorption.';
+              rationaleTe = 'నూనె పీల్చకుండా కరకరలాడే ఫ్రైస్ మరియు స్నాక్స్ కోసం 232°C స్మోక్ పాయింట్ గల వేరుశెనగ నూనె ఉత్తమం.';
+              buyUrl = 'https://asbrandoils.com/products/a-s-brand-groundnut-oil-1-liter-pouch';
+            } else if (isNorthIndian) {
+              oilEn = 'A.S. Brand Groundnut Oil & Pure Oils';
+              oilTe = 'A.S. బ్రాండ్ వేరుశెనగ నూనె (ఉత్తమ రుచి & సువాసన)';
+              rationaleEn = 'Provides a rich golden glaze and clean, nutty aroma to tawa breads, aromatic gravies, and restaurant-style paneer dishes.';
+              rationaleTe = 'ధాబా-స్టైల్ గ్రేవీలు, పన్నీర్ వంటకాలు మరియు తవా రోటీలకు స్వచ్ఛమైన వేరుశెనగ నూనె అద్భుతమైన రుచినిస్తుంది.';
+              buyUrl = 'https://asbrandoils.com/products/a-s-brand-groundnut-oil-1-liter-pouch';
             } else if (isSweet) {
               oilEn = 'A.S. Brand Hulled Gingelly Seeds & Pure Oils';
               oilTe = 'A.S. బ్రాండ్ హల్డ్ తెల్ల నువ్వులు & నూనెలు';
-              rationaleEn = 'White sesame seeds with natural crunch and nutty aroma for traditional sweets.';
-              rationaleTe = 'నువ్వుల లడ్డూలు, పండుగ స్వీట్లకు స్వచ్ఛమైన A.S. బ్రాండ్ హల్డ్ సీడ్స్ వాడండి.';
+              rationaleEn = 'Mechanically de-hulled white sesame seeds with natural crunch and sweet nutty aroma for traditional sweets.';
+              rationaleTe = 'నువ్వుల లడ్డూలు, సాంప్రదాయ స్వీట్లకు సహజమైన తీపి, క్రంచీ రుచినిచ్చే A.S. బ్రాండ్ హల్డ్ సీడ్స్ వాడండి.';
+              buyUrl = 'https://asbrandoils.com/products/a-s-brand-hulled-gingelly-seeds-white-sesame-seed-1-kg-500grm-x-2';
+            } else if (isFestivalOrPrasadam) {
+              oilEn = 'A.S. Brand Hulled Sesame Seeds & Heritage Oils';
+              oilTe = 'A.S. బ్రాండ్ హల్డ్ నువ్వులు & స్వచ్ఛమైన నూనెలు';
+              rationaleEn = 'Pure, sattvic ingredients formulated for temple offerings, festive sundals, and sacred festive celebrations.';
+              rationaleTe = 'దేవుని ప్రసాదాలు, పండుగ సుండల్ మరియు నైవేద్యాల తయారీకి అత్యంత పవిత్రమైన స్వచ్ఛమైన ఉత్పత్తులు.';
+              buyUrl = 'https://asbrandoils.com/products/a-s-brand-hulled-gingelly-seeds-white-sesame-seed-1-kg-500grm-x-2';
+            } else if (isDevotionalOrCulture) {
+              oilEn = 'Sree Divya Sugandha Deeparadhana Oil (Jasmine Pancha Thailam)';
+              oilTe = 'శ్రీ దివ్య సుగంధ దీపారాధన తైలం (జాస్మిన్ పంచ తైలం)';
+              rationaleEn = 'Sacred blend of five Vedic oils infused with divine jasmine fragrance for bright, calm, soot-free pooja flames.';
+              rationaleTe = 'జాస్మిన్ సువాసనతో కూడిన పవిత్రమైన పంచ తైలం. ప్రశాంతమైన మరియు ప్రకాశవంతమైన దీపారాధన కోసం ఉత్తమం.';
+              buyUrl = 'https://asbrandoils.com/products/sree-divya-sugandha-deeparadhana-oil-910ml-bottle';
+            } else if (isSouthIndianOrBreakfast) {
+              oilEn = 'A.S. Brand Hulled Gingelly Oil (Flagship Purity)';
+              oilTe = 'A.S. బ్రాండ్ హల్డ్ జింజెల్లీ ఆయిల్';
+              rationaleEn = 'De-hulled white sesame seeds eliminate bitterness, giving an unmatched nutty aroma to sambars, chutneys, and crisp dosas.';
+              rationaleTe = 'చేదు లేకుండా సహజమైన కమ్మని సువాసన, సాంబార్, రసం మరియు దోశలకు అసలైన సౌత్ ఇండియన్ రుచినిస్తుంది.';
+              buyUrl = 'https://asbrandoils.com/products/a-s-brand-hulled-gingelly-oil-1-litre-bottle';
             }
 
             return (
@@ -445,7 +501,7 @@ export default function BilingualRecipeReader({
                 </div>
 
                 <a
-                  href="https://asbrandoils.com/"
+                  href={buyUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-xs font-bold bg-gold-500 hover:bg-gold-400 text-forest-950 px-4 py-2.5 rounded-xl transition-all shrink-0 shadow-sm"

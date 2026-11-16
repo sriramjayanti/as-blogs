@@ -19,9 +19,10 @@ export async function GET(request: Request) {
       where: {
         status: 'PUBLISHED',
         OR: [
-          { title: { contains: q } },
-          { excerpt: { contains: q } },
-          { focusKeyword: { contains: q } },
+          { title: { contains: q, mode: 'insensitive' } },
+          { titleTe: { contains: q, mode: 'insensitive' } },
+          { excerpt: { contains: q, mode: 'insensitive' } },
+          { focusKeyword: { contains: q, mode: 'insensitive' } },
         ],
       },
       select: {

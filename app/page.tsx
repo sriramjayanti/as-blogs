@@ -3,9 +3,11 @@ import Image from 'next/image';
 import { prisma } from '@/lib/db';
 import { isUnoptimizedImage } from '@/lib/utils';
 
+import { Metadata } from 'next';
 import ArticleCard from '@/components/ArticleCard';
 import HeroPosterCarousel from '@/components/HeroPosterCarousel';
 import BrandVideoShowcase from '@/components/BrandVideoShowcase';
+import { getSiteUrl } from '@/lib/utils';
 import {
   ArrowRight,
   ArrowUpRight,
@@ -13,20 +15,32 @@ import {
   Flame,
   ShieldCheck,
   BookOpen,
-  Utensils,
   Candy,
-  Drumstick,
   Soup,
-  ChefHat,
   Coffee,
-  Pizza,
-  Info,
 } from 'lucide-react';
+
+const siteUrl = getSiteUrl();
+
+export const metadata: Metadata = {
+  title: 'A.S. Heritage & Living | Indian Culinary, Wellness & Culture',
+  description:
+    'Discover authentic Indian culinary science, cold-pressed oil smoke points, heirloom recipes, Ayurvedic wellness, and sacred Pooja deepam traditions.',
+  alternates: {
+    canonical: siteUrl,
+  },
+  openGraph: {
+    title: 'A.S. Heritage & Living | Indian Culinary, Wellness & Culture',
+    description:
+      'Discover authentic Indian culinary science, cold-pressed oil smoke points, heirloom recipes, Ayurvedic wellness, and sacred Pooja deepam traditions.',
+    url: siteUrl,
+  },
+};
 
 export const revalidate = 60; // ISR 60 seconds
 
 export default async function HomePage() {
-  // Fetch published recipes and categories
+  // Fetch published recipes, categories, and featured products
   const [articles, categories, products] = await Promise.all([
     prisma.article.findMany({
       where: { status: 'PUBLISHED' },
@@ -35,7 +49,7 @@ export default async function HomePage() {
         author: true,
       },
       orderBy: { publishedAt: 'desc' },
-      take: 16,
+      take: 60,
     }),
     prisma.category.findMany({
       orderBy: { orderIndex: 'asc' },
@@ -47,19 +61,42 @@ export default async function HomePage() {
     }),
   ]);
 
-  // Featured Lead Story
-  const featuredArticle = articles[0];
-  const trendingArticles = articles.slice(1, 4);
+  // Guaranteed Unique Article Display (no duplicates across sections)
+  const usedIds = new Set<string>();
 
-  // Group recipes by the 8 categories
-  const vegArticles = articles.filter((a) => a.category.slug === 'vegetarian-recipes');
-  const sweetArticles = articles.filter((a) => a.category.slug === 'sweet-recipes');
-  const nonVegArticles = articles.filter((a) => a.category.slug === 'non-vegetarian-recipes');
-  const festivalArticles = articles.filter((a) => a.category.slug === 'festival-recipes');
-  const southIndianArticles = articles.filter((a) => a.category.slug === 'south-indian-recipes');
-  const northIndianArticles = articles.filter((a) => a.category.slug === 'north-indian-recipes');
-  const breakfastArticles = articles.filter((a) => a.category.slug === 'breakfast-recipes');
-  const streetFoodArticles = articles.filter((a) => a.category.slug === 'street-food-recipes');
+  // 1. Featured Lead Story
+  const featuredArticle = articles[0];
+  if (featuredArticle) usedIds.add(featuredArticle.id);
+
+  // 2. Trending Stories (3 items, unique)
+  const trendingArticles = articles.filter((a) => !usedIds.has(a.id)).slice(0, 3);
+  trendingArticles.forEach((a) => usedIds.add(a.id));
+
+  // 3. Sweet Recipes (3 items, unique)
+  const sweetArticles = articles
+    .filter((a) => a.category.slug === 'sweet-recipes' && !usedIds.has(a.id))
+    .slice(0, 3);
+  sweetArticles.forEach((a) => usedIds.add(a.id));
+
+  // 4. Regional: South Indian & North Indian (3 items, unique)
+  const regionalArticles = articles
+    .filter(
+      (a) =>
+        (a.category.slug === 'south-indian-recipes' || a.category.slug === 'north-indian-recipes') &&
+        !usedIds.has(a.id)
+    )
+    .slice(0, 3);
+  regionalArticles.forEach((a) => usedIds.add(a.id));
+
+  // 5. Breakfast & Street Food (3 items, unique)
+  const breakfastStreetArticles = articles
+    .filter(
+      (a) =>
+        (a.category.slug === 'breakfast-recipes' || a.category.slug === 'street-food-recipes') &&
+        !usedIds.has(a.id)
+    )
+    .slice(0, 3);
+  breakfastStreetArticles.forEach((a) => usedIds.add(a.id));
 
   return (
     <div className="space-y-14 sm:space-y-18 pb-20">
@@ -131,7 +168,7 @@ export default async function HomePage() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {(sweetArticles.length > 0 ? sweetArticles : articles.slice(0, 3)).map((art) => (
+          {sweetArticles.map((art) => (
             <ArticleCard key={art.id} article={art} variant="standard" />
           ))}
         </div>
@@ -157,7 +194,7 @@ export default async function HomePage() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {[...southIndianArticles, ...northIndianArticles].slice(0, 3).map((art) => (
+          {regionalArticles.map((art) => (
             <ArticleCard key={art.id} article={art} variant="standard" />
           ))}
         </div>
@@ -225,7 +262,7 @@ export default async function HomePage() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {[...breakfastArticles, ...streetFoodArticles].slice(0, 3).map((art) => (
+          {breakfastStreetArticles.map((art) => (
             <ArticleCard key={art.id} article={art} variant="standard" />
           ))}
         </div>

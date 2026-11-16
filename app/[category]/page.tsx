@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { prisma } from '@/lib/db';
 import ArticleCard from '@/components/ArticleCard';
 import { generateBreadcrumbJsonLd } from '@/lib/seo';
+import { getSiteUrl } from '@/lib/utils';
 import { ChevronRight, Sparkles } from 'lucide-react';
 
 interface CategoryPageProps {
@@ -21,12 +22,19 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     return { title: 'Category Not Found' };
   }
 
+  const siteUrl = getSiteUrl();
+  const canonical = `${siteUrl}/${category.slug}`;
+
   return {
     title: `${category.name} | Editorial Archive`,
     description: category.description,
+    alternates: {
+      canonical,
+    },
     openGraph: {
       title: `${category.name} | A.S. Heritage & Living`,
       description: category.description,
+      url: canonical,
     },
   };
 }
@@ -50,9 +58,10 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
     notFound();
   }
 
+  const siteUrl = getSiteUrl();
   const breadcrumbs = [
-    { name: 'Home', item: 'https://asbrandoils.com/' },
-    { name: category.name, item: `https://asbrandoils.com/${category.slug}` },
+    { name: 'Home', item: siteUrl },
+    { name: category.name, item: `${siteUrl}/${category.slug}` },
   ];
 
   const breadcrumbJsonLd = generateBreadcrumbJsonLd(breadcrumbs);

@@ -1,3 +1,5 @@
+import { getSiteUrl } from './utils';
+
 export interface StructuredDataArticleProps {
   title: string;
   description: string;
@@ -11,6 +13,7 @@ export interface StructuredDataArticleProps {
 }
 
 export function generateArticleJsonLd(props: StructuredDataArticleProps) {
+  const siteUrl = getSiteUrl();
   return {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
@@ -26,11 +29,12 @@ export function generateArticleJsonLd(props: StructuredDataArticleProps) {
     author: {
       '@type': 'Person',
       name: props.authorName,
-      url: props.authorUrl || 'https://asbrandoils.com/',
+      url: props.authorUrl && !props.authorUrl.includes('asbrandoils.com') ? props.authorUrl : `${siteUrl}/about`,
     },
     publisher: {
       '@type': 'Organization',
       name: 'A.S. Heritage & Living',
+      url: siteUrl,
       logo: {
         '@type': 'ImageObject',
         url: 'https://asbrandoils.com/cdn/shop/files/Gingelly_oil_1_720x.png?v=1721982944',
@@ -70,11 +74,12 @@ export function generateFaqJsonLd(faqs: { question: string; answer: string }[]) 
 }
 
 export function generateOrganizationJsonLd() {
+  const siteUrl = getSiteUrl();
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: 'A.S. Heritage & Living',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+    url: siteUrl,
     logo: 'https://asbrandoils.com/cdn/shop/files/Gingelly_oil_1_720x.png?v=1721982944',
     sameAs: [
       'https://asbrandoils.com/',
@@ -83,3 +88,4 @@ export function generateOrganizationJsonLd() {
     ],
   };
 }
+

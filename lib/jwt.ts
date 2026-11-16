@@ -2,13 +2,37 @@ import { SignJWT, jwtVerify } from 'jose';
 
 export const TOKEN_NAME = 'as_admin_auth_token';
 
-const PRIMARY_SECRET =
-  process.env.JWT_SECRET ||
-  'as_brand_oils_super_secure_jwt_secret_token_2026_seo_mag';
+function getJwtSecrets(): string[] {
+  const secrets: string[] = [];
 
-// Secret key encoded as Uint8Array for jose
-function getSecretKey(): Uint8Array {
-  return new TextEncoder().encode(PRIMARY_SECRET);
+  if (process.env.JWT_SECRET?.trim()) {
+    secrets.push(process.env.JWT_SECRET.trim());
+  }
+
+  // Support seamless key rotation via JWT_SECRET_ROTATION or JWT_SECRET_PREVIOUS
+  if (process.env.JWT_SECRET_ROTATION?.trim()) {
+    secrets.push(process.env.JWT_SECRET_ROTATION.trim());
+  }
+  if (process.env.JWT_SECRET_PREVIOUS?.trim()) {
+    secrets.push(process.env.JWT_SECRET_PREVIOUS.trim());
+  }
+
+  if (secrets.length === 0) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(
+        'SECURITY CRITICAL: JWT_SECRET environment variable is not configured. Server refused to use hardcoded secrets in production.'
+      );
+    }
+    // Local development fallback only
+    secrets.push('dev_local_only_secret_minimum_32_characters_long_for_security');
+  }
+
+  return secrets;
+}
+
+function getSigningKey(): Uint8Array {
+  const secrets = getJwtSecrets();
+  return new TextEncoder().encode(secrets[0]);
 }
 
 export interface AdminPayload {
@@ -22,7 +46,7 @@ export interface AdminPayload {
  * Signs a secure JWT session token using jose (HS256) - Edge & Node compatible
  */
 export async function signToken(payload: AdminPayload): Promise<string> {
-  const secretKey = getSecretKey();
+  const secretKey = getSigningKey();
   return new SignJWT({ ...payload })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
@@ -32,17 +56,17 @@ export async function signToken(payload: AdminPayload): Promise<string> {
 
 /**
  * Cryptographically verifies JWT token (100% Edge runtime compatible, zero Node.js dependencies)
- * Supports primary secret and seamless backward-compatible rotation keys so sessions don't suddenly break.
+ * Only accepts tokens signed by configured environment secrets.
  */
 export async function verifyToken(token: string): Promise<AdminPayload | null> {
   if (!token) return null;
 
-  const candidateSecrets = [
-    process.env.JWT_SECRET,
-    'as_brand_oils_super_secure_jwt_secret_token_2026_seo_mag',
-    'as_brand_oils_super_secure_jwt_secret_token_2026',
-    'as_brand_oils_fallback_emergency_secret_key_minimum_32_chars',
-  ].filter(Boolean) as string[];
+  let candidateSecrets: string[] = [];
+  try {
+    candidateSecrets = getJwtSecrets();
+  } catch {
+    return null;
+  }
 
   for (const secret of candidateSecrets) {
     try {
@@ -62,7 +86,7 @@ export async function verifyToken(token: string): Promise<AdminPayload | null> {
         role: payload.role as string,
       };
     } catch {
-      // Try next secret in keyring
+      // Try next valid rotation secret
     }
   }
 

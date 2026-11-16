@@ -16,11 +16,6 @@ const ContentSecurityPolicy = `
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false, // Prevents X-Powered-By: Next.js header information disclosure
-  experimental: {
-    outputFileTracingIncludes: {
-      '/**': ['./prisma/dev.db'],
-    },
-  },
   images: {
     remotePatterns: [
       {

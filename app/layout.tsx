@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ReadingProgressBar from '@/components/ReadingProgressBar';
 import { generateOrganizationJsonLd } from '@/lib/seo';
+import { getSiteUrl } from '@/lib/utils';
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -18,13 +19,15 @@ const plusJakarta = Plus_Jakarta_Sans({
   display: 'swap',
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || 'https://asbrandoils.com';
-const metadataBaseUrl = siteUrl.startsWith('http') ? new URL(siteUrl) : new URL(`https://${siteUrl}`);
+const siteUrl = getSiteUrl();
+const metadataBaseUrl = new URL(siteUrl);
 
 export const metadata: Metadata = {
   metadataBase: metadataBaseUrl,
+  alternates: {
+    canonical: '/',
+  },
   title: {
-
     default: 'A.S. Heritage & Living | Indian Culinary, Wellness & Culture',
     template: '%s | A.S. Heritage & Living',
   },
@@ -45,7 +48,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    url: 'https://asbrandoils.com/',
+    url: siteUrl,
     siteName: 'A.S. Heritage & Living',
     title: 'A.S. Heritage & Living | Indian Culinary, Wellness & Culture',
     description:

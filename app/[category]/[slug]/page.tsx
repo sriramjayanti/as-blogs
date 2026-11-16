@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
-import { formatDate } from '@/lib/utils';
+import { formatDate, getSiteUrl } from '@/lib/utils';
 import { processArticleContent, PromotionRuleWithProduct } from '@/lib/promotion-engine';
 import {
   generateArticleJsonLd,
@@ -41,9 +41,11 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
     return { title: 'Article Not Found' };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://asbrandoils.com';
+  const siteUrl = getSiteUrl();
   const canonical =
-    article.canonicalUrl || `${siteUrl}/${article.category.slug}/${article.slug}`;
+    article.canonicalUrl && !article.canonicalUrl.includes('asbrandoils.com')
+      ? article.canonicalUrl
+      : `${siteUrl}/${article.category.slug}/${article.slug}`;
 
   return {
     title: article.seoTitle || `${article.title} | A.S. Heritage & Living`,
@@ -161,8 +163,11 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
     faqs = [];
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://asbrandoils.com';
-  const articleUrl = `${siteUrl}/${article.category.slug}/${article.slug}`;
+  const siteUrl = getSiteUrl();
+  const articleUrl =
+    article.canonicalUrl && !article.canonicalUrl.includes('asbrandoils.com')
+      ? article.canonicalUrl
+      : `${siteUrl}/${article.category.slug}/${article.slug}`;
 
   // Generate structured schemas
   const articleJsonLd = generateArticleJsonLd({
