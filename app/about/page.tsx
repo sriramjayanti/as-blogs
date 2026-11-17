@@ -13,6 +13,9 @@ import {
   BookOpen,
   Award,
   CheckCircle2,
+  Youtube,
+  Instagram,
+  ArrowUpRight,
 } from 'lucide-react';
 import { getSiteUrl } from '@/lib/utils';
 
@@ -218,6 +221,35 @@ export default function AboutPage() {
               <div className="flex items-center gap-2.5">
                 <MapPin className="w-4 h-4 text-gold-400 shrink-0" />
                 <span>Editorial Desk • South Indian Culinary Research</span>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-forest-800/80 space-y-1.5">
+              <div className="text-[11px] uppercase tracking-wider font-bold text-gold-400">
+                Official Recipe Channels:
+              </div>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <a
+                  href="https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 bg-red-600/90 hover:bg-red-600 text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                >
+                  <Youtube className="w-3.5 h-3.5" />
+                  <span>YouTube</span>
+                  <ArrowUpRight className="w-3 h-3 opacity-60 ml-auto" />
+                </a>
+
+                <a
+                  href="https://www.instagram.com/asbrand_oils_recipes?psln=MW82OWQ2djg0bWdweQ=="
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 hover:opacity-95 text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                >
+                  <Instagram className="w-3.5 h-3.5" />
+                  <span>Instagram</span>
+                  <ArrowUpRight className="w-3 h-3 opacity-60 ml-auto" />
+                </a>
               </div>
             </div>
           </div>

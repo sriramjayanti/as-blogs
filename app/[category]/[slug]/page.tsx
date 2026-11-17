@@ -17,7 +17,7 @@ import ArticleSidebarPromo from '@/components/ArticleSidebarPromo';
 import FaqAccordion from '@/components/FaqAccordion';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
 import BilingualRecipeReader from '@/components/BilingualRecipeReader';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Youtube, Instagram, Sparkles, ArrowUpRight } from 'lucide-react';
 
 interface ArticlePageProps {
   params: {
@@ -294,6 +294,40 @@ export default async function ArticlePage({ params, searchParams }: ArticlePageP
                 products={processedEn.matchedProducts}
                 articleSlug={article.slug}
               />
+
+              {/* Social Media Recipe Video Card */}
+              <div className="bg-forest-950 text-white rounded-2xl p-5 border border-gold-500/20 shadow-sm space-y-3">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-gold-400 uppercase tracking-wider">
+                  <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+                  Cook Along with Videos
+                </div>
+                <p className="text-xs text-stone-300 leading-relaxed">
+                  Watch quick step-by-step video tutorials and chef masterclasses for this recipe.
+                </p>
+                <div className="space-y-2 pt-1">
+                  <a
+                    href="https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white p-2.5 rounded-xl text-xs font-bold transition-all shadow-xs group"
+                  >
+                    <Youtube className="w-4 h-4 text-white shrink-0" />
+                    <span className="truncate">YouTube Recipe Video</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 ml-auto" />
+                  </a>
+
+                  <a
+                    href="https://www.instagram.com/asbrand_oils_recipes?psln=MW82OWQ2djg0bWdweQ=="
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 hover:opacity-95 text-white p-2.5 rounded-xl text-xs font-bold transition-all shadow-xs group"
+                  >
+                    <Instagram className="w-4 h-4 text-white shrink-0" />
+                    <span className="truncate">Instagram 60s Reel</span>
+                    <ArrowUpRight className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 ml-auto" />
+                  </a>
+                </div>
+              </div>
 
               {/* Related Topic Cluster Box */}
               {relatedArticles.length > 0 && (

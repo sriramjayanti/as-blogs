@@ -18,6 +18,8 @@ import {
   Candy,
   Soup,
   Coffee,
+  Youtube,
+  Instagram,
 } from 'lucide-react';
 
 const siteUrl = getSiteUrl();
@@ -325,6 +327,62 @@ export default async function HomePage() {
             >
               View Full Product Roster & Verified Channels <ArrowRight className="w-3.5 h-3.5" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* 8. Official Social Community Showcase (YouTube & Instagram) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-forest-950 via-forest-900 to-forest-950 text-white p-6 sm:p-10 border border-forest-800 shadow-xl">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="space-y-3 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 bg-gold-950/80 text-gold-400 border border-gold-800/50 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+                Join Our Kitchen Community
+              </div>
+              <h3 className="font-serif text-2xl sm:text-3xl font-bold text-cream-50">
+                Cook With Us on YouTube & Instagram
+              </h3>
+              <p className="text-stone-300 text-xs sm:text-sm max-w-xl leading-relaxed">
+                Watch detailed recipe masterclasses, quick 60-second cooking reels, traditional oil pairing tips, and festival feast preparations every week.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto shrink-0">
+              {/* YouTube Card */}
+              <a
+                href="https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 bg-red-600 hover:bg-red-500 text-white px-5 py-3.5 rounded-2xl font-bold transition-all shadow-md group hover:scale-[1.02]"
+              >
+                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                  <Youtube className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-[11px] text-red-100 uppercase tracking-wider font-semibold">Subscribe on YouTube</div>
+                  <div className="text-sm font-bold">@asbrandoilsrecipes</div>
+                </div>
+                <ArrowUpRight className="w-4 h-4 text-white/70 group-hover:text-white ml-2" />
+              </a>
+
+              {/* Instagram Card */}
+              <a
+                href="https://www.instagram.com/asbrand_oils_recipes?psln=MW82OWQ2djg0bWdweQ=="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 hover:opacity-95 text-white px-5 py-3.5 rounded-2xl font-bold transition-all shadow-md group hover:scale-[1.02]"
+              >
+                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                  <Instagram className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-[11px] text-pink-100 uppercase tracking-wider font-semibold">Follow on Instagram</div>
+                  <div className="text-sm font-bold">@asbrand_oils_recipes</div>
+                </div>
+                <ArrowUpRight className="w-4 h-4 text-white/70 group-hover:text-white ml-2" />
+              </a>
+            </div>
           </div>
         </div>
       </section>

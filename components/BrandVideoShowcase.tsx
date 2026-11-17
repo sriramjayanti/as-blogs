@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   ArrowUpRight,
   Youtube,
+  Instagram,
   CheckCircle2,
   Tv,
   Award,
@@ -37,7 +38,7 @@ const BRAND_VIDEOS: VideoItem[] = [
     duration: '04:15',
     category: 'Heritage Craft',
     thumbnail: 'https://images.unsplash.com/photo-1610057099431-d73a1c9d2f2f?w=800&auto=format&fit=crop&q=80',
-    youtubeUrl: 'https://www.youtube.com/@asbrandoils',
+    youtubeUrl: 'https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa',
     embedId: 'dQw4w9WgXcQ', // fallback or channel showcase
     description: 'Discover how A.S. Brand carefully de-hulls white sesame seeds to eliminate bitterness and preserve natural sesamol antioxidants for aromatic daily cooking.',
     descriptionTe: 'చేదు లేకుండా సహజమైన సువాసన మరియు పోషకాలను నిలుపుతూ A.S. బ్రాండ్ హల్డ్ జింజెల్లీ ఆయిల్ ఎలా తయారవుతుందో చూడండి.',
@@ -51,7 +52,7 @@ const BRAND_VIDEOS: VideoItem[] = [
     duration: '05:30',
     category: 'Culinary Science',
     thumbnail: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&auto=format&fit=crop&q=80',
-    youtubeUrl: 'https://www.youtube.com/@asbrandoils',
+    youtubeUrl: 'https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa',
     description: 'Why double-filtered peanut oil ensures pakoras, murukkus, and fish fry remain wonderfully crispy without greasy absorption.',
     descriptionTe: 'స్వచ్ఛమైన వేరుశెనగ నూనెతో పకోడీలు, మురుకులు నూనె పీల్చకుండా కరకరలాడేలా వేయించుకోవచ్చు.',
     oilUsed: 'A.S. Brand Groundnut Oil',
@@ -64,7 +65,7 @@ const BRAND_VIDEOS: VideoItem[] = [
     duration: '06:10',
     category: 'Heritage Non-Veg',
     thumbnail: 'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=800&auto=format&fit=crop&q=80',
-    youtubeUrl: 'https://www.youtube.com/@asbrandoils',
+    youtubeUrl: 'https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa',
     description: 'Watch how whole-seed Mansion Gingelly Oil captures robust heat, blends with stone-ground black pepper, and creates irresistible rustic gravy.',
     descriptionTe: 'సాంప్రదాయ హోల్ సీడ్ మాన్షన్ జింజెల్లీ ఆయిల్‌తో చెట్టినాడు స్టైల్ ఘాటైన చికెన్ రోస్ట్ ఎలా చేయాలో చూడండి.',
     oilUsed: 'Mansion Gingelly Oil',
@@ -77,7 +78,7 @@ const BRAND_VIDEOS: VideoItem[] = [
     duration: '03:45',
     category: 'Festival & Sweets',
     thumbnail: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=800&auto=format&fit=crop&q=80',
-    youtubeUrl: 'https://www.youtube.com/@asbrandoils',
+    youtubeUrl: 'https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa',
     description: 'Learn the heirloom technique of making melt-in-mouth Til Ladoos using A.S. Brand premium white hulled sesame seeds and pure oils.',
     descriptionTe: 'A.S. బ్రాండ్ హల్డ్ తెల్ల నువ్వులు మరియు స్వచ్ఛమైన నూనెతో రుచికరమైన నువ్వుల లడ్డూ తయారీ విధానం.',
     oilUsed: 'A.S. Brand Hulled Gingelly Seeds',
@@ -106,20 +107,33 @@ export default function BrandVideoShowcase() {
             Watch & Learn: The Science of Cooking with Pure Oils
           </h2>
           <p className="text-stone-300 text-xs sm:text-sm mt-2 max-w-2xl font-normal leading-relaxed">
-            Step inside our culinary masterclass videos from <strong>@asbrandoils</strong>. See how pure cold-pressing, whole-seed extraction, and heirloom spices combine to create unforgettable dishes.
+            Step inside our culinary masterclass videos from <strong>@asbrandoilsrecipes</strong>. See how pure cold-pressing, whole-seed extraction, and heirloom spices combine to create unforgettable dishes.
           </p>
         </div>
 
-        <a
-          href="https://www.youtube.com/@asbrandoils"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition-all shadow-md shrink-0 self-start md:self-auto"
-        >
-          <Youtube className="w-4 h-4" />
-          <span>Subscribe on YouTube</span>
-          <ArrowUpRight className="w-3.5 h-3.5" />
-        </a>
+        <div className="flex flex-wrap items-center gap-2.5 shrink-0 self-start md:self-auto">
+          <a
+            href="https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all shadow-md"
+          >
+            <Youtube className="w-4 h-4" />
+            <span>YouTube Channel</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </a>
+
+          <a
+            href="https://www.instagram.com/asbrand_oils_recipes?psln=MW82OWQ2djg0bWdweQ=="
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 hover:opacity-95 text-white font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all shadow-md"
+          >
+            <Instagram className="w-4 h-4" />
+            <span>Instagram Reels</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </a>
+        </div>
       </div>
 
       {/* Main Video & Playlist Grid */}

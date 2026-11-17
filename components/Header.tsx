@@ -21,6 +21,8 @@ import {
   Info,
   ChevronDown,
   Globe,
+  Youtube,
+  Instagram,
 } from 'lucide-react';
 import SearchModal from './SearchModal';
 
@@ -102,7 +104,32 @@ export default function Header() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4 text-[11px] sm:text-xs shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 text-[11px] sm:text-xs shrink-0">
+            {/* Social Media Highlights */}
+            <a
+              href="https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="A.S. Brand Recipes on YouTube"
+              className="inline-flex items-center gap-1 bg-red-600/90 hover:bg-red-600 text-white font-semibold text-[10px] sm:text-[11px] px-2 sm:px-2.5 py-0.5 rounded-full transition-all shadow-2xs hover:scale-105"
+            >
+              <Youtube className="w-3 h-3" />
+              <span className="hidden xs:inline">YouTube</span>
+            </a>
+
+            <a
+              href="https://www.instagram.com/asbrand_oils_recipes?psln=MW82OWQ2djg0bWdweQ=="
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="A.S. Brand Oils Recipes on Instagram"
+              className="inline-flex items-center gap-1 bg-gradient-to-r from-pink-600 to-amber-500 hover:from-pink-500 hover:to-amber-400 text-white font-semibold text-[10px] sm:text-[11px] px-2 sm:px-2.5 py-0.5 rounded-full transition-all shadow-2xs hover:scale-105"
+            >
+              <Instagram className="w-3 h-3" />
+              <span className="hidden xs:inline">Instagram</span>
+            </a>
+
+            <span className="hidden sm:inline text-forest-800">|</span>
+
             <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-emerald-300 bg-emerald-950/70 px-2 py-0.5 rounded-full border border-emerald-850">
               <Globe className="w-3 h-3 text-emerald-400" />
               English & తెలుగు
@@ -113,7 +140,7 @@ export default function Header() {
               className="text-gold-400 hover:text-gold-300 flex items-center gap-1 font-medium transition-colors"
             >
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span className="hidden xs:inline">Verified</span> A.S. Brand
+              <span className="hidden md:inline">Verified</span> A.S. Brand
             </Link>
           </div>
         </div>
@@ -322,7 +349,39 @@ export default function Header() {
                   );
                 })}
 
+                {/* Social Media Channels Box in Drawer */}
                 <div className="pt-3">
+                  <div className="bg-forest-950 text-white rounded-2xl p-3 border border-gold-500/20 space-y-2">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-gold-400 flex items-center gap-1.5">
+                      <Sparkles className="w-3 h-3" />
+                      Official Recipe Channels
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <a
+                        href="https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-1.5 bg-red-600 hover:bg-red-500 text-white py-2 px-2 rounded-xl text-[11px] font-bold transition-all shadow-xs"
+                      >
+                        <Youtube className="w-3.5 h-3.5" />
+                        <span>YouTube</span>
+                        <ArrowUpRight className="w-3 h-3 opacity-70" />
+                      </a>
+                      <a
+                        href="https://www.instagram.com/asbrand_oils_recipes?psln=MW82OWQ2djg0bWdweQ=="
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-1.5 bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 hover:opacity-95 text-white py-2 px-2 rounded-xl text-[11px] font-bold transition-all shadow-xs"
+                      >
+                        <Instagram className="w-3.5 h-3.5" />
+                        <span>Instagram</span>
+                        <ArrowUpRight className="w-3 h-3 opacity-70" />
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-2">
                   <Link
                     href="/products"
                     onClick={() => setIsMobileMenuOpen(false)}

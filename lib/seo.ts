@@ -83,8 +83,8 @@ export function generateOrganizationJsonLd() {
     logo: 'https://asbrandoils.com/cdn/shop/files/Gingelly_oil_1_720x.png?v=1721982944',
     sameAs: [
       'https://asbrandoils.com/',
-      'https://www.facebook.com/asbrandoils',
-      'https://www.instagram.com/asbrandoils',
+      'https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa',
+      'https://www.instagram.com/asbrand_oils_recipes?psln=MW82OWQ2djg0bWdweQ==',
     ],
   };
 }
