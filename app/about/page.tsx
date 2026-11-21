@@ -6,9 +6,6 @@ import {
   HeartPulse,
   Sparkles,
   ShieldCheck,
-  Phone,
-  Mail,
-  MapPin,
   ArrowRight,
   BookOpen,
   Award,
@@ -201,56 +198,36 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <div className="lg:col-span-4 bg-forest-900/80 p-6 rounded-2xl border border-forest-800 space-y-3">
-            <h4 className="font-serif font-bold text-sm text-gold-400 uppercase tracking-wider">
-              Editorial Helpdesk & Inquiries
+          <div className="lg:col-span-4 bg-forest-900/80 p-6 rounded-2xl border border-forest-800 space-y-3.5">
+            <h4 className="font-serif font-bold text-sm text-gold-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-gold-400" />
+              Official Recipe Channels
             </h4>
-            <div className="space-y-2 text-xs text-stone-300">
-              <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-gold-400 shrink-0" />
-                <a href="tel:9177455998" className="hover:text-gold-300 font-mono font-semibold">
-                  +91 91774 55998
-                </a>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <Mail className="w-4 h-4 text-gold-400 shrink-0" />
-                <a href="mailto:recipes@asbrandoils.com" className="hover:text-gold-300">
-                  recipes@asbrandoils.com
-                </a>
-              </div>
-              <div className="flex items-center gap-2.5">
-                <MapPin className="w-4 h-4 text-gold-400 shrink-0" />
-                <span>Editorial Desk • South Indian Culinary Research</span>
-              </div>
-            </div>
+            <p className="text-xs text-stone-300 leading-relaxed">
+              Explore step-by-step cooking videos, masterclasses, and quick 60-second reels directly from our kitchen.
+            </p>
+            <div className="space-y-2.5 pt-1">
+              <a
+                href="https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 bg-red-600/90 hover:bg-red-600 text-white px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors"
+              >
+                <Youtube className="w-4 h-4 shrink-0" />
+                <span className="truncate">@asbrandoilsrecipes</span>
+                <ArrowUpRight className="w-3.5 h-3.5 opacity-60 ml-auto" />
+              </a>
 
-            <div className="pt-2 border-t border-forest-800/80 space-y-1.5">
-              <div className="text-[11px] uppercase tracking-wider font-bold text-gold-400">
-                Official Recipe Channels:
-              </div>
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                <a
-                  href="https://youtube.com/@asbrandoilsrecipes?si=Q3ScmdUlfgl_0gIa"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 bg-red-600/90 hover:bg-red-600 text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
-                >
-                  <Youtube className="w-3.5 h-3.5" />
-                  <span>YouTube</span>
-                  <ArrowUpRight className="w-3 h-3 opacity-60 ml-auto" />
-                </a>
-
-                <a
-                  href="https://www.instagram.com/asbrand_oils_recipes?psln=MW82OWQ2djg0bWdweQ=="
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 hover:opacity-95 text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
-                >
-                  <Instagram className="w-3.5 h-3.5" />
-                  <span>Instagram</span>
-                  <ArrowUpRight className="w-3 h-3 opacity-60 ml-auto" />
-                </a>
-              </div>
+              <a
+                href="https://www.instagram.com/asbrand_oils_recipes?psln=MW82OWQ2djg0bWdweQ=="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 hover:opacity-95 text-white px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors"
+              >
+                <Instagram className="w-4 h-4 shrink-0" />
+                <span className="truncate">@asbrand_oils_recipes</span>
+                <ArrowUpRight className="w-3.5 h-3.5 opacity-60 ml-auto" />
+              </a>
             </div>
           </div>
         </div>

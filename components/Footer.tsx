@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowUpRight, ShieldCheck, Mail, Phone, MapPin, Youtube, Instagram, Sparkles } from 'lucide-react';
+import { ArrowUpRight, ShieldCheck, Youtube, Instagram, Sparkles } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -22,12 +22,6 @@ export default function Footer() {
               Sharing authentic home recipes, healthy cooking techniques, oil-based festival sweets, and traditional culinary secrets. In proud association with A.S. Brand Oils.
             </p>
             <div className="space-y-1.5 text-xs text-stone-400 pt-2">
-              <div className="flex items-center gap-2">
-                <Phone className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-                <a href="tel:9177455998" className="hover:text-gold-300 font-mono">
-                  +91 91774 55998
-                </a>
-              </div>
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-3.5 h-3.5 text-gold-400 shrink-0" />
                 <span>Editorial standards compliant • Pure & healthy cooking</span>
@@ -184,37 +178,39 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Quick Links & Newsletter */}
+          {/* Culinary Heritage & Links */}
           <div className="lg:col-span-3 space-y-3">
             <h4 className="font-serif text-sm font-bold uppercase tracking-wider text-cream-100">
-              Everyday Dispatch
+              Culinary Heritage
             </h4>
             <p className="text-stone-400 text-xs leading-relaxed">
-              Get tested home recipes, healthy kitchen tips, and festival sweets delivered to your inbox.
+              Committed to authentic South Indian culinary tradition, wholesome cold-pressed oils, and generational recipes.
             </p>
-            <form onSubmit={(e) => e.preventDefault()} className="space-y-2">
-              <div className="relative">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  aria-label="Email address for recipe dispatch"
-                  className="w-full bg-forest-900/80 border border-forest-800 rounded-xl px-3.5 py-2 text-xs text-stone-200 placeholder-stone-500 focus:outline-none focus:border-gold-500"
-                />
-                <button
-                  type="submit"
-                  aria-label="Join recipe dispatch newsletter"
-                  className="absolute right-1 top-1 bottom-1 bg-gold-500 hover:bg-gold-400 text-forest-950 font-bold px-3 rounded-lg text-xs transition-colors flex items-center gap-1"
+            <ul className="space-y-2 text-xs sm:text-sm pt-1">
+              <li>
+                <Link href="/about" className="hover:text-gold-400 transition-colors flex items-center gap-1.5">
+                  <span>About Our Editorial Kitchen</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/products" className="hover:text-gold-400 transition-colors flex items-center gap-1.5">
+                  <span>Verified Oil Pantry Roster</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="https://asbrandoils.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gold-400 transition-colors flex items-center gap-1.5"
                 >
-                  <Mail className="w-3 h-3" />
-                  Join
-                </button>
-              </div>
-            </form>
-            <div className="pt-2">
-              <Link href="/about" className="text-xs text-gold-400 hover:text-gold-300 font-semibold underline">
-                About Our Editorial Kitchen →
-              </Link>
-            </div>
+                  <span>Official A.S. Brand Store</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
 
